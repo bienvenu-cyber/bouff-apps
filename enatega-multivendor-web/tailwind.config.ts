@@ -1,6 +1,8 @@
 import type { Config } from "tailwindcss";
 
 const config = {
+  // Thème partagé BOUFF (couleurs, polices) — voir packages/bouff-theme
+  presets: [require("../packages/bouff-theme/tailwind-preset.js")],
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
