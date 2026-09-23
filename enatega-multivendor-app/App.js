@@ -242,19 +242,19 @@ function ModeAwareApp() {
     // eslint-disable-next-line no-undef
     if (__DEV__) return
     ;(async () => {
-      const { isAvailable } = await Updates.checkForUpdateAsync()
-      if (isAvailable) {
-        try {
+      try {
+        const { isAvailable } = await Updates.checkForUpdateAsync()
+        if (isAvailable) {
           setIsUpdating(true)
           const { isNew } = await Updates.fetchUpdateAsync()
           if (isNew) {
             await Updates.reloadAsync()
           }
-        } catch (error) {
-          console.log('error while updating app', JSON.stringify(error))
-        } finally {
-          setIsUpdating(false)
         }
+      } catch (error) {
+        console.log('error while updating app', JSON.stringify(error))
+      } finally {
+        setIsUpdating(false)
       }
     })()
   }, [])
