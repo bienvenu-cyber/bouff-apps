@@ -8,8 +8,7 @@
     "noEmit": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "isolatedModules": true,
-    "paths": { "@/*": ["./*"] }
+    "isolatedModules": true
   },
-  "include": ["lib/**/*.ts"]
+  "include": ["types/monorepo.d.ts"]
 }
