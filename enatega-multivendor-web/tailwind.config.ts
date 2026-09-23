@@ -26,6 +26,20 @@ const config = {
         none: "none",
       },
       colors: {
+        // BOUFF — palette neutre chaude (noir mat), pas de gris bleuté
+        gray: {
+          50: "#f7f3ee",
+          100: "#eeeae4",
+          200: "#ded9d2",
+          300: "#c2bcb4",
+          400: "#98918a",
+          500: "#736d67",
+          600: "#4f4a46",
+          700: "#332f2d",
+          800: "#1c1b1e",
+          900: "#141416",
+          950: "#0b0b0c",
+        },
         "primary-color": "var(--primary-color)",
         "primary-light": "var(--primary-light)",
         "primary-dark": "var(--primary-dark)",

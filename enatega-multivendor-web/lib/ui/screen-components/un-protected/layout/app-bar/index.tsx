@@ -427,7 +427,7 @@ const AppTopbar = ({ handleModalToggle }: IAppBarProps) => {
                     onClick={logoClickHandler}
                     className={`flex shrink-0 cursor-pointer items-center text-xl font-bold text-gray-900 dark:text-white ${isMarketplaceLanding ? "md:origin-left md:scale-110" : ""}`}
                   >
-                    <Logo fillColor="#000000" darkmode="#FFFFFFFF" />
+                    <Logo height={40} />
                   </div>
                 )}
                 {!isSearchFocused && !isMarketplaceLanding && (

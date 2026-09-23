@@ -1,20 +1,12 @@
-// Logo BOUFF — mot-clé typographique, couleur adaptée au thème.
-import { useTheme } from "@/lib/providers/ThemeProvider";
-
-const Logo = ({ fillColor = "#000000", darkmode = "#ffffffff" }) => {
-  const { theme } = useTheme();
-  const color = theme === "dark" ? darkmode : fillColor;
-
+// Logo BOUFF — image officielle de la marque.
+const Logo = ({ height = 40 }: { height?: number }) => {
   return (
-    <span
-      className="inline-flex items-baseline gap-1 text-[22px] font-extrabold uppercase leading-none tracking-tight md:text-[26px]"
-      style={{ color }}
-    >
-      BOUFF
-      <span aria-hidden className="text-primary-color">
-        .
-      </span>
-    </span>
+    <img
+      src="/bouff-logo.jpg"
+      alt="BOUFF"
+      style={{ height, width: "auto" }}
+      className="rounded-md object-contain"
+    />
   );
 };
 
