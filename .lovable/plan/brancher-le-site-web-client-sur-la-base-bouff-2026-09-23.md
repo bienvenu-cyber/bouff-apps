@@ -18,9 +18,9 @@ Entre les écrans et la base, on ajoute une couche de traduction : le site conti
 - Compte client : inscription, connexion, profil, historique de commandes
 - Horaires d'ouverture et fermeture du restaurant
 
-## Ce qui sera neutralisé proprement (pas d'écran cassé)
+## Ce qui sera mis a jour coter base  proprement (pas d'écran cassé)
 
-Fonctions Enatega qui n'existent pas chez BOUFF pour le moment : coupons, pourboire, taxes, portefeuille, abonnement, parrainage, bons d'achat, avis, chat avec le livreur, PayPal/Stripe. Ces éléments sont masqués côté écran plutôt que laissés en erreur. On les activera plus tard si vous le souhaitez.
+Fonctions Enatega qui n'existent pas chez BOUFF pour le moment : coupons, pourboire, taxes, portefeuille, abonnemgent, parrainage, bons d'achat, avis, chat avec le livreur, PayPal/Stripe. Ces éléments doivent etre implementer ou mis a jour pour fonctionner proprmement , pour le paiement, c'est mobile monney et on va probablement utiliser pawapay.  TOUT L'APP DOIS ETRE FONCTIONNEL , ET SI A CERTAINS NIVEAU, TU IGNORE , QUOI METTRE OU FAIRE EXACTEMENT , TU ME DEMANDE . ... 
 
 ## Nettoyage au passage
 
@@ -32,7 +32,7 @@ Fonctions Enatega qui n'existent pas chez BOUFF pour le moment : coupons, pourbo
 
 Ce site a besoin d'un vrai serveur pour fonctionner (il calcule ses pages à la demande). L'hébergement de Lovable ne publie que des fichiers statiques, donc `bouff-web.lovable.app` ne pourra pas servir ce site. Deux options, au choix :
 
-1. Héberger le site sur Vercel ou sur votre serveur (`git pull` puis mise en ligne depuis votre terminal) — la base BOUFF, elle, reste ici et est déjà en ligne.
+1. JE VAIS Héberger le site sur VercEL (`git pull` puis mise en ligne depuis votre terminal) — la base BOUFF, elle, reste ici et est déjà en ligne.
 2. Reconstruire plus tard une vitrine légère publiable ici, en gardant ce site pour la commande.
 
 Le travail décrit ci-dessus est valable dans les deux cas.
