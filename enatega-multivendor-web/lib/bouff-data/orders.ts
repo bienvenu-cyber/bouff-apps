@@ -25,7 +25,13 @@ export function paymentMethodFor(method?: string | null): string {
   return "cash";
 }
 
-async function identity(): Promise<{ name: string; phone: string }> {
+async function identity(override?: {
+  name?: string | null;
+  phone?: string | null;
+}): Promise<{ name: string; phone: string }> {
+  if (override?.phone) {
+    return { name: override.name?.trim() || "Client", phone: override.phone.trim() };
+  }
   const db = bouffDb();
   const { data: auth } = await db.auth.getUser();
   if (auth.user) {
@@ -41,7 +47,7 @@ async function identity(): Promise<{ name: string; phone: string }> {
   const guest = getGuest();
   if (guest?.phone) return guest;
   throw new Error(
-    "Numéro de téléphone manquant : renseignez votre numéro dans votre profil avant de commander.",
+    "Numéro de téléphone manquant : renseignez votre nom et votre numéro pour commander.",
   );
 }
 
@@ -53,9 +59,15 @@ export async function placeOrder(variables: Record<string, any>) {
   const isPickedUp = Boolean(variables.isPickedUp);
   const address: string | null =
     variables.address?.deliveryAddress ?? variables.address?.details ?? null;
-  const zoneId = isPickedUp ? null : resolveZoneId(cart.menu, address);
-  const who = await identity();
+  const zoneId = isPickedUp
+    ? null
+    : (variables.zoneId ?? resolveZoneId(cart.menu, address));
+  const who = await identity({
+    name: variables.customerName,
+    phone: variables.customerPhone,
+  });
   setGuest(who);
+
 
   const items = cart.lines.map((line) => ({
     menu_item_id: line.line.foodId,
@@ -281,7 +293,9 @@ export async function recentActiveOrder() {
 export async function checkout(variables: Record<string, any>) {
   const cart = await priceCart();
   const isPickup = Boolean(variables.isPickup);
-  const zoneId = isPickup ? null : resolveZoneId(cart.menu, null);
+  const zoneId = isPickup
+    ? null
+    : (variables.zoneId ?? resolveZoneId(cart.menu, null));
   const deliveryCharges = isPickup ? 0 : deliveryFeeFor(cart.menu, zoneId);
 
   return {

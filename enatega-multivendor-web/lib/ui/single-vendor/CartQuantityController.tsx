@@ -38,7 +38,8 @@ export default function CartQuantityController({
   addons = [],
 }: CartQuantityControllerProps) {
   const t = useTranslations();
-  const { authToken, setIsAuthModalVisible } = useAuth();
+  const { setIsAuthModalVisible } = useAuth();
+  void setIsAuthModalVisible;
   const { cart, setSingleVendorItemQuantity } = useUser();
   const { showToast } = useToast();
   const [isUpdating, setIsUpdating] = useState(false);
@@ -54,10 +55,6 @@ export default function CartQuantityController({
   const changeQuantity = async (nextQuantity: number) => {
     if (updatePendingRef.current) return;
     if (isOutOfStock && nextQuantity > quantity) return;
-    if (!authToken) {
-      setIsAuthModalVisible(true);
-      return;
-    }
 
     if (!categoryId || !variationId) {
       showToast({
