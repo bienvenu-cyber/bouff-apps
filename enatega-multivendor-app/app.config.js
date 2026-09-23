@@ -26,13 +26,12 @@ module.exports = () => {
   ]
 
   return {
-    name: 'Enatega Multi',
-    scheme: 'enategamultivendor',
-    version: '1.1.41',
-    description:
-      "Enatega is a starter kit food ordering app built in React Native using Expo for IOS and Android. It's made keeping good aesthetics in mind as well keeping the best coding practices in mind. Its fully customisable to easily help you in your next food delivery project. https://market.nativebase.io/view/react-native-food-delivery-backend-app",
-    slug: 'enategamultivendor',
-    owner: 'ninjas_code',
+    name: 'The Bouff App',
+    scheme: 'thebouffapp',
+    version: '1.0.0',
+    description: "The Bouff App - Food Delivery Application",
+    slug: 'the-bouff-app',
+    owner: 'ben229',
     experiments: {
       buildCacheProvider: 'eas'
     },
@@ -168,7 +167,7 @@ module.exports = () => {
       [
         'expo-updates',
         {
-          username: 'ninjas_code'
+          username: 'ben229'
         }
       ],
       [
@@ -227,14 +226,14 @@ module.exports = () => {
         riderResourceName: 'enatega_rider'
       },
       eas: {
-        projectId: '331d4e5b-b12a-434a-92ec-d6d283dc0e46'
+        projectId: '6efb52b9-2693-4728-a3df-7b06ae174922'
       }
     },
     runtimeVersion: {
       policy: 'sdkVersion'
     },
     updates: {
-      url: 'https://u.expo.dev/331d4e5b-b12a-434a-92ec-d6d283dc0e46'
+      url: 'https://u.expo.dev/6efb52b9-2693-4728-a3df-7b06ae174922'
     }
   }
 }

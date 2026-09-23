@@ -9,15 +9,15 @@ const androidGoogleMapsApiKey =
 
 module.exports = {
   expo: {
-    name: 'Enatega Multivendor Rider',
-    description:
-      "Enatega is a starter kit food ordering app built in React Native using Expo for IOS and Android. It's made keeping good aesthetics in mind as well keeping the best coding practices in mind. Its fully customisable to easily help you in your next food delivery project. https://market.nativebase.io/view/react-native-food-delivery-backend-app",
-    version: '1.1.95',
-    slug: 'food-delivery-rider-multivendor',
+    name: 'The Bouff App Rider',
+    description: "The Bouff App Rider Application",
+    version: '1.0.0',
+    slug: 'the-bouff-app-rider',
+    owner: 'ben229',
     orientation: 'portrait',
     icon: './lib/assets/images/icon.png',
     assetBundlePatterns: ['lib/assets/**/*'],
-    scheme: 'com.enatega.multirider',
+    scheme: 'thebouffapprider',
     userInterfaceStyle: 'automatic',
     newArchEnabled: true,
     plugins: [
@@ -113,7 +113,7 @@ module.exports = {
     },
     extra: {
       eas: {
-        projectId: '9144a7fc-b205-464a-8fb6-64eb66fc8743'
+        projectId: 'c8e3056b-947a-4fe8-80ce-d627379f2e3e'
       }
     },
     experiments: {

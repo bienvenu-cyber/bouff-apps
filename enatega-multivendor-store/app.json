@@ -1,13 +1,16 @@
 {
   "expo": {
-    "name": "Enatega Store",
-    "slug": "enatega-multivendor-restaurant",
-    "description": "Enatega is a starter kit food ordering app built in React Native using Expo for IOS and Android. It's made keeping good aesthetics in mind as well keeping the best coding practices in mind. Its fully customisable to easily help you in your next food delivery project. https://market.nativebase.io/view/react-native-food-delivery-backend-app",
-    "version": "1.0.86",
+    "name": "The Bouff App Store",
+    "slug": "the-bouff-app-store",
+    "owner": "ben229",
+    "description": "The Bouff App Restaurant Store Application",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./lib/assets/images/icon.png",
-    "assetBundlePatterns": ["**/*"],
-    "scheme": "enatega-store",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "scheme": "thebouffappstore",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "plugins": [
@@ -39,13 +42,19 @@
       "expo-audio",
       "expo-video"
     ],
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "multivendor.enatega.restaurant",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "$(PRODUCT_NAME) uses your location for features like finding orders nearby and tracking customer orders!",
-        "UIBackgroundModes": ["audio", "remote-notification"],
+        "UIBackgroundModes": [
+          "audio",
+          "remote-notification"
+        ],
         "ITSAppUsesNonExemptEncryption": false,
         "UIRequiresFullScreen": true,
         "NSBluetoothAlwaysUsageDescription": "We use Bluetooth to connect to your thermal printer.",
@@ -56,11 +65,13 @@
       "versionCode": 86,
       "googleServicesFile": "./google-services.json",
       "permissions": [
-        "BLUETOOTH",
-        "BLUETOOTH_CONNECT",
-        "BLUETOOTH_SCAN",
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "android.permission.BLUETOOTH",
+        "android.permission.BLUETOOTH_CONNECT",
+        "android.permission.BLUETOOTH_SCAN",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
       "package": "multivendor.enatega.restaurant",
       "adaptiveIcon": {
@@ -70,8 +81,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "6a94161f-f21b-4ad9-8a04-c95b54ef0116"
-      }
+        "projectId": "682bdeda-e04c-4a58-a1df-c09fab64aff9"
+      },
+      "router": {}
     },
     "experiments": {
       "typedRoutes": true
