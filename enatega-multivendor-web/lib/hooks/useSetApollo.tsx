@@ -34,7 +34,13 @@ import {
 import { METRICS_GENERAL } from "../api/graphql/mutations/metrics";
 import { print } from "graphql";
 import { getAccessToken, invalidateClientSession } from "../utils/methods/auth";
-import { getModeEnvironment, useAppMode, type AppMode } from "@/lib/mode";
+import {
+  APP_MODES,
+  getModeEnvironment,
+  useAppMode,
+  type AppMode,
+} from "@/lib/mode";
+import { createBouffLink } from "@/lib/bouff-data/link";
 
 const refreshPromises = new Map<AppMode, Promise<string | null>>();
 let isAuthRedirecting = false;
@@ -109,6 +115,19 @@ export const useSetupApollo = (): ApolloClient<NormalizedCacheObject> => {
   if (clientRef.current) {
     return clientRef.current;
   }
+
+  // BOUFF : en mode mono-restaurant, toutes les données viennent de notre base
+  // (aucun serveur Enatega n'est appelé).
+  if (mode === APP_MODES.SINGLE) {
+    const bouffClient = new ApolloClient({
+      link: createBouffLink(),
+      cache: new InMemoryCache(),
+      connectToDevTools: process.env.NODE_ENV !== "production",
+    });
+    clientRef.current = bouffClient;
+    return bouffClient;
+  }
+
 
   // const { SERVER_URL, WS_SERVER_URL } = getEnv(ENV);
   const SERVER_URL = environment.graphqlUrl;
