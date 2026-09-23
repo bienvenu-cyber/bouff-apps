@@ -16,7 +16,9 @@ const interfaceFont = Inter({
 });
 
 export const metadata = {
-  title: "Enatega Multivendor",
+  title: "BOUFF — Bonne bouffe. Bon prix. Bon mood.",
+  description:
+    "BOUFF, le fast-food de Parakou : smash burgers, shawarma & kebab, Pop's Chicken, loaded fries. À emporter, sur place ou livré.",
   manifest: "/manifest.json",
 };
 
@@ -47,10 +49,10 @@ export default async function RootLayout({
             __html: `
               (function() {
                 const theme = localStorage.getItem("theme");
-                if (theme === "dark") {
-                  document.documentElement.classList.add("dark");
-                } else {
+                if (theme === "light") {
                   document.documentElement.classList.remove("dark");
+                } else {
+                  document.documentElement.classList.add("dark");
                 }
               })();
             `,
@@ -73,7 +75,7 @@ export default async function RootLayout({
         </Script>
 
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#75D04B" />
+        <meta name="theme-color" content="#0B0B0C" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 

@@ -12,13 +12,13 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>("dark");
   const pathname = usePathname();
 
   // Load theme on first mount
   useEffect(() => {
     const saved = localStorage.getItem("theme") as Theme | null;
-    const initial = saved || "light";
+    const initial = saved || "dark";
     setTheme(initial);
     document.documentElement.classList.toggle("dark", initial === "dark");
   }, []);
