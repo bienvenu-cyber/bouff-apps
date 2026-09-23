@@ -1,3 +1,4 @@
+import "../(localized)/global.css";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ToastProvider } from "@/lib/bouff/toast";
