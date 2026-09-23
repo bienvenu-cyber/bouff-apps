@@ -439,7 +439,7 @@ const resolvers: Record<string, Resolver> = {
 
 const subscriptions = new Set([
   "SingleVendorOrderStatusChanged",
-  "SingleVendorTrackingUpdated",
+  "SingleVendorOrderTrackingUpdated",
   "SingleVendorPaymentSuccess",
   "OrderStatusChanged",
 ]);
@@ -456,10 +456,10 @@ function subscribe(operationName: string, observer: any) {
         const details = await orders.orderDetails(row.id);
         if (!details?.rawOrder) return;
         if (operationName === "SingleVendorPaymentSuccess") return;
-        if (operationName === "SingleVendorTrackingUpdated") {
+        if (operationName === "SingleVendorOrderTrackingUpdated") {
           observer.next({
             data: {
-              trackingUpdated: {
+              subscriptionOrderTracking: {
                 orderId: details.rawOrder.orderId,
                 status: details.rawOrder.orderStatus,
                 riderLocation: null,
