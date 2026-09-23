@@ -54,10 +54,6 @@ export default function CartQuantityController({
   const changeQuantity = async (nextQuantity: number) => {
     if (updatePendingRef.current) return;
     if (isOutOfStock && nextQuantity > quantity) return;
-    if (!authToken) {
-      setIsAuthModalVisible(true);
-      return;
-    }
 
     if (!categoryId || !variationId) {
       showToast({
