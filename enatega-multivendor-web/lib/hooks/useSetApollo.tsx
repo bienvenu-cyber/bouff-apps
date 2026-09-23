@@ -110,6 +110,19 @@ export const useSetupApollo = (): ApolloClient<NormalizedCacheObject> => {
     return clientRef.current;
   }
 
+  // BOUFF : en mode mono-restaurant, toutes les données viennent de notre base
+  // (aucun serveur Enatega n'est appelé).
+  if (mode === APP_MODES.SINGLE) {
+    const bouffClient = new ApolloClient({
+      link: createBouffLink(),
+      cache: new InMemoryCache(),
+      connectToDevTools: process.env.NODE_ENV !== "production",
+    });
+    clientRef.current = bouffClient;
+    return bouffClient;
+  }
+
+
   // const { SERVER_URL, WS_SERVER_URL } = getEnv(ENV);
   const SERVER_URL = environment.graphqlUrl;
   const WS_SERVER_URL = environment.websocketUrl;
