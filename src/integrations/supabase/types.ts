@@ -686,7 +686,213 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      advance_order_status: {
+        Args: {
+          p_cancel_reason?: string
+          p_order_id: string
+          p_status: Database["public"]["Enums"]["order_status"]
+        }
+        Returns: {
+          accepted_at: string | null
+          cancel_reason: string | null
+          cancelled_at: string | null
+          commission_fcfa: number
+          created_at: string
+          customer_id: string | null
+          customer_name: string
+          customer_phone: string
+          delivered_at: string | null
+          delivery_address: string | null
+          delivery_fee_fcfa: number
+          delivery_zone_id: string | null
+          id: string
+          items_total_fcfa: number
+          note: string | null
+          order_number: string
+          order_type: Database["public"]["Enums"]["order_type"]
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          picked_up_at: string | null
+          ready_at: string | null
+          restaurant_id: string
+          rider_id: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          total_fcfa: number
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      claim_order: {
+        Args: { p_order_id: string }
+        Returns: {
+          accepted_at: string | null
+          cancel_reason: string | null
+          cancelled_at: string | null
+          commission_fcfa: number
+          created_at: string
+          customer_id: string | null
+          customer_name: string
+          customer_phone: string
+          delivered_at: string | null
+          delivery_address: string | null
+          delivery_fee_fcfa: number
+          delivery_zone_id: string | null
+          id: string
+          items_total_fcfa: number
+          note: string | null
+          order_number: string
+          order_type: Database["public"]["Enums"]["order_type"]
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          picked_up_at: string | null
+          ready_at: string | null
+          restaurant_id: string
+          rider_id: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          total_fcfa: number
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      place_order: {
+        Args: {
+          p_customer_name: string
+          p_customer_phone: string
+          p_delivery_address?: string
+          p_delivery_zone_id?: string
+          p_items: Json
+          p_note?: string
+          p_order_type: Database["public"]["Enums"]["order_type"]
+          p_payment_method?: Database["public"]["Enums"]["payment_method"]
+          p_restaurant_id: string
+        }
+        Returns: Json
+      }
+      platform_stats: {
+        Args: { p_from?: string; p_to?: string }
+        Returns: Json
+      }
+      restaurant_stats: {
+        Args: { p_from?: string; p_restaurant_id: string; p_to?: string }
+        Returns: Json
+      }
+      rider_advance_order: {
+        Args: {
+          p_order_id: string
+          p_status: Database["public"]["Enums"]["order_status"]
+        }
+        Returns: {
+          accepted_at: string | null
+          cancel_reason: string | null
+          cancelled_at: string | null
+          commission_fcfa: number
+          created_at: string
+          customer_id: string | null
+          customer_name: string
+          customer_phone: string
+          delivered_at: string | null
+          delivery_address: string | null
+          delivery_fee_fcfa: number
+          delivery_zone_id: string | null
+          id: string
+          items_total_fcfa: number
+          note: string | null
+          order_number: string
+          order_type: Database["public"]["Enums"]["order_type"]
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          picked_up_at: string | null
+          ready_at: string | null
+          restaurant_id: string
+          rider_id: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          total_fcfa: number
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      set_item_availability: {
+        Args: { p_available: boolean; p_menu_item_id: string }
+        Returns: {
+          available_weekday: number | null
+          base_price_fcfa: number
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_available: boolean
+          is_featured: boolean
+          name: string
+          restaurant_id: string
+          sort_order: number
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "menu_items"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      set_rider_status: {
+        Args: { p_status: Database["public"]["Enums"]["rider_status"] }
+        Returns: {
+          created_at: string
+          full_name: string
+          id: string
+          is_active: boolean
+          is_platform_fleet: boolean
+          phone: string | null
+          restaurant_id: string
+          status: Database["public"]["Enums"]["rider_status"]
+          updated_at: string
+          user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "riders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      set_variant_availability: {
+        Args: { p_available: boolean; p_variant_id: string }
+        Returns: {
+          created_at: string
+          id: string
+          is_available: boolean
+          is_default: boolean
+          kind: Database["public"]["Enums"]["variant_kind"]
+          menu_item_id: string
+          name: string
+          price_fcfa: number
+          sort_order: number
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "item_variants"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      track_order: {
+        Args: { p_order_number: string; p_phone: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role:
