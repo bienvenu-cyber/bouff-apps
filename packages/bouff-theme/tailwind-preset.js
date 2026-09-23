@@ -3,7 +3,6 @@
  * Déclare les variables CSS --bouff-* (clair sur :root, sombre sur .dark)
  * et les classes bg-bouff-*, text-bouff-*, border-bouff-*, font-bouff-*.
  */
-const plugin = require("tailwindcss/plugin");
 const { dark, light, fonts, radius } = require("./tokens");
 
 const kebab = (s) => s.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
@@ -38,8 +37,9 @@ module.exports = {
     },
   },
   plugins: [
-    plugin(({ addBase }) => {
+    // Fonction plugin simple : pas de dépendance à tailwindcss dans ce dossier partagé.
+    function bouffVars({ addBase }) {
       addBase({ ":root": toVars(light), ".dark": toVars(dark) });
-    }),
+    },
   ],
 };
