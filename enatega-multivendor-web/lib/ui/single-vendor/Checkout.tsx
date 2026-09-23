@@ -26,6 +26,21 @@ export default function SingleVendorCheckout() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [payerPhone, setPayerPhone] = useState("");
+  const [momoNotice, setMomoNotice] = useState<string | null>(null);
+  // Paiement Mobile Money en ligne (pawaPay) : activé dès que les clés sont
+  // en place côté serveur (NEXT_PUBLIC_PAWAPAY_ENABLED=true).
+  const onlineMomoEnabled = process.env.NEXT_PUBLIC_PAWAPAY_ENABLED === "true";
+  const paymentOptions: [string, string][] = [
+    ["COD", pickup ? "Espèces au comptoir" : "Espèces à la livraison"],
+    ["MOBILE_MONEY", "Mobile Money (à la remise)"],
+    ...(onlineMomoEnabled
+      ? ([["MOBILE_MONEY_ONLINE", "Mobile Money maintenant (MTN / Moov)"]] as [
+          string,
+          string,
+        ][])
+      : []),
+  ];
   const idempotencyKey = useRef(
     `sv-web-${Date.now()}-${Math.random().toString(36).slice(2)}`,
   );
@@ -82,6 +97,31 @@ export default function SingleVendorCheckout() {
       const order = result.data?.placeOrder;
       if (!order) throw new Error("La commande n'a pas pu être enregistrée.");
       clearCart();
+
+      if (paymentMethod === "MOBILE_MONEY_ONLINE") {
+        try {
+          const response = await fetch("/api/payments/pawapay/initiate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderNumber: order.orderId,
+              customerPhone: phone.trim(),
+              payerPhone: (payerPhone || phone).trim(),
+            }),
+          });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data?.error ?? "Paiement refusé.");
+          setMomoNotice(data?.message ?? null);
+        } catch (paymentError) {
+          // La commande est enregistrée : on prévient sans la perdre.
+          setMomoNotice(
+            paymentError instanceof Error
+              ? `${paymentError.message} Votre commande est enregistrée, vous pourrez régler à la remise.`
+              : "Paiement en ligne indisponible : réglez à la remise.",
+          );
+        }
+      }
+
       router.replace(`/order/${order.orderId}/tracking`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Commande impossible.");
@@ -192,10 +232,7 @@ export default function SingleVendorCheckout() {
         <section className={card}>
           <h2 className="font-semibold dark:text-white">Paiement</h2>
           <div className="mt-3 space-y-2">
-            {[
-              ["COD", pickup ? "Espèces au comptoir" : "Espèces à la livraison"],
-              ["MOBILE_MONEY", "Mobile Money (à la remise)"],
-            ].map(([value, label]) => (
+            {paymentOptions.map(([value, label]) => (
               <label
                 key={value}
                 className="flex items-center gap-3 rounded-xl border border-gray-200 p-3 dark:border-gray-700 dark:text-white"
@@ -210,6 +247,21 @@ export default function SingleVendorCheckout() {
               </label>
             ))}
           </div>
+          {paymentMethod === "MOBILE_MONEY_ONLINE" && (
+            <label className="mt-4 block text-sm dark:text-gray-200">
+              Numéro Mobile Money à débiter
+              <input
+                value={payerPhone}
+                onChange={(event) => setPayerPhone(event.target.value)}
+                placeholder={phone || "97 00 00 00"}
+                inputMode="tel"
+                className={field}
+              />
+              <span className="mt-2 block text-xs text-gray-500 dark:text-gray-400">
+                Vous recevrez une demande de validation sur ce numéro.
+              </span>
+            </label>
+          )}
           <label className="mt-5 block text-sm dark:text-gray-200">
             Note pour la cuisine
             <textarea
@@ -249,6 +301,9 @@ export default function SingleVendorCheckout() {
           <p className="mt-3 text-sm text-red-600">
             {error || placeState.error?.message}
           </p>
+        )}
+        {momoNotice && (
+          <p className="mt-3 text-sm text-primary-color">{momoNotice}</p>
         )}
       </aside>
     </div>

@@ -13,8 +13,23 @@ export function formatCurrencyValue(
   if (!Number.isFinite(amount)) return "—";
 
   const currencyLabel = currencySymbol || currency;
-  const separator = currencyLabel.length > 2 ? " " : "";
   const sign = amount < 0 ? "-" : "";
+
+  // Le franc CFA n'a pas de centimes : montants entiers et symbole après le prix.
+  const isZeroDecimal =
+    currency?.toUpperCase() === "XOF" ||
+    currency?.toUpperCase() === "XAF" ||
+    currencySymbol?.toUpperCase() === "FCFA" ||
+    currencySymbol?.toUpperCase() === "CFA";
+
+  if (isZeroDecimal) {
+    const whole = Math.round(Math.abs(amount))
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return `${sign}${whole} ${currencyLabel}`.trim();
+  }
+
+  const separator = currencyLabel.length > 2 ? " " : "";
 
   return `${sign}${currencyLabel}${separator}${Math.abs(amount).toFixed(2)}`;
 }

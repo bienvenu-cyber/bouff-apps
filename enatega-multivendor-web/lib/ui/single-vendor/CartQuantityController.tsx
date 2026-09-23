@@ -129,7 +129,7 @@ export default function CartQuantityController({
               <FiShoppingBag aria-hidden className="h-[18px] w-[18px]" />
             </span>
             <span className="font-semibold tracking-[-0.01em]">
-              {isOutOfStock ? t("out_of_stock_label") : "Add to cart"}
+              {isOutOfStock ? t("out_of_stock_label") : "Ajouter au panier"}
             </span>
             <span className="ms-auto inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-primary-color shadow-sm">
               <FiPlus aria-hidden className="h-4 w-4" />

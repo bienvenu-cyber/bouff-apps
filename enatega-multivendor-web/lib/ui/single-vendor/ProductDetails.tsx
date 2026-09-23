@@ -195,8 +195,8 @@ export default function SingleVendorProductDetails({
                     <legend className="px-2 font-semibold text-gray-900 dark:text-white">
                       {addon.title}{' '}
                       <span className="text-xs font-normal text-gray-500">
-                        {minimum > 0 ? `Select ${minimum}` : 'Optional'}
-                        {maximum > 1 ? ` · up to ${maximum}` : ''}
+                        {minimum > 0 ? `Choisir ${minimum}` : 'Facultatif'}
+                        {maximum > 1 ? ` · jusqu'à ${maximum}` : ''}
                       </span>
                     </legend>
                     {addon.description && <p className="mb-3 text-sm text-gray-500">{addon.description}</p>}
@@ -230,13 +230,13 @@ export default function SingleVendorProductDetails({
               <p className="font-semibold text-gray-900 dark:text-white">
                 {selectedIsOutOfStock
                   ? t("out_of_stock_label")
-                  : "Ready to order?"}
+                  : "Prêt à commander ?"}
               </p>
               {!selectedIsOutOfStock && (
                 <p className="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
                   {addonsAreValid
-                    ? `${formatCurrency(Number(selectedFinalPrice) + addonTotal)} per item`
-                    : 'Select the required options to continue.'}
+                    ? `${formatCurrency(Number(selectedFinalPrice) + addonTotal)} par article`
+                    : 'Choisissez les options obligatoires pour continuer.'}
                 </p>
               )}
             </div>
@@ -267,7 +267,7 @@ export default function SingleVendorProductDetails({
         </div>
       </div>
       <SingleVendorProductSection
-        title="You may also like"
+        title="Vous aimerez aussi"
         products={normalizeProducts(similar.data?.getSimilarFoods?.items)}
       />
     </div>

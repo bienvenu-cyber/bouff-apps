@@ -57,6 +57,9 @@ const nextConfig = {
       "sb_publishable_mL30STWaoMLv30cWEZnI8g_e_WZn8j3",
     NEXT_PUBLIC_BOUFF_RESTAURANT_SLUG:
       process.env.NEXT_PUBLIC_BOUFF_RESTAURANT_SLUG ?? "bouff",
+    // Paiement Mobile Money en ligne (pawaPay) : false jusqu'à l'arrivée des clés
+    NEXT_PUBLIC_PAWAPAY_ENABLED:
+      process.env.NEXT_PUBLIC_PAWAPAY_ENABLED ?? "false",
   },
   webpack: (config) => {
     config.module.rules.push({

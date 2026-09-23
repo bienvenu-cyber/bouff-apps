@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.enqueue_order_notifications() FROM anon, authenticated, PUBLIC;
