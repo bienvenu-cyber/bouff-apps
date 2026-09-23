@@ -4,9 +4,10 @@
   "version": "0.1.0",
   "scripts": {
     "install:web": "cd enatega-multivendor-web && npm install --legacy-peer-deps",
-    "dev": "cd enatega-multivendor-web && npx next dev -p 8080 --webpack",
-    "build": "cd enatega-multivendor-web && npx next build",
-    "build:dev": "cd enatega-multivendor-web && npx next build",
-    "start": "cd enatega-multivendor-web && npx next start -p 8080"
+    "ensure:web": "cd enatega-multivendor-web && [ -d node_modules/next-intl ] || npm install --legacy-peer-deps",
+    "dev": "npm run ensure:web && cd enatega-multivendor-web && node ./node_modules/next/dist/bin/next dev -p 8080 --webpack",
+    "build": "npm run ensure:web && cd enatega-multivendor-web && node ./node_modules/next/dist/bin/next build",
+    "build:dev": "npm run ensure:web && cd enatega-multivendor-web && node ./node_modules/next/dist/bin/next build",
+    "start": "cd enatega-multivendor-web && node ./node_modules/next/dist/bin/next start -p 8080"
   }
 }
