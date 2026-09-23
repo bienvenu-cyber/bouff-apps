@@ -225,6 +225,7 @@ const resolvers: Record<string, Resolver> = {
     };
   },
   SingleVendorBanners: async () => ({ banners: [] }),
+  Banners: async () => ({ banners: [] }),
   SingleVendorDiscovery: async () => {
     const menu = await loadMenu();
     const featured = menu.items.filter((i) => i.isFeatured).map(shortItem);
