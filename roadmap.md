@@ -16,23 +16,22 @@
 - [ ] Retirer les adresses de serveurs Enatega écrites en dur (app livreur)
 
 
-## Étape 2 — Commande client
-- [x] Écran de commande BOUFF (`/bouff`) : carte en direct, formules, boissons et sauces, panier, emporter/livraison, zones et frais, validation
-- [x] Total, frais de livraison et commission recalculés côté base (impossible de commander à un prix modifié)
-- [x] Suivi de commande sans compte (`/bouff/suivi`) avec numéro + téléphone
-- [ ] Logo BOUFF (couronne dans le « O »), photos des produits, typographie au pinceau
+## Étape 2 — Brancher les applications existantes sur la base BOUFF
+Aucune nouvelle application ne sera créée. On réutilise les applications déjà présentes dans le dépôt (site web client, app mobile client, app cuisine, app livreur, back-office) et on remplace leur serveur Enatega par notre base BOUFF.
+- [ ] Couche d'accès commune (connexion à la base + appels de commande) partagée par les applications
+- [ ] Site web client : carte, formules, panier, emporter/livraison, validation, suivi
+- [ ] App mobile client : carte, panier, commande, suivi
+- [ ] App cuisine : commandes en direct, reçue → en cuisine → prête, annulation, ruptures
+- [ ] App livreur : disponibilité, courses libres, prise en charge, en route, remise
+- [ ] Back-office : restaurants, carte, comptes de l'équipe, livreurs, commissions, statistiques
+- [ ] Retirer les adresses de serveurs Enatega écrites en dur
 
-## Étape 3 — Cuisine
-- [x] Écran cuisine (`/bouff/cuisine`) : commandes en temps réel, reçue → en cuisine → prête, annulation avec motif, ruptures de stock
-- [ ] Créer les comptes de l'équipe cuisine
-
-## Étape 4 — Livreurs
-- [x] Écran livreur (`/bouff/livreur`) : disponibilité, courses libres, prise en charge sans doublon, en route, remise validée
-- [ ] Créer les comptes livreurs
-
-## Étape 5 — Super admin
-- [x] Statistiques disponibles côté base (ventes, commandes, panier moyen, commissions, meilleurs articles, par restaurant et plateforme)
-- [ ] Écran back-office (restaurants, carte, livreurs, commissions, statistiques)
+## Déjà disponible côté base (rien à refaire)
+- [x] Prise de commande avec total, frais de zone et commission recalculés côté base
+- [x] Suivi de commande sans compte (numéro + téléphone)
+- [x] Statuts cuisine et livreur, prise de course sans doublon, ruptures de stock
+- [x] Statistiques (ventes, commandes, panier moyen, commissions, meilleurs articles)
+- [ ] Comptes de l'équipe (cuisine, livreurs) créés par l'admin
 
 ## À faire plus tard
 - [ ] Notifications WhatsApp (Cloud API Meta) au restaurant et au client
