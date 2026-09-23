@@ -157,6 +157,122 @@ export async function pastOrders(limit?: number, page?: number) {
   }));
 }
 
+// Suivi sans compte : la commande n'est pas lisible directement (verrou base),
+// on passe par la fonction de suivi avec le numéro de téléphone du client.
+async function guestOrderDetails(orderNumber: string, menu: any) {
+  const guest = getGuest();
+  if (!guest?.phone || orderNumber.length > 20) return null;
+  const db = bouffDb();
+  const { data } = await db.rpc("track_order", {
+    p_order_number: orderNumber,
+    p_phone: guest.phone,
+  });
+  const t = data as any;
+  if (!t || t.error || !t.order_number) return null;
+
+  const items = (t.items ?? []).map((i: any, index: number) => ({
+    _id: `${orderNumber}-${index}`,
+    food: null,
+    title: i.item_name,
+    foodTitle: i.item_name,
+    description: i.variant_name,
+    image: null,
+    foodImage: null,
+    variationImage: null,
+    variationTitle: i.variant_name,
+    variationTotal: i.line_total_fcfa,
+    foodQuantity: i.quantity,
+    quantity: i.quantity,
+    specialInstructions: (i.options ?? []).join(", "),
+    isActive: true,
+    variation: {
+      _id: null,
+      title: i.variant_name,
+      price: i.line_total_fcfa,
+      discounted: null,
+      image: null,
+      createdAt: t.created_at,
+      updatedAt: t.created_at,
+    },
+    addons: [],
+  }));
+
+  const common = {
+    _id: orderNumber,
+    orderId: t.order_number,
+    orderStatus: STATUS_MAP[t.status] ?? "PENDING",
+    orderState: t.status,
+    paymentMethod: "COD",
+    paidAmount: 0,
+    orderAmount: t.total_fcfa,
+    paymentStatus: "PENDING",
+    tipping: 0,
+    taxationAmount: 0,
+    createdAt: t.created_at,
+    completionTime: t.delivered_at,
+    preparationTime: t.ready_at,
+    orderDate: t.created_at,
+    expectedTime: null,
+    isPickedUp: t.order_type === "takeaway",
+    deliveryType: t.order_type,
+    deliveryCharges: t.delivery_fee_fcfa,
+    acceptedAt: t.accepted_at,
+    pickedAt: t.picked_up_at,
+    deliveredAt: t.delivered_at,
+    cancelledAt: t.cancelled_at,
+    scheduledAt: null,
+    assignedAt: t.accepted_at,
+    instructions: t.cancel_reason,
+    restaurant: {
+      _id: menu.restaurant.id,
+      name: t.restaurant ?? menu.restaurant.name,
+      image: menu.restaurant.logo,
+      address: menu.restaurant.address,
+      location: { coordinates: [0, 0] },
+    },
+    deliveryAddress: {
+      _id: null,
+      id: null,
+      deliveryAddress: t.order_type === "takeaway" ? "À emporter" : "Livraison",
+      details: null,
+      label: "Livraison",
+      location: { coordinates: [0, 0] },
+    },
+    rider: t.rider_name
+      ? {
+          _id: null,
+          name: t.rider_name,
+          phone: t.rider_phone,
+          location: { coordinates: [0, 0] },
+        }
+      : null,
+    items,
+    eta: null,
+  };
+
+  return {
+    success: true,
+    message: null,
+    rawOrder: common,
+    data: {
+      ...common,
+      deliveryDiscount: 0,
+      couponDiscount: 0,
+      isPriority: false,
+      itemsSubTotal: (t.total_fcfa ?? 0) - (t.delivery_fee_fcfa ?? 0),
+      minimumOrderFee: 0,
+      minimumOrderAmount: 0,
+      isBelowMinimumOrder: false,
+      isBelowMaximumOrder: false,
+      freeDeliveriesRemaining: 0,
+      priorityDeliveryFees: 0,
+      deliverChargesAmount: t.delivery_fee_fcfa,
+      couponDiscountApplied: false,
+      creditsApplied: 0,
+    },
+  };
+}
+
 export async function orderDetails(orderId: string) {
   const db = bouffDb();
   const menu = await loadMenu();
