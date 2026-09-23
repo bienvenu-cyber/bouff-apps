@@ -13,14 +13,15 @@
 }
 
 :root {
-  --primary-color: #75d04b;
-  --primary-light: #f3ffee;
-  --primary-dark: #5ac12f;
-  --primary-hover: #68c73e;
-  --primary-pressed: #56b02f;
-  --primary-focus: rgba(117, 208, 75, 0.32);
-  --primary-disabled: #b9e8a3;
-  --secondary-color: #75d04b;
+  /* BOUFF — orange neon / ambre sur noir mat */
+  --primary-color: #ff7a1a;
+  --primary-light: #fff3e8;
+  --primary-dark: #e56200;
+  --primary-hover: #ff8c38;
+  --primary-pressed: #cc5800;
+  --primary-focus: rgba(255, 122, 26, 0.38);
+  --primary-disabled: #ffd2ab;
+  --secondary-color: #ffc043;
   --dispatch-ground: #ffffff;
   --dispatch-header: #ffffff;
   --dispatch-header-line: #e8e9e4;
@@ -38,14 +39,14 @@
 }
 
 .dark {
-  --dispatch-ground: #111410;
-  --dispatch-header: #0d1117;
-  --dispatch-header-line: #29313d;
-  --dispatch-surface: #181c17;
-  --dispatch-map: #20251f;
-  --dispatch-ink: #f7f8f3;
-  --dispatch-muted: #b6bcb2;
-  --dispatch-line: #343a32;
+  --dispatch-ground: #0b0b0c;
+  --dispatch-header: #101011;
+  --dispatch-header-line: #262528;
+  --dispatch-surface: #141416;
+  --dispatch-map: #1b1b1e;
+  --dispatch-ink: #f7f3ee;
+  --dispatch-muted: #b3ada6;
+  --dispatch-line: #2b2a2e;
   --skeleton-base: #1e293b;
   --skeleton-highlight: #334155;
   --skeleton-line: #475569;
@@ -127,7 +128,7 @@ body:has(.quiet-orbit-page) {
 }
 
 .dark body:has(.quiet-orbit-page) {
-  background: #111410;
+  background: #0b0b0c;
 }
 
 .quiet-orbit-page {
@@ -135,19 +136,19 @@ body:has(.quiet-orbit-page) {
   --dispatch-surface: #ffffff;
   --dispatch-map: #f7f8f6;
   --dispatch-line: #e8e9e4;
-  --quiet-plinth: #e5ecda;
+  --quiet-plinth: #ffe6cf;
   --quiet-inactive-opacity: 0.48;
   scrollbar-color: var(--primary-dark) var(--dispatch-ground);
 }
 
 .dark .quiet-orbit-page {
-  --dispatch-ground: #111410;
-  --dispatch-surface: #181c17;
-  --dispatch-map: #20251f;
-  --dispatch-ink: #f7f8f3;
-  --dispatch-muted: #b6bcb2;
-  --dispatch-line: #343a32;
-  --quiet-plinth: #293126;
+  --dispatch-ground: #0b0b0c;
+  --dispatch-surface: #141416;
+  --dispatch-map: #1b1b1e;
+  --dispatch-ink: #f7f3ee;
+  --dispatch-muted: #b3ada6;
+  --dispatch-line: #2b2a2e;
+  --quiet-plinth: #2a2118;
   --quiet-inactive-opacity: 0.68;
 }
 
