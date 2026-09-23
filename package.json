@@ -10,5 +10,8 @@
     "build": "npm run ensure:web && cd enatega-multivendor-web && node ./node_modules/next/dist/bin/next build && cd .. && npm run dist",
     "build:dev": "npm run ensure:web && cd enatega-multivendor-web && node ./node_modules/next/dist/bin/next build && cd .. && npm run dist",
     "start": "cd enatega-multivendor-web && node ./node_modules/next/dist/bin/next start -p 8080"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.1"
   }
 }
