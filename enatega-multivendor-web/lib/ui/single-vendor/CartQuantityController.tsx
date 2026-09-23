@@ -38,7 +38,8 @@ export default function CartQuantityController({
   addons = [],
 }: CartQuantityControllerProps) {
   const t = useTranslations();
-  const { authToken, setIsAuthModalVisible } = useAuth();
+  const { setIsAuthModalVisible } = useAuth();
+  void setIsAuthModalVisible;
   const { cart, setSingleVendorItemQuantity } = useUser();
   const { showToast } = useToast();
   const [isUpdating, setIsUpdating] = useState(false);
