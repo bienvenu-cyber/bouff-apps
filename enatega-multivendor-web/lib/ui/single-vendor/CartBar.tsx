@@ -21,7 +21,7 @@ export default function CartBar() {
         <span className="min-w-0 flex-1 truncate">
           {cartCount} article{cartCount > 1 ? "s" : ""} · Voir mon panier
         </span>
-        <span className="shrink-0">{calculateSubtotal()}</span>
+        <span className="shrink-0">{total}</span>
         <FiArrowRight className="shrink-0" />
       </Link>
     </div>
