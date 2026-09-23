@@ -166,7 +166,7 @@ export async function orderDetails(orderId: string) {
     .select("*")
     .eq(column, orderId)
     .maybeSingle();
-  if (!order) return null;
+  if (!order) return guestOrderDetails(orderId, menu);
 
   const { data: items } = await db
     .from("order_items")
