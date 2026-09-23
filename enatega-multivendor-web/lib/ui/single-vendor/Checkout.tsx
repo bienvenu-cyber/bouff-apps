@@ -171,7 +171,7 @@ export default function SingleVendorCheckout() {
                 >
                   {zones.map((zone) => (
                     <option key={zone.id} value={zone.id}>
-                      {zone.name} — {formatCurrency(zone.feeFcfa)}
+                      {zone.name} — {formatCurrency(zone.fee)}
                     </option>
                   ))}
                 </select>
