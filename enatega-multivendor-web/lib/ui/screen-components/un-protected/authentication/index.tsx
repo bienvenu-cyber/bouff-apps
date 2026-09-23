@@ -106,58 +106,6 @@ export default function AuthModal({
       setIsLoading(false);
       return;
     }
-    // Ancien flux Enatega (conservé, non utilisé)
-    // eslint-disable-next-line no-unreachable
-    try {
-      setIsLoading(true);
-      const idToken = await getGoogleIdToken();
-      const userData = await getGoogleUserInfo(idToken);
-
-      const userLoginResponse = await handleUserLogin({
-        type: "google",
-        email: userData.email,
-        idToken,
-        name: userData.name,
-        notificationToken: "",
-      });
-
-      if (userLoginResponse) {
-        setUser(userLoginResponse.login as ILoginProfile);
-        if (
-          !userLoginResponse.login.emailIsVerified &&
-          SKIP_EMAIL_VERIFICATION
-        ) {
-          setActivePanel(5);
-        } else if (
-          !userLoginResponse.login.phoneIsVerified &&
-          !SKIP_MOBILE_VERIFICATION
-        ) {
-          setActivePanel(4);
-        } else {
-          setActivePanel(0);
-          setIsAuthModalVisible(false);
-
-          // showToast({
-          //   type: "success",
-          //   title: t("login_success"),
-          //   message: t("login_success_message"),
-          // });
-        }
-        setIsLoading(false);
-        console.log("userLoginResponse", userLoginResponse);
-      }
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Google sign-in failed. Please try again.";
-      showToast({
-        type: "error",
-        title: t("login_error"),
-        message,
-      });
-      setIsLoading(false);
-    }
   };
 
   const getGoogleIdToken = () =>
