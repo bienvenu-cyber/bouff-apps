@@ -5,10 +5,16 @@
 - [x] Réintégration des images et icônes exclues du dépôt (le projet compile à nouveau après un `git clone`)
 - [x] Aperçu du site client fonctionnel
 
-## Étape 1 — Socle technique (à faire en premier)
-- [ ] Mettre en service le serveur (API) BOUFF et renseigner les adresses via variables d'environnement
-- [ ] Créer les comptes Firebase / Google Maps BOUFF (notifications, cartes)
+## Étape 1 — Socle technique
+- [x] Base de données BOUFF créée sur Lovable Cloud, structurée multi-restaurants (restaurants, zones, catégories, articles, formules, options, profils, rôles, livreurs, commandes)
+- [x] Règles d'accès par rôle vérifiées côté base, fonctions de rôles hors de portée du navigateur
+- [x] Carte BOUFF enregistrée (prix FCFA, formules Seul / + Frites / Combo, boissons, sauces)
+- [x] Temps réel activé sur les commandes et la disponibilité des articles
+- [ ] Prix Pop's Chicken, prix du Repas du Monde, frais réels par zone (en attente)
+- [ ] Numéro WhatsApp Business + accès à la Cloud API Meta
+- [ ] Créer les comptes Google Maps BOUFF (cartes)
 - [ ] Retirer les adresses de serveurs Enatega écrites en dur (app livreur)
+
 
 ## Étape 2 — Vitrine BOUFF (site + app client)
 - [x] Ambiance sombre + orange néon, nom et slogan dans le titre du site
