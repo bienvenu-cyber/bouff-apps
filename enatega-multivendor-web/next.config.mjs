@@ -44,6 +44,20 @@ const contentSecurityPolicy = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // BOUFF : mono-restaurant par défaut, données servies par notre base.
+  env: {
+    NEXT_PUBLIC_VENDOR_MODE: process.env.NEXT_PUBLIC_VENDOR_MODE ?? "SINGLE",
+    NEXT_PUBLIC_SINGLE_VENDOR_ENABLED:
+      process.env.NEXT_PUBLIC_SINGLE_VENDOR_ENABLED ?? "true",
+    NEXT_PUBLIC_SUPABASE_URL:
+      process.env.NEXT_PUBLIC_SUPABASE_URL ??
+      "https://txyqwlatzlkurjrnlxhe.supabase.co",
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+      "sb_publishable_mL30STWaoMLv30cWEZnI8g_e_WZn8j3",
+    NEXT_PUBLIC_BOUFF_RESTAURANT_SLUG:
+      process.env.NEXT_PUBLIC_BOUFF_RESTAURANT_SLUG ?? "bouff",
+  },
   webpack: (config) => {
     config.module.rules.push({
       test: /\.(woff|woff2|eot|ttf|otf)$/i,
