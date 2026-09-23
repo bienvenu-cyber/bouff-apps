@@ -15,7 +15,6 @@ import { GoogleMapsContext } from "@/lib/context/global/google-maps.context";
 import { useConfig } from "@/lib/context/configuration/configuration.context";
 import useUser from "@/lib/hooks/useUser";
 import GoogleMapTrackingComponent from "@/lib/ui/screen-components/protected/order-tracking/components/gm-tracking-comp";
-import TrackingHelpCard from "@/lib/ui/screen-components/protected/order-tracking/components/tracking-help-card";
 import TrackingOrderDetails from "@/lib/ui/screen-components/protected/order-tracking/components/tracking-order-details";
 import TrackingStatusCard from "@/lib/ui/screen-components/protected/order-tracking/components/tracking-status-card";
 import { PaddingContainer } from "@/lib/ui/useable-components/containers";
@@ -172,16 +171,16 @@ export default function SingleVendorOrderTracking({
     return (
       <div className="mx-auto my-12 max-w-lg rounded-2xl border border-red-200 bg-red-50 p-6 text-center dark:border-red-900 dark:bg-red-950/20">
         <p className="font-semibold text-red-600 dark:text-red-300">
-          This order could not be loaded.
+          Cette commande est introuvable.
         </p>
         <p className="mt-2 text-sm text-red-500 dark:text-red-400">
-          Open your active orders to use the latest tracking link.
+          Ouvrez vos commandes pour retrouver le bon lien de suivi.
         </p>
         <Link
           href="/profile/order-history"
           className="mt-5 inline-block rounded-xl bg-primary-color px-5 py-2.5 font-semibold text-dispatch-ink"
         >
-          View my orders
+          Voir mes commandes
         </Link>
       </div>
     );
@@ -191,11 +190,11 @@ export default function SingleVendorOrderTracking({
     <div className="flex min-h-full w-screen flex-col bg-dispatch-ground pb-20 text-dispatch-ink dark:bg-gray-900 dark:text-gray-100">
       <div className="scrollable-container flex-1">
         {showLiveMap && (
-          <section aria-label="Order locations and delivery route">
+          <section aria-label="Position de la commande et trajet de livraison">
             {!GOOGLE_MAPS_KEY ? (
-              <TrackingUnavailable message="The interactive map is not configured." />
+              <TrackingUnavailable message="La carte n'est pas encore configurée." />
             ) : mapLoadError ? (
-              <TrackingUnavailable message="Google Maps could not be loaded. Please try again." />
+              <TrackingUnavailable message="La carte n'a pas pu être chargée. Réessayez." />
             ) : destination ? (
               <GoogleMapTrackingComponent
                 isLoaded={isLoaded}
@@ -207,7 +206,7 @@ export default function SingleVendorOrderTracking({
                 showStaticLoadingImage={false}
               />
             ) : (
-              <TrackingUnavailable message="The customer location is unavailable for this order." />
+              <TrackingUnavailable message="L'adresse de livraison n'est pas disponible pour cette commande." />
             )}
           </section>
         )}
@@ -221,13 +220,12 @@ export default function SingleVendorOrderTracking({
               />
 
               <div className="w-full md:w-auto md:flex-none">
-                <TrackingHelpCard />
                 {normalizedOrder.rider?.phone && (
                   <a
                     href={`tel:${normalizedOrder.rider.phone}`}
                     className="mt-3 block min-h-11 w-full rounded-xl bg-primary-color px-5 py-3 text-center text-sm font-semibold text-dispatch-ink transition-colors hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-focus md:max-w-xs"
                   >
-                    Contact courier
+                    Appeler le livreur
                   </a>
                 )}
               </div>
@@ -256,7 +254,7 @@ function TrackingUnavailable({ message }: { message: string }) {
           aria-hidden
         />
         <p className="mt-3 font-semibold text-dispatch-ink dark:text-gray-100">
-          Map temporarily unavailable
+          Carte momentanément indisponible
         </p>
         <p className="mt-2 text-sm text-dispatch-muted dark:text-gray-400">
           {message}

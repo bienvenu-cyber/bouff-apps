@@ -7,6 +7,10 @@ describe("formatCurrencyValue", () => {
     expect(formatCurrencyValue(12.5, "€", "EUR")).toBe("€12.50");
   });
 
+  it("affiche le franc CFA sans centimes", () => {
+    expect(formatCurrencyValue(1500, "FCFA", "XOF")).toBe("1 500 FCFA");
+  });
+
   it("falls back to the currency code with readable spacing", () => {
     expect(formatCurrencyValue("9", "", "USD")).toBe("USD 9.00");
   });

@@ -209,6 +209,72 @@ export type Database = {
           },
         ]
       }
+      notification_outbox: {
+        Row: {
+          attempts: number
+          audience: string
+          channel: string
+          created_at: string
+          event: string
+          id: string
+          last_error: string | null
+          order_id: string | null
+          payload: Json
+          recipient: string | null
+          restaurant_id: string | null
+          sent_at: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          audience: string
+          channel: string
+          created_at?: string
+          event: string
+          id?: string
+          last_error?: string | null
+          order_id?: string | null
+          payload?: Json
+          recipient?: string | null
+          restaurant_id?: string | null
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          audience?: string
+          channel?: string
+          created_at?: string
+          event?: string
+          id?: string
+          last_error?: string | null
+          order_id?: string | null
+          payload?: Json
+          recipient?: string | null
+          restaurant_id?: string | null
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_outbox_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_outbox_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       option_groups: {
         Row: {
           applies_to_kind: Database["public"]["Enums"]["variant_kind"] | null
@@ -506,6 +572,62 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount_fcfa: number
+          created_at: string
+          currency: string
+          failure_reason: string | null
+          id: string
+          order_id: string
+          phone: string
+          provider: string
+          provider_correspondent: string | null
+          provider_ref: string | null
+          raw: Json | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_fcfa: number
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          order_id: string
+          phone: string
+          provider?: string
+          provider_correspondent?: string | null
+          provider_ref?: string | null
+          raw?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_fcfa?: number
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          order_id?: string
+          phone?: string
+          provider?: string
+          provider_correspondent?: string | null
+          provider_ref?: string | null
+          raw?: Json | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -726,6 +848,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      claim_notifications: {
+        Args: { p_limit?: number; p_token: string }
+        Returns: Json
+      }
       claim_order: {
         Args: { p_order_id: string }
         Returns: {
@@ -762,6 +888,19 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      mark_notification: {
+        Args: {
+          p_error?: string
+          p_id: string
+          p_status: string
+          p_token: string
+        }
+        Returns: undefined
+      }
+      payment_order_lookup: {
+        Args: { p_order_number: string; p_phone: string; p_token: string }
+        Returns: Json
+      }
       place_order: {
         Args: {
           p_customer_name: string
@@ -779,6 +918,18 @@ export type Database = {
       platform_stats: {
         Args: { p_from?: string; p_to?: string }
         Returns: Json
+      }
+      record_payment_intent: {
+        Args: {
+          p_amount: number
+          p_correspondent?: string
+          p_order_id: string
+          p_phone: string
+          p_provider?: string
+          p_provider_ref: string
+          p_token: string
+        }
+        Returns: string
       }
       restaurant_stats: {
         Args: { p_from?: string; p_restaurant_id: string; p_to?: string }
@@ -892,6 +1043,16 @@ export type Database = {
       track_order: {
         Args: { p_order_number: string; p_phone: string }
         Returns: Json
+      }
+      update_payment_status: {
+        Args: {
+          p_failure_reason?: string
+          p_provider_ref: string
+          p_raw?: Json
+          p_status: string
+          p_token: string
+        }
+        Returns: undefined
       }
     }
     Enums: {

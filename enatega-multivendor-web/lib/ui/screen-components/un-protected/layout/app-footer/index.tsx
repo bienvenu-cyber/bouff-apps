@@ -2,13 +2,11 @@
 
 import AppLinks from "@/lib/ui/useable-components/Footer/AppLinks";
 import FooterLinks from "@/lib/ui/useable-components/Footer/FooterLinks";
-import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { isMarketplaceLandingPath } from "@/lib/ui/screens/unprotected/landing/landing-state";
 
 const AppFooter = () => {
-  const t = useTranslations();
   const pathname = usePathname();
   const isLandingPage = isMarketplaceLandingPath(pathname);
 
@@ -17,71 +15,29 @@ const AppFooter = () => {
     pathname?.endsWith("/discovery") ||
     pathname?.endsWith("/store");
 
-  const partnerWithEnatega = {
-    title: t("Footer.partnerWithEnatega"),
+  const commander = {
+    title: "Commander",
     links: [
-      { label: t("Footer.home"), link: "/", internal: true },
-      { label: t("Footer.forRiders"), link: "/rider", internal: true },
-      { label: t("Footer.forRestaurants"), link: "/restaurantInfo", internal: true },
+      { label: "La carte", link: "/browse", internal: true },
+      { label: "Mon panier", link: "/cart", internal: true },
+      { label: "Suivre ma commande", link: "/profile/order-history", internal: true },
     ],
   };
 
-  const products = {
-    title: t("Footer.products"),
+  const bouff = {
+    title: "BOUFF",
     links: [
-      {
-        label: t("Footer.enategaRider"),
-        link: "https://play.google.com/store/apps/details?id=com.enatega.multirider&hl=en",
-        internal: false,
-      },
-      {
-        label: t("Footer.enategaRestaurant"),
-        link: "https://play.google.com/store/apps/details?id=multivendor.enatega.restaurant&hl=en",
-        internal: false,
-      },
-    ],
-  };
-
-  const usefulLinks = {
-    title: t("Footer.company"),
-    links: [
-      { label: t("Footer.aboutUs"), link: "/about", internal: true },
-      { label: t("Footer.termsConditions"), link: "/terms", internal: true },
-      { label: t("Footer.privacyPolicy"), link: "/privacy", internal: true },
-      { label: t("Footer.contact"), link: "https://ninjascode.com/", internal: false },
-      { label: t("Footer.developers"), link: "https://ninjascode.com/", internal: false },
-    ],
-  };
-
-  const followUs = {
-    title: t("Footer.followUs"),
-    links: [
-      { label: t("Footer.blog"), link: "https://ninjascode.com/blog", internal: false },
-      {
-        label: t("Footer.instagram"),
-        link: "https://www.instagram.com/ninjascodeofficial?igsh=ajFoeGxud3FqYnd3",
-        internal: false,
-      },
-      {
-        label: t("Footer.facebook"),
-        link: "https://www.facebook.com/enatega/",
-        internal: false,
-      },
-      {
-        label: t("Footer.linkedIn"),
-        link: "https://www.linkedin.com/company/enatega/?originalSubdomain=pk",
-        internal: false,
-      },
+      { label: "Accueil", link: "/", internal: true },
+      { label: "Conditions d'utilisation", link: "/terms", internal: true },
+      { label: "Confidentialité", link: "/privacy", internal: true },
     ],
   };
 
   if (isLandingPage) {
     const landingLinks = [
-      { label: t("Footer.aboutUs"), href: "/about" },
-      { label: t("Footer.forRestaurants"), href: "/restaurantInfo" },
-      { label: t("Footer.forRiders"), href: "/rider" },
-      { label: t("Footer.privacyPolicy"), href: "/privacy" },
-      { label: t("Footer.contact"), href: "https://ninjascode.com/" },
+      { label: "La carte", href: "/browse" },
+      { label: "Conditions d'utilisation", href: "/terms" },
+      { label: "Confidentialité", href: "/privacy" },
     ];
 
     return (
@@ -89,7 +45,10 @@ const AppFooter = () => {
         <div className="mx-auto flex max-w-dispatch-page flex-col gap-8 px-6 py-10 md:flex-row md:items-end md:justify-between md:px-10 lg:px-16">
           <AppLinks />
           <div className="flex flex-col gap-5 md:items-end">
-            <nav aria-label={t("Footer.company")} className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-white/68">
+            <nav
+              aria-label="Liens BOUFF"
+              className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-white/68"
+            >
               {landingLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -101,7 +60,7 @@ const AppFooter = () => {
               ))}
             </nav>
             <p className="text-xs text-white/45">
-              © {new Date().getFullYear()} Enatega. {t("Landing.footer.rights")}
+              © {new Date().getFullYear()} BOUFF — Parakou, Bénin.
             </p>
           </div>
         </div>
@@ -111,27 +70,25 @@ const AppFooter = () => {
 
   return (
     <div
-      className={`w-full h-auto bg-[#141414] flex items-center justify-center ${isDiscoveryPage ? "md:pb-0 pb-20" : ""
-        }`}
+      className={`w-full h-auto bg-[#141414] flex items-center justify-center ${
+        isDiscoveryPage ? "md:pb-0 pb-20" : ""
+      }`}
     >
       <div className="mx-auto my-[30px] md:mt-[60px] md:mb-[60px] p-4 flex md:items-center md:justify-center flex-col">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 w-screen md:w-full md:px-0 px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 w-screen md:w-full md:px-0 px-4">
           <div className="p-2">
             <AppLinks />
           </div>
           <div className="p-2">
-            <FooterLinks section={partnerWithEnatega} />
+            <FooterLinks section={commander} />
           </div>
           <div className="p-2">
-            <FooterLinks section={products} />
-          </div>
-          <div className="p-2">
-            <FooterLinks section={usefulLinks} />
-          </div>
-          <div className="p-2">
-            <FooterLinks section={followUs} />
+            <FooterLinks section={bouff} />
           </div>
         </div>
+        <p className="mt-6 px-2 text-xs text-white/45">
+          © {new Date().getFullYear()} BOUFF — Parakou, Bénin.
+        </p>
       </div>
     </div>
   );
