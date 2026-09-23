@@ -1182,3 +1182,25 @@ input:-webkit-autofill:active {
 .rtl-carousel .p-carousel-container {
   direction: ltr !important; /* Force LTR for animation */
 }
+
+/* BOUFF — surfaces noir mat (neutralise le bleu-gris du thème sombre) */
+.dark {
+  --surface-a: #141416;
+  --surface-b: #0b0b0c;
+  --surface-c: #1c1b1e;
+  --surface-d: #2b2a2e;
+  --surface-e: #141416;
+  --surface-f: #141416;
+  --surface-ground: #0b0b0c;
+  --surface-section: #0b0b0c;
+  --surface-card: #141416;
+  --surface-overlay: #141416;
+  --surface-border: #2b2a2e;
+  --surface-hover: rgba(255, 122, 26, 0.12);
+  --text-color: #f7f3ee;
+  --text-color-secondary: #b3ada6;
+  --primary-color: #ff7a1a;
+  --primary-color-text: #0b0b0c;
+  --highlight-bg: rgba(255, 122, 26, 0.18);
+  --highlight-text-color: #ff9d4d;
+}
