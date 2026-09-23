@@ -34,7 +34,13 @@ import {
 import { METRICS_GENERAL } from "../api/graphql/mutations/metrics";
 import { print } from "graphql";
 import { getAccessToken, invalidateClientSession } from "../utils/methods/auth";
-import { getModeEnvironment, useAppMode, type AppMode } from "@/lib/mode";
+import {
+  APP_MODES,
+  getModeEnvironment,
+  useAppMode,
+  type AppMode,
+} from "@/lib/mode";
+import { createBouffLink } from "@/lib/bouff-data/link";
 
 const refreshPromises = new Map<AppMode, Promise<string | null>>();
 let isAuthRedirecting = false;
