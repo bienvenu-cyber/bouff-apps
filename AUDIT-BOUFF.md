@@ -50,6 +50,10 @@ d'Enatega. C'est le point à régler avant tout travail de marque ou de menu.
     compilation à chaque modification : les régressions passent inaperçues.
 11. **Fichier `.codex/hooks.json`** référence un chemin personnel d'une autre
     machine (`/Users/muhammadali/...`) : inutile ici.
+12. **Aucun aperçu possible ici** : le dépôt contient 6 applications séparées,
+    sans dépendances installées ni commande de démarrage à la racine. L'aperçu
+    reste donc vide (message « no command found for task dev »). Il faut choisir
+    l'application à lancer (le site web client, logiquement) et l'installer.
 
 ## Ordre de travail recommandé
 
