@@ -18,8 +18,14 @@
 
 ## Étape 2 — Brancher les applications existantes sur la base BOUFF
 Aucune nouvelle application ne sera créée. On réutilise les applications déjà présentes dans le dépôt (site web client, app mobile client, app cuisine, app livreur, back-office) et on remplace leur serveur Enatega par notre base BOUFF.
-- [ ] Couche d'accès commune (connexion à la base + appels de commande) partagée par les applications
-- [ ] Site web client : carte, formules, panier, emporter/livraison, validation, suivi
+- [x] Couche d'accès commune (connexion à la base + appels de commande) partagée par les applications
+- [x] Site web client : carte, formules, panier, emporter/livraison, validation, suivi
+- [x] Compte client testé (inscription, connexion, mes commandes)
+- [x] Habillage BOUFF : logo, pied de page, site en français par défaut, prix affichés « 1 500 FCFA »
+- [x] Paiement Mobile Money pawaPay préparé (à activer avec les clés)
+- [x] Notifications WhatsApp (wapiway) et e-mail (Resend) préparées (à activer avec les clés)
+- [ ] Photos des plats et logo définitif
+- [ ] Mise en ligne du site client sur un hébergement Node
 - [ ] App mobile client : carte, panier, commande, suivi
 - [ ] App cuisine : commandes en direct, reçue → en cuisine → prête, annulation, ruptures
 - [ ] App livreur : disponibilité, courses libres, prise en charge, en route, remise
