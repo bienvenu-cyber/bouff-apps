@@ -5,9 +5,9 @@ import { useQuery } from "@apollo/client";
 import { SINGLE_VENDOR_DISCOVERY } from "@/lib/api/graphql/single-vendor";
 import { getSingleVendorDealPricing } from "@/lib/mode/singleVendorPricing";
 import type { ModeProduct } from "@/lib/mode/types";
-import DiscoveryBannerSection from "@/lib/ui/screen-components/protected/home/discovery/banner-section";
-import CuisinesSliderCard from "@/lib/ui/useable-components/cuisines-slider-card";
-import CuisinesSliderSkeleton from "@/lib/ui/useable-components/custom-skeletons/cuisines.slider.skeleton";
+import BouffHero from "./BouffHero";
+import CategoryChips, { sectionAnchor } from "./CategoryChips";
+import CartBar from "./CartBar";
 
 import SingleVendorProductSection, {
   SingleVendorProductSectionSkeleton,
@@ -46,7 +46,7 @@ const normalizeProducts = (items: any[] = []): ModeProduct[] =>
 
 function SectionError({ message }: { message: string }) {
   return (
-    <div className="mt-7 rounded-xl border border-red-300 px-4 py-8 text-center text-sm text-red-500 dark:border-red-900 dark:text-red-300">
+    <div className="mt-7 rounded-bouff-md border border-bouff-danger px-4 py-8 text-center text-sm text-bouff-danger">
       {message}
     </div>
   );
@@ -80,29 +80,17 @@ export default function SingleVendorDiscovery() {
       products.findIndex((candidate) => candidate.id === product.id) === index,
   );
 
-  return (
-    <div className="pb-12">
-      <DiscoveryBannerSection
-        banners={discoveryData?.banners}
-        loading={discovery.loading}
-        error={discovery.error}
-      />
-      <SingleVendorActiveOrderCard />
+  const chips = catalogData
+    .filter((c: any) => (c.items || []).length)
+    .map((c: any) => ({ id: c.id, name: c.name }));
 
-      {discovery.loading && !categoryData.length ? (
-        <CuisinesSliderSkeleton />
-      ) : discovery.error ? (
-        <SectionError message={t("something_went_wrong_please_try_again")} />
-      ) : (
-        <CuisinesSliderCard
-          title={t("categories_label")}
-          data={categoryData}
-          showLogo={false}
-          cuisines={false}
-          shopTypes
-          itemHref={(category) => `/category/${category._id}`}
-        />
-      )}
+  return (
+    <div className="pb-32 md:pb-24">
+      <BouffHero />
+
+      {chips.length > 0 && <CategoryChips categories={chips} />}
+
+      <SingleVendorActiveOrderCard />
 
       {discovery.loading && !discovery.data ? (
         <SingleVendorProductSectionSkeleton />
@@ -121,6 +109,8 @@ export default function SingleVendorDiscovery() {
         catalogData.map((category: any) => (
           <SingleVendorProductSection
             key={category.id}
+            id={sectionAnchor(category.id)}
+            layout="grid"
             title={category.name}
             products={normalizeProducts(category.items).map((product) => ({
               ...product,
@@ -129,6 +119,8 @@ export default function SingleVendorDiscovery() {
           />
         ))
       )}
+
+      <CartBar />
     </div>
   );
 }

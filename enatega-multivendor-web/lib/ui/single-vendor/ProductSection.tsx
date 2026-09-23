@@ -54,9 +54,13 @@ export function SingleVendorProductSectionSkeleton() {
 export default function SingleVendorProductSection({
   title,
   products,
+  id,
+  layout = "carousel",
 }: {
   title: string;
   products: ModeProduct[];
+  id?: string;
+  layout?: "carousel" | "grid";
 }) {
   const [page, setPage] = useState(0);
   const [numVisible, setNumVisible] = useState(getVisibleCount);
@@ -89,6 +93,21 @@ export default function SingleVendorProductSection({
 
   if (!products.length) return null;
 
+  if (layout === "grid") {
+    return (
+      <section id={id} className="mt-8 scroll-mt-40 sm:mt-10">
+        <h2 className="mb-4 font-bouff-display text-2xl font-extrabold uppercase tracking-tight text-bouff-text sm:text-3xl">
+          {title}
+        </h2>
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+          {products.map((product) => (
+            <SingleVendorProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   const maxPage = Math.max(products.length - numVisible, 0);
   const shouldUseFixedCardColumns = products.length < numVisible;
   const fixedColumnStyle = {
@@ -103,9 +122,9 @@ export default function SingleVendorProductSection({
   };
 
   return (
-    <section className="mt-8 sm:mt-10" dir={isRTL ? "rtl" : "ltr"}>
+    <section id={id} className="mt-8 scroll-mt-40 sm:mt-10" dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-2 flex items-center justify-between">
-        <h2 className="text-lg font-medium tracking-[-0.02em] text-dispatch-ink sm:text-xl dark:text-white">
+        <h2 className="font-bouff-display text-2xl font-extrabold uppercase tracking-tight text-bouff-text sm:text-3xl">
           {title}
         </h2>
 

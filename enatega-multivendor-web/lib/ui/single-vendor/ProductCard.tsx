@@ -35,9 +35,9 @@ export default function SingleVendorProductCard({
     finalPrice < originalPrice;
   const href = `/product/${product.id}${product.categoryId ? `?categoryId=${product.categoryId}` : ""}`;
   return (
-    <article className="group relative h-full overflow-hidden rounded-xl border border-dispatch-line bg-dispatch-surface transition-shadow hover:shadow-[0_12px_30px_rgba(21,25,20,0.09)] dark:border-gray-800 dark:bg-gray-900">
+    <article className="group relative h-full overflow-hidden rounded-bouff-md border border-bouff-line bg-bouff-surface transition hover:border-bouff-primary">
       <Link href={href} className="block h-full focus-visible:outline-none">
-        <div className="relative aspect-[16/9] overflow-hidden bg-dispatch-map dark:bg-gray-800">
+        <div className="relative aspect-[4/3] overflow-hidden bg-bouff-surface-raised">
           {product.image ? (
             <Image
               src={product.image}
@@ -50,32 +50,32 @@ export default function SingleVendorProductCard({
             <div className="h-full w-full" />
           )}
           {hasDeal && (
-            <span className="absolute start-2.5 top-2.5 z-10 rounded-md bg-primary-color px-2 py-1 text-xs font-bold leading-none text-dispatch-ink shadow-sm">
+            <span className="absolute start-2.5 top-2.5 z-10 rounded-md bg-bouff-primary px-2 py-1 text-xs font-bold leading-none text-bouff-on-primary shadow-sm">
               {dealLabel}
             </span>
           )}
           {isOutOfStock && (
-            <span className="absolute inset-x-2.5 bottom-2.5 z-10 rounded-md bg-dispatch-ink/90 px-2 py-1.5 text-center text-xs font-semibold text-white backdrop-blur-sm">
+            <span className="absolute inset-x-2.5 bottom-2.5 z-10 rounded-md bg-bouff-overlay px-2 py-1.5 text-center text-xs font-semibold text-bouff-text backdrop-blur-sm">
               {t("out_of_stock_label")}
             </span>
           )}
         </div>
-        <div className="p-2.5">
-          <h3 className="line-clamp-1 text-sm font-medium leading-tight text-dispatch-ink dark:text-white sm:text-base">
+        <div className="p-3 pb-14">
+          <h3 className="line-clamp-1 font-bouff-display text-lg font-extrabold uppercase leading-tight tracking-tight text-bouff-text sm:text-xl">
             {product.title}
           </h3>
           {product.description && (
-            <p className="mt-1 line-clamp-2 text-xs leading-5 text-dispatch-muted dark:text-gray-400">
+            <p className="mt-1 line-clamp-2 text-xs leading-5 text-bouff-text-muted">
               {product.description}
             </p>
           )}
           {typeof originalPrice === "number" && (
-            <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm">
-              <span className="font-semibold text-primary-dark">
+            <div className="absolute bottom-3 start-3 flex flex-wrap items-baseline gap-x-2">
+              <span className="inline-block -rotate-2 rounded-bouff-sm bg-bouff-primary px-2.5 py-1 font-bouff-display text-lg font-extrabold leading-none text-bouff-on-primary">
                 {formatCurrency(finalPrice)}
               </span>
               {hasDeal && (
-                <span className="text-xs text-dispatch-muted line-through decoration-1 dark:text-gray-400">
+                <span className="text-xs text-bouff-text-muted line-through decoration-1">
                   {formatCurrency(originalPrice)}
                 </span>
               )}

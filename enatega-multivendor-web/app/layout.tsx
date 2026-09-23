@@ -8,6 +8,8 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import "@fontsource/barlow-condensed/600.css";
 import "@fontsource/cormorant-garamond/500-italic.css";
+import "@fontsource/barlow-condensed/800.css";
+import "@fontsource/permanent-marker/400.css";
 
 const interfaceFont = Inter({
   subsets: ["latin"],
