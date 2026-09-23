@@ -1,0 +1,12 @@
+{
+  "name": "bouff-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "install:web": "cd enatega-multivendor-web && npm install --legacy-peer-deps",
+    "dev": "cd enatega-multivendor-web && npx next dev -p 8080 --webpack",
+    "build": "cd enatega-multivendor-web && npx next build",
+    "build:dev": "cd enatega-multivendor-web && npx next build",
+    "start": "cd enatega-multivendor-web && npx next start -p 8080"
+  }
+}
