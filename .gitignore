@@ -17,10 +17,11 @@ node_modules/
 **/serviceAccountKey*.json
 *.pem
 
-# Heavy Assets & Documentation Binaries
-assets/
+# Documentation binaries
+# NOTE: ne jamais reexclure "assets/" ni "index.html" : les images ET les
+# composants d'icones (.tsx) des applications vivent dans ces dossiers ;
+# les exclure empeche toute compilation apres un git clone.
 *.pdf
-index.html
 
 # Next.js
 .next/
