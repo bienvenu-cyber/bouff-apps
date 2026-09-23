@@ -43,7 +43,7 @@ export function FavoriteProducts() {
     variables: { limit: 50, skip: 0 },
   });
   return (
-    <Shell title="Favorite products">
+    <Shell title="Mes plats favoris">
       {loading ? (
         <p>Loading…</p>
       ) : (
@@ -58,7 +58,7 @@ export function FavoriteProducts() {
 export function Vouchers() {
   const { data, loading } = useQuery(SINGLE_VENDOR_VOUCHERS);
   return (
-    <Shell title="Vouchers">
+    <Shell title="Mes bons de réduction">
       <div className="grid gap-3 sm:grid-cols-2">
         {loading ? (
           <p>Loading…</p>
@@ -83,7 +83,7 @@ export function Wallet() {
   const { data, loading } = useQuery(SINGLE_VENDOR_CREDITS);
   const { formatCurrency } = useCurrencyFormatter();
   return (
-    <Shell title="Wallet">
+    <Shell title="Mon portefeuille">
       <div className="rounded-3xl bg-primary-color p-8 text-white">
         <p>Available credits</p>
         <p className="mt-2 text-4xl font-bold">
@@ -111,7 +111,7 @@ function MembershipForm({ plans }: { plans: any[] }) {
         variables: { input: { newStripePriceId: selected } },
       });
       setMessage(
-        result.data?.updateSubscription?.message || "Membership updated.",
+        result.data?.updateSubscription?.message || "Abonnement mis à jour.",
       );
       return;
     }
@@ -119,7 +119,7 @@ function MembershipForm({ plans }: { plans: any[] }) {
     if (!stripe || !card) return;
     const payment = await stripe.createPaymentMethod({ type: "card", card });
     if (payment.error) {
-      setMessage(payment.error.message || "Card could not be verified.");
+      setMessage(payment.error.message || "La carte n'a pas pu être vérifiée.");
       return;
     }
     const result = await create({
@@ -131,7 +131,7 @@ function MembershipForm({ plans }: { plans: any[] }) {
       },
     });
     setMessage(
-      result.data?.createSubscription?.message || "Membership activated.",
+      result.data?.createSubscription?.message || "Abonnement activé.",
     );
   };
   return (
@@ -165,7 +165,7 @@ function MembershipForm({ plans }: { plans: any[] }) {
           onClick={() => void submit()}
           className="rounded-full bg-primary-color px-6 py-3 font-semibold text-white disabled:opacity-50"
         >
-          {profile?.stripe_plan_id ? "Update membership" : "Start membership"}
+          {profile?.stripe_plan_id ? "Modifier l'abonnement" : "Activer l'abonnement"}
         </button>
         {profile?.stripe_plan_id && (
           <button
@@ -174,7 +174,7 @@ function MembershipForm({ plans }: { plans: any[] }) {
               const result = await cancel();
               setMessage(
                 result.data?.cancelSubscription?.message ||
-                  "Membership cancelled.",
+                  "Abonnement annulé.",
               );
             }}
             className="rounded-full border border-red-300 px-6 py-3 text-red-600"
@@ -200,7 +200,7 @@ export function Membership() {
   const { data, loading } = useQuery(SINGLE_VENDOR_MEMBERSHIP_PLANS);
   const plans = data?.getAllSubscriptionPlans?.plans ?? [];
   return (
-    <Shell title="Membership">
+    <Shell title="Abonnement">
       {loading ? (
         <p>Loading…</p>
       ) : !stripePromise ? (
@@ -217,7 +217,7 @@ export function Referral() {
   const { data, loading } = useQuery(SINGLE_VENDOR_REFERRAL);
   const code = data?.getMyReferralCode ?? "";
   return (
-    <Shell title="Refer a friend">
+    <Shell title="Parrainer un ami">
       <div className="max-w-xl rounded-3xl bg-primary-light p-8 text-center dark:bg-gray-800">
         <p className="text-gray-600 dark:text-gray-300">
           Share your referral code with friends.
