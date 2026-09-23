@@ -48,17 +48,7 @@
 - [ ] Prix en FCFA, options sur place / à emporter / livraison
 - [ ] Panier et passage de commande
 
-## Étape 3 — Cuisine (app boutique)
-- [ ] Réception des commandes en temps réel, statuts, ruptures de stock
-
-## Étape 4 — Livreurs
-- [ ] Attribution des courses, adresses, remise de commande, flotte interne + partenaires
-
-## Étape 5 — Back-office
-- [ ] Un seul back-office (supprimer le doublon)
-- [ ] Restaurants, commissions, livreurs, statistiques
-
-## Étape 6 — Sécurité et nettoyage
+## Nettoyage Enatega
 - [ ] Sessions en cookies sécurisés au lieu du stockage navigateur
 - [ ] Contrôle des rôles validé côté serveur
 - [ ] Suppression des fichiers générés commités, des traces de débogage, alignement des versions
