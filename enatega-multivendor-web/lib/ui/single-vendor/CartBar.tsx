@@ -3,11 +3,14 @@
 import Link from "next/link";
 import { FiShoppingCart, FiArrowRight } from "react-icons/fi";
 import useUser from "@/lib/hooks/useUser";
+import useCurrencyFormatter from "@/lib/hooks/useCurrencyFormatter";
 
 /** Barre panier flottante : visible seulement quand le panier contient au moins un plat. */
 export default function CartBar() {
   const { cartCount, calculateSubtotal } = useUser();
+  const { formatCurrency } = useCurrencyFormatter();
   if (!cartCount) return null;
+  const total = formatCurrency(Number(calculateSubtotal()));
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-[84px] z-40 px-4 md:bottom-6">
       <Link
