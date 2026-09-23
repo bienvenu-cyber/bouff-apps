@@ -293,7 +293,9 @@ export async function recentActiveOrder() {
 export async function checkout(variables: Record<string, any>) {
   const cart = await priceCart();
   const isPickup = Boolean(variables.isPickup);
-  const zoneId = isPickup ? null : resolveZoneId(cart.menu, null);
+  const zoneId = isPickup
+    ? null
+    : (variables.zoneId ?? resolveZoneId(cart.menu, null));
   const deliveryCharges = isPickup ? 0 : deliveryFeeFor(cart.menu, zoneId);
 
   return {
