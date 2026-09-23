@@ -87,55 +87,24 @@ export default function AuthModal({
 
   // Login With Google
   const googleLogin = async () => {
+    // BOUFF : connexion Google via la base BOUFF (redirection puis retour sur le site).
     try {
       setIsLoading(true);
-      const idToken = await getGoogleIdToken();
-      const userData = await getGoogleUserInfo(idToken);
-
-      const userLoginResponse = await handleUserLogin({
-        type: "google",
-        email: userData.email,
-        idToken,
-        name: userData.name,
-        notificationToken: "",
+      const { bouffDb } = await import("@/lib/bouff-data/supabase");
+      const { error } = await bouffDb().auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin },
       });
-
-      if (userLoginResponse) {
-        setUser(userLoginResponse.login as ILoginProfile);
-        if (
-          !userLoginResponse.login.emailIsVerified &&
-          SKIP_EMAIL_VERIFICATION
-        ) {
-          setActivePanel(5);
-        } else if (
-          !userLoginResponse.login.phoneIsVerified &&
-          !SKIP_MOBILE_VERIFICATION
-        ) {
-          setActivePanel(4);
-        } else {
-          setActivePanel(0);
-          setIsAuthModalVisible(false);
-
-          // showToast({
-          //   type: "success",
-          //   title: t("login_success"),
-          //   message: t("login_success_message"),
-          // });
-        }
-        setIsLoading(false);
-        console.log("userLoginResponse", userLoginResponse);
-      }
+      if (error) throw error;
+      return;
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Google sign-in failed. Please try again.";
       showToast({
         type: "error",
         title: t("login_error"),
-        message,
+        message: error instanceof Error ? error.message : "Connexion Google impossible.",
       });
       setIsLoading(false);
+      return;
     }
   };
 

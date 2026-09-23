@@ -86,6 +86,57 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [isRegistering, setIsRegistering] = useState(false);
   const [refetchProfileData, setRefetchProfileData] = useState(false);
 
+  // BOUFF : synchronise la session Google (retour de redirection) avec l'app.
+  useEffect(() => {
+    let cancelled = false;
+    const sync = async (session: {
+      access_token: string;
+      expires_at?: number;
+      user: { id: string; email?: string | null; user_metadata?: Record<string, unknown> };
+    } | null) => {
+      if (!session || cancelled) return;
+      if (getAccessToken() === session.access_token) return;
+      const { bouffDb } = await import("@/lib/bouff-data/supabase");
+      const db = bouffDb();
+      const meta = session.user.user_metadata ?? {};
+      const name = String(meta.full_name ?? meta.name ?? "");
+      const { data: existing } = await db
+        .from("profiles")
+        .select("id")
+        .eq("id", session.user.id)
+        .maybeSingle();
+      if (!existing) {
+        await db.from("profiles").upsert({ id: session.user.id, full_name: name || null });
+      }
+      await db
+        .from("user_roles")
+        .upsert(
+          { user_id: session.user.id, role: "client" },
+          { onConflict: "user_id,role,restaurant_id", ignoreDuplicates: true },
+        );
+      setAuthTokens({
+        userId: session.user.id,
+        token: session.access_token,
+        tokenExpiration: String((session.expires_at ?? 0) * 1000),
+        userType: "USER",
+      });
+      setAuthToken(session.access_token);
+      setRefetchProfileData(true);
+    };
+    (async () => {
+      const { bouffDb } = await import("@/lib/bouff-data/supabase");
+      const db = bouffDb();
+      const { data } = await db.auth.getSession();
+      await sync(data.session);
+      db.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_IN") sync(session);
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Hooks
   const {
     GOOGLE_CLIENT_ID,

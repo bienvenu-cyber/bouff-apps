@@ -12,6 +12,7 @@
     "start": "cd enatega-multivendor-web && node ./node_modules/next/dist/bin/next start -p 8080"
   },
   "dependencies": {
+    "@lovable.dev/cloud-auth-js": "^1.1.2",
     "@supabase/supabase-js": "^2.117.1"
   }
 }
