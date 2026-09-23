@@ -95,7 +95,7 @@ export default function SingleVendorProductSection({
 
   if (layout === "grid") {
     return (
-      <section id={id} className="mt-8 scroll-mt-32 sm:mt-10">
+      <section id={id} className="mt-8 scroll-mt-40 sm:mt-10">
         <h2 className="mb-4 font-bouff-display text-2xl font-extrabold uppercase tracking-tight text-bouff-text sm:text-3xl">
           {title}
         </h2>
@@ -122,7 +122,7 @@ export default function SingleVendorProductSection({
   };
 
   return (
-    <section id={id} className="mt-8 scroll-mt-32 sm:mt-10" dir={isRTL ? "rtl" : "ltr"}>
+    <section id={id} className="mt-8 scroll-mt-40 sm:mt-10" dir={isRTL ? "rtl" : "ltr"}>
       <div className="mb-2 flex items-center justify-between">
         <h2 className="font-bouff-display text-2xl font-extrabold uppercase tracking-tight text-bouff-text sm:text-3xl">
           {title}

@@ -26,7 +26,7 @@ export default function CategoryChips({ categories }: { categories: ChipCategory
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
         if (visible) setActive(visible.target.id.replace(/^cat-/, ""));
       },
-      { rootMargin: "-140px 0px -55% 0px" },
+      { rootMargin: "-160px 0px -55% 0px" },
     );
     els.forEach((el) => obs.observe(el));
     return () => obs.disconnect();
@@ -42,13 +42,13 @@ export default function CategoryChips({ categories }: { categories: ChipCategory
   const go = (id: string) => {
     setActive(id);
     const el = document.getElementById(sectionAnchor(id));
-    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 130, behavior: "smooth" });
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
     <nav
       aria-label="Catégories"
-      className="sticky top-0 z-30 -mx-4 mt-4 bg-bouff-background/95 px-4 py-3 backdrop-blur md:top-[72px]"
+      className="sticky top-[80px] z-30 -mx-4 mt-4 bg-bouff-background/95 px-4 py-3 backdrop-blur md:top-[72px]"
     >
       <div ref={rowRef} className="flex gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {categories.map((c) => {
