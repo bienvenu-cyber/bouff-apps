@@ -87,6 +87,27 @@ export default function AuthModal({
 
   // Login With Google
   const googleLogin = async () => {
+    // BOUFF : connexion Google via la base BOUFF (redirection puis retour sur le site).
+    try {
+      setIsLoading(true);
+      const { bouffDb } = await import("@/lib/bouff-data/supabase");
+      const { error } = await bouffDb().auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin },
+      });
+      if (error) throw error;
+      return;
+    } catch (error) {
+      showToast({
+        type: "error",
+        title: t("login_error"),
+        message: error instanceof Error ? error.message : "Connexion Google impossible.",
+      });
+      setIsLoading(false);
+      return;
+    }
+    // Ancien flux Enatega (conservé, non utilisé)
+    // eslint-disable-next-line no-unreachable
     try {
       setIsLoading(true);
       const idToken = await getGoogleIdToken();
