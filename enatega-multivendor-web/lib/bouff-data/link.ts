@@ -182,7 +182,48 @@ const resolvers: Record<string, Resolver> = {
       },
     };
   },
-  Configuration: async (v) => resolvers.SingleVendorConfiguration!(v),
+  Configuration: async () => {
+    const menu = await loadMenu();
+    return {
+      configuration: {
+        __typename: "Configuration",
+        _id: menu.restaurant.id,
+        currency: CURRENCY,
+        currencySymbol: CURRENCY_SYMBOL,
+        deliveryRate: 0,
+        twilioEnabled: false,
+        webClientID: null,
+        webAmplitudeApiKey: null,
+        googleMapLibraries: null,
+        googleColor: menu.restaurant.brandColor,
+        webSentryUrl: null,
+        publishableKey: null,
+        clientId: null,
+        skipEmailVerification: true,
+        skipMobileVerification: true,
+        costType: "fixed",
+        firebaseKey: null,
+        authDomain: null,
+        projectId: null,
+        storageBucket: null,
+        msgSenderId: null,
+        appId: null,
+      },
+    };
+  },
+  Zones: async () => {
+    const menu = await loadMenu();
+    return {
+      zones: menu.zones.map((z) => ({
+        __typename: "Zone",
+        _id: z.id,
+        title: z.name,
+        description: null,
+        location: { __typename: "Point", coordinates: [] },
+        isActive: true,
+      })),
+    };
+  },
   SingleVendorBanners: async () => ({ banners: [] }),
   SingleVendorDiscovery: async () => {
     const menu = await loadMenu();
