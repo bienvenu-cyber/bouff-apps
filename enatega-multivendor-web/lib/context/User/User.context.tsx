@@ -405,8 +405,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = (props) => {
       if (_token) {
         await fetchProfile();
         await fetchOrders();
-        if (isSingleVendor) await fetchSingleCart();
       }
+      // BOUFF : le panier vit en local, il doit être chargé même sans compte.
+      if (isSingleVendor) await fetchSingleCart();
 
       setIsLoading(false);
     },
