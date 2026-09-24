@@ -42,17 +42,17 @@ const GLOW = require('./assets/glow.png')
 
 const THEMES = {
   dark: {
-    bg: ['#111c33', '#0b1225', '#070d1e'],
+    bg: ['#1C1B1E', '#0B0B0C', '#050505'],
     wordmark: WM_WHITE,
     ring: 'rgba(110,224,122,0.85)',
     underline: '#FF7A1A',
     orbOpacity: 1
   },
   light: {
-    bg: ['#ffffff', '#f4f8f5', '#e7efe9'],
-    wordmark: WM_NAVY,
+    bg: ['#1C1B1E', '#0B0B0C', '#050505'],
+    wordmark: WM_WHITE,
     ring: 'rgba(47,164,87,0.75)',
-    underline: '#E5650A',
+    underline: '#FF7A1A',
     orbOpacity: 0.8
   }
 }

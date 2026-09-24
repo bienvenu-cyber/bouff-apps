@@ -40,10 +40,10 @@ const THEMES = {
     orbOpacity: 1,
   },
   light: {
-    bg: ["#FFFFFF", "#F7F3EE", "#EEEAE4"] as const,
-    wordmark: WM_NAVY,
+    bg: ["#1C1B1E", "#0B0B0C", "#050505"] as const,
+    wordmark: WM_WHITE,
     ring: "rgba(47,164,87,0.75)",
-    underline: "#E5650A",
+    underline: '#FF7A1A',
     orbOpacity: 0.8,
   },
 };
