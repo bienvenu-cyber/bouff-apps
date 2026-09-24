@@ -24,6 +24,8 @@ import {
 } from "./cart";
 import * as auth from "./auth";
 import * as orders from "./orders";
+import * as engagement from "./engagement";
+import { Platform } from "react-native";
 
 /* ------------------------------------------------------------------ */
 /* Mise au format attendu par les écrans                               */

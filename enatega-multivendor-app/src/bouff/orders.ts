@@ -6,6 +6,7 @@ import {
   resolveZoneId,
 } from "./cart";
 import { getGuest, setGuest } from "./auth";
+import { checkCoupon, rememberCoupon } from "./engagement";
 import { loadMenu } from "./catalog";
 import { rememberGuestOrder } from "./notifications";
 
@@ -88,10 +89,12 @@ export async function placeOrder(variables: Record<string, any>) {
     p_delivery_address: isPickedUp ? null : address,
     p_payment_method: paymentMethodFor(variables.paymentMethod),
     p_note: variables.instructions ?? variables.specialInstructions ?? null,
+    p_coupon_code: String(variables.couponCode ?? "").trim() || null,
   });
   if (error) throw new Error(error.message);
 
   clearCart();
+  rememberCoupon(null);
   const result = data as Record<string, any>;
   if (result?.order_number) rememberGuestOrder(result.order_number, result.order_id);
   const loc = variables.location;
@@ -395,7 +398,7 @@ export async function orderDetails(orderId: string) {
     data: {
       ...common,
       deliveryDiscount: 0,
-      couponDiscount: 0,
+      couponDiscount: order.discount_fcfa ?? 0,
       isPriority: false,
       itemsSubTotal: order.items_total_fcfa,
       minimumOrderFee: 0,
@@ -405,7 +408,7 @@ export async function orderDetails(orderId: string) {
       freeDeliveriesRemaining: 0,
       priorityDeliveryFees: 0,
       deliverChargesAmount: order.delivery_fee_fcfa,
-      couponDiscountApplied: false,
+      couponDiscountApplied: (order.discount_fcfa ?? 0) > 0,
       creditsApplied: 0,
     },
   };
@@ -425,6 +428,15 @@ export async function checkout(variables: Record<string, any>) {
     ? null
     : (variables.zoneId ?? resolveZoneId(cart.menu, null));
   const deliveryCharges = isPickup ? 0 : deliveryFeeFor(cart.menu, zoneId);
+  const couponCode = String(variables.coupon ?? "").trim();
+  let couponDiscount = 0;
+  if (couponCode) {
+    const q = await checkCoupon(couponCode, cart.subtotal);
+    if (q.valid) couponDiscount = q.discount_fcfa ?? 0;
+    else rememberCoupon(null);
+  } else {
+    rememberCoupon(null);
+  }
 
   return {
     success: true,
@@ -438,16 +450,16 @@ export async function checkout(variables: Record<string, any>) {
     minimumOrderFee: 0,
     taxAmount: 0,
     taxPercentage: 0,
-    grandTotal: cart.subtotal + deliveryCharges,
-    totalDiscount: 0,
+    grandTotal: Math.max(cart.subtotal - couponDiscount, 0) + deliveryCharges,
+    totalDiscount: couponDiscount,
     discountDetails: { dealDiscount: 0 },
     hasActiveSubscription: false,
     freeDeliveriesRemaining: 0,
     minimumOrderAmount: 0,
     isBelowMinimumOrder: false,
     isBelowMaximumOrder: false,
-    couponDiscountAmount: 0,
-    couponApplied: false,
+    couponDiscountAmount: couponDiscount,
+    couponApplied: couponDiscount > 0,
     priorityDeliveryFees: 0,
     creditsUsed: 0,
     maximumOrderAmount: 0,
