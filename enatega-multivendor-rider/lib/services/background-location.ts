@@ -54,6 +54,21 @@ const transmitLocation = async (
     return;
   }
 
+  // BOUFF : envoi direct à la base BOUFF (session du livreur).
+  if (process.env.EXPO_PUBLIC_BOUFF !== "false") {
+    const { bouffDb } = await import("@/lib/bouff/supabase");
+    const { error } = await bouffDb().rpc("update_rider_location", {
+      p_latitude: location.coords.latitude,
+      p_longitude: location.coords.longitude,
+      p_accuracy: location.coords.accuracy,
+      p_heading: location.coords.heading,
+      p_speed: location.coords.speed,
+    });
+    if (error) throw new Error(error.message);
+    await AsyncStorage.setItem(LAST_FIX_KEY, JSON.stringify(nextFix));
+    return;
+  }
+
   const token = await getSecureItem(config.tokenKey);
   if (!token) return;
   const locale = (await AsyncStorage.getItem("lang")) || "en";

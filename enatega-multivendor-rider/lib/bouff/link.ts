@@ -266,6 +266,42 @@ async function earningsGraph() {
   return { __typename: "RiderEarningsGraph", totalCount: earnings.length, earnings };
 }
 
+function mapMessage(m: any, riderId: string | null) {
+  return {
+    __typename: "ChatMessageOutput",
+    id: m.id,
+    message: m.body,
+    image: null,
+    user: {
+      __typename: "ChatUserOutput",
+      // Les messages du livreur portent son identifiant : l'app les affiche à droite.
+      id: m.sender_role === "rider" && riderId ? riderId : `${m.sender_role}-${m.order_id}`,
+      name: m.sender_name,
+    },
+    createdAt: m.created_at,
+  };
+}
+
+async function listMessages(order: string) {
+  const r = await currentRider();
+  const data: any = await rpc("list_order_messages", { p_order: String(order) });
+  // L'app attend les plus récents en premier.
+  return ((data ?? []) as any[]).map((m) => mapMessage(m, r.id)).reverse();
+}
+
+async function sendMessage(v: Record<string, any>) {
+  const r = await currentRider();
+  try {
+    const m: any = await rpc("send_order_message", {
+      p_order: String(v.orderId),
+      p_body: String(v.messageInput?.message ?? ""),
+    });
+    return { __typename: "SendChatMessageResponse", success: true, message: null, data: mapMessage(m, r.id) };
+  } catch (e: any) {
+    return { __typename: "SendChatMessageResponse", success: false, message: e?.message ?? "Erreur", data: null };
+  }
+}
+
 type Resolver = (v: Record<string, any>) => Promise<Record<string, any>>;
 
 const resolvers: Record<string, Resolver> = {
@@ -310,10 +346,20 @@ const resolvers: Record<string, Resolver> = {
     const updated: any = await rpc("set_rider_status", { p_status: next });
     return { toggleAvailablity: { __typename: "Rider", _id: updated?.id ?? r.id } };
   },
-  // Position GPS : pas encore stockée côté base.
-  UpdateRiderLocation: async () => ({
-    updateRiderLocation: { __typename: "Rider", _id: (await currentRider()).id },
-  }),
+  // Position GPS : dernière position du livreur, visible par le client pendant sa course.
+  UpdateRiderLocation: async (v) => {
+    const lat = Number(v.latitude);
+    const lng = Number(v.longitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) throw new Error("Position invalide.");
+    await rpc("update_rider_location", {
+      p_latitude: lat,
+      p_longitude: lng,
+      p_accuracy: v.accuracy ?? null,
+      p_heading: v.heading ?? null,
+      p_speed: v.speed ?? null,
+    });
+    return { updateRiderLocation: { __typename: "Rider", _id: (await currentRider()).id } };
+  },
 
   /* --- courses --- */
   RiderOrders: async () => ({ riderOrders: await riderOrders(0, 100) }),
@@ -338,9 +384,11 @@ const resolvers: Record<string, Resolver> = {
   TransactionHistory: async () => ({ transactionHistory: { data: [] } }),
   RiderCurrentWithdrawRequest: async () => ({ riderCurrentWithdrawRequest: null }),
 
-  /* --- chat : pas encore disponible --- */
-  Chat: async () => ({ chat: [] }),
-  SingleVendorChat: async () => ({ chat: [] }),
+  /* --- chat client <-> livreur --- */
+  Chat: async (v) => ({ chat: await listMessages(v.order) }),
+  SingleVendorChat: async (v) => ({ chat: await listMessages(v.order) }),
+  SendChatMessage: async (v) => ({ sendChatMessage: await sendMessage(v) }),
+  SingleVendorSendChatMessage: async (v) => ({ sendChatMessage: await sendMessage(v) }),
 };
 
 /* ------------------------------------------------------------------ */
@@ -354,6 +402,7 @@ function subscribe(operation: Operation, observer: any) {
   let stopped = false;
   const zone = name.includes("ZoneOrders");
   const assign = name.includes("AssignRider");
+  if (name.includes("NewMessage")) return subscribeMessages(operation, observer);
   if (!zone && !assign) return () => {};
 
   void (async () => {
@@ -420,6 +469,34 @@ function subscribe(operation: Operation, observer: any) {
       .subscribe();
   })();
 
+  return () => {
+    stopped = true;
+    if (channel) void db.removeChannel(channel);
+  };
+}
+
+function subscribeMessages(operation: Operation, observer: any) {
+  const db = bouffDb();
+  const orderId = String(operation.variables?.order ?? "");
+  let channel: ReturnType<typeof db.channel> | null = null;
+  let stopped = false;
+  void (async () => {
+    const r = await currentRider().catch(() => null);
+    if (!r || stopped || !orderId) return;
+    channel = db
+      .channel(`bouff-chat-${orderId}-${Math.random().toString(36).slice(2)}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "order_messages", filter: `order_id=eq.${orderId}` },
+        (payload: any) => {
+          const m = payload.new;
+          // Ses propres messages sont déjà affichés par l'app.
+          if (!m?.id || stopped || m.sender_role === "rider") return;
+          observer.next({ data: { subscriptionNewMessage: mapMessage(m, r.id) } });
+        },
+      )
+      .subscribe();
+  })();
   return () => {
     stopped = true;
     if (channel) void db.removeChannel(channel);
