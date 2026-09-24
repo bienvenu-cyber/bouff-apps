@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "The Bouff App Store",
+    "name": "BOUFF Cuisine",
     "slug": "the-bouff-app-store",
     "owner": "ben229",
     "description": "The Bouff App Restaurant Store Application",
@@ -48,7 +48,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "multivendor.enatega.restaurant",
+      "bundleIdentifier": "bj.bouff.cuisine",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "$(PRODUCT_NAME) uses your location for features like finding orders nearby and tracking customer orders!",
         "UIBackgroundModes": [
@@ -73,7 +73,7 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
-      "package": "multivendor.enatega.restaurant",
+      "package": "bj.bouff.cuisine",
       "adaptiveIcon": {
         "foregroundImage": "./lib/assets/images/appIcon.png",
         "backgroundColor": "#0B0B0C"
