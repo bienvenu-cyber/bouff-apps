@@ -24,12 +24,15 @@ import {
 } from "./cart";
 import * as auth from "./auth";
 import * as orders from "./orders";
+import * as engagement from "./engagement";
+import { Platform } from "react-native";
 
 /* ------------------------------------------------------------------ */
 /* Mise au format attendu par les écrans                               */
 /* ------------------------------------------------------------------ */
 
 const noDeal = null;
+let favSet: Set<string> = new Set();
 
 function variations(item: BouffItem) {
   return item.variations.map((v) => ({
@@ -81,7 +84,7 @@ function shortItem(item: BouffItem) {
     categoryId: item.categoryId,
     subCategory: null,
     isOutOfStock: item.isOutOfStock,
-    isFavourite: false,
+    isFavourite: favSet.has(item.id),
     variations: variations(item),
   };
 }
@@ -467,17 +470,39 @@ const resolvers: Record<string, Resolver> = {
 
   /* --- non utilisé chez BOUFF pour l'instant --- */
   MetricsGeneral: async () => ({ metricsGeneral: null }),
-  GetFavoriteFoodsSingleVendor: async () => ({
-    getFavoriteFoodsSingleVendor: { success: true, message: null, data: [] },
+  GetFavoriteFoodsSingleVendor: async (v) => {
+    const menu = await loadMenu();
+    const ids = [...(await engagement.favoriteIds())];
+    const skip = Number(v.skip ?? 0);
+    const limit = Number(v.limit ?? 50);
+    const data = ids
+      .map((id) => findItem(menu, id))
+      .filter(Boolean)
+      .slice(skip, skip + limit)
+      .map((item: any) => ({
+        ...shortItem(item),
+        isFavourite: true,
+        isActive: true,
+        createdAt: null,
+        updatedAt: null,
+      }));
+    return { getFavoriteFoodsSingleVendor: { success: true, message: null, data } };
+  },
+  ToggleFavoriteFoodSingleVendor: async (v) => {
+    const id = String(v.toggleFavoriteFoodSingleVendorId ?? v.id ?? "");
+    const r = await engagement.toggleFavorite(id);
+    favSet = await engagement.favoriteIds();
+    return { toggleFavoriteFoodSingleVendor: r };
+  },
+  SingleVendorVouchers: async () => ({
+    couponsbyRestaurant: (await engagement.publicCoupons()).map((c) => ({
+      _id: c.code,
+      title: c.title,
+      discount: c.value,
+      enabled: true,
+      couponType: c.kind === "percent" ? "percentage" : "flat",
+    })),
   }),
-  ToggleFavoriteFoodSingleVendor: async () => ({
-    toggleFavoriteFoodSingleVendor: {
-      success: false,
-      message: "Favoris bientôt disponibles.",
-      isFavorite: false,
-    },
-  }),
-  SingleVendorVouchers: async () => ({ couponsbyRestaurant: [] }),
   GetAllUserCredits: async () => ({ getAllUserCredits: { credits: 0 } }),
   GetAllSubscriptionPlans: async () => ({ getAllSubscriptionPlans: { plans: [] } }),
   GetMyReferralCode: async () => ({ getMyReferralCode: null }),
@@ -618,18 +643,54 @@ const resolvers: Record<string, Resolver> = {
   },
 
   /* --- sans objet chez BOUFF pour l'instant --- */
-  GetFavoriteFoodsStatus: async () => ({ getFavoriteFoodsStatus: [] }),
-  Coupon: async () => ({
-    coupon: { _id: null, title: null, discount: 0, enabled: false, success: false, message: "Codes promo bientôt disponibles." },
+  GetFavoriteFoodsStatus: async (v) => ({
+    getFavoriteFoodsStatus: {
+      success: true,
+      message: null,
+      isFavorite: await engagement.isFavorite(String(v.foodId ?? "")),
+    },
   }),
-  PushToken: async () => ({ pushToken: null }),
-  PushSingleVendorNotificationToken: async () => ({ pushSingleVendorNotificationToken: null }),
-  UpdateNotificationStatus: async () => ({ updateNotificationStatus: null }),
+  Coupon: async (v) => {
+    const cart = await priceCart();
+    const q = await engagement.checkCoupon(String(v.coupon ?? ""), cart.subtotal);
+    if (q.valid) engagement.rememberCoupon(q.code ?? null);
+    return {
+      coupon: {
+        success: q.valid,
+        message: q.message,
+        coupon: q.valid
+          ? { _id: q.code, title: q.title, discount: q.value, enabled: true }
+          : null,
+      },
+    };
+  },
+  PushToken: async (v) => pushTokenPayload("pushToken", v.token),
+  PushSingleVendorNotificationToken: async (v) => pushTokenPayload("pushToken", v.token),
+  UpdateNotificationStatus: async (v) => {
+    const prefs = await engagement.setPushPrefs(
+      Boolean(v.orderNotification),
+      Boolean(v.offerNotification),
+    );
+    const uid = await currentUserId();
+    return {
+      updateNotificationStatus: {
+        _id: uid,
+        notificationToken: engagement.storedPushToken(),
+        isOrderNotification: prefs.order,
+        isOfferNotification: prefs.offer,
+      },
+    };
+  },
 };
 
 /* ------------------------------------------------------------------ */
 /* Aides pour l'app mobile                                             */
 /* ------------------------------------------------------------------ */
+
+async function pushTokenPayload(field: string, token?: string) {
+  await engagement.registerPushToken(token, Platform.OS);
+  return { [field]: { _id: await currentUserId(), notificationToken: token ?? null } };
+}
 
 async function emailExists(email?: string) {
   if (!email) return null;
@@ -720,6 +781,19 @@ async function addressesPayload() {
 }
 
 async function profileWithAddresses() {
+  const base = await profileWithAddressesRaw();
+  if (!base) return base;
+  const prefs = engagement.pushPrefs();
+  return {
+    ...base,
+    notificationToken: engagement.storedPushToken(),
+    isOrderNotification: prefs.order,
+    isOfferNotification: prefs.offer,
+    favourite: [...(await engagement.favoriteIds().catch(() => new Set<string>()))],
+  };
+}
+
+async function profileWithAddressesRaw() {
   const profile = await auth.fetchProfile();
   if (!profile) return null;
   return { ...profile, addresses: (await readAddresses()).map(mapAddress) };
@@ -901,7 +975,13 @@ export function createBouffLink(): ApolloLink {
         }
 
         let cancelled = false;
-        resolver(operation.variables ?? {})
+        engagement
+          .favoriteIds()
+          .catch(() => new Set<string>())
+          .then((ids) => {
+            favSet = ids;
+            return resolver(operation.variables ?? {});
+          })
           .then((data) => {
             if (cancelled) return;
             observer.next({ data });
