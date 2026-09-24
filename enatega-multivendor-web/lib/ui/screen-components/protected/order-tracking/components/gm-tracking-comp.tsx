@@ -21,7 +21,7 @@ import {
 
 interface IGoogleMapTrackingComponent {
   isLoaded: boolean;
-  destination: { lat: number; lng: number };
+  destination?: { lat: number; lng: number } | null;
   origin?: { lat: number; lng: number } | null;
   eta?: IOrderEta | null;
   riderLocation?: IRiderTrackingLocation | null;
@@ -54,6 +54,7 @@ function GoogleMapTrackingComponent({
     const trimmed = trimPolylineToRider(decoded, riderLocation);
     if (trimmed.length > 1) return trimmed;
     if (requireBackendRoute) return [];
+    if (!destination) return [];
     if (riderCoordinate) return [riderCoordinate, destination];
     return origin ? [origin, destination] : [];
   }, [
@@ -70,8 +71,13 @@ function GoogleMapTrackingComponent({
     const bounds = new window.google.maps.LatLngBounds();
     route.forEach((point) => bounds.extend(point));
     if (origin) bounds.extend(origin);
-    bounds.extend(destination);
+    if (destination) bounds.extend(destination);
     if (riderCoordinate) bounds.extend(riderCoordinate);
+    // Un seul point (livreur seul) : on centre sans zoomer à l'extrême.
+    if (!destination && !origin && route.length < 2) {
+      if (riderCoordinate) map.panTo(riderCoordinate);
+      return;
+    }
     map.fitBounds(bounds, 48);
   }, [destination, map, origin, riderCoordinate, route]);
 
@@ -121,18 +127,20 @@ function GoogleMapTrackingComponent({
           keyboardShortcuts: true,
         }}
         mapContainerStyle={{ width: "100%", height: "400px" }}
-        center={riderCoordinate || origin || destination}
+        center={riderCoordinate || origin || destination || undefined}
         zoom={14}
         onLoad={setMap}
         onUnmount={() => setMap(null)}
       >
-        <Marker
-          position={destination}
-          icon={{
-            url: HomeIcon.src,
-            scaledSize: new window.google.maps.Size(40, 40),
-          }}
-        />
+        {destination && (
+          <Marker
+            position={destination}
+            icon={{
+              url: HomeIcon.src,
+              scaledSize: new window.google.maps.Size(40, 40),
+            }}
+          />
+        )}
         {origin && (
           <Marker
             position={origin}
