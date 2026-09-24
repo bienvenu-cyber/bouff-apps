@@ -1115,6 +1115,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      email_exists: { Args: { p_email: string }; Returns: boolean }
       is_restaurant_open: {
         Args: { p_restaurant_id: string }
         Returns: boolean
