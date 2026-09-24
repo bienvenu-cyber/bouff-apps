@@ -747,7 +747,11 @@ export type Database = {
           description: string | null
           id: string
           is_active: boolean
+          is_temporarily_closed: boolean
           logo_url: string | null
+          max_active_orders_per_phone: number
+          max_orders_per_phone_hour: number
+          min_order_fcfa: number
           name: string
           opens_at: string | null
           phone: string | null
@@ -769,7 +773,11 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          is_temporarily_closed?: boolean
           logo_url?: string | null
+          max_active_orders_per_phone?: number
+          max_orders_per_phone_hour?: number
+          min_order_fcfa?: number
           name: string
           opens_at?: string | null
           phone?: string | null
@@ -791,7 +799,11 @@ export type Database = {
           description?: string | null
           id?: string
           is_active?: boolean
+          is_temporarily_closed?: boolean
           logo_url?: string | null
+          max_active_orders_per_phone?: number
+          max_orders_per_phone_hour?: number
+          min_order_fcfa?: number
           name?: string
           opens_at?: string | null
           phone?: string | null
@@ -926,6 +938,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      cancel_my_order: {
+        Args: { p_order_number: string; p_phone?: string }
+        Returns: Json
+      }
       claim_notifications: {
         Args: { p_limit?: number; p_token: string }
         Returns: Json
@@ -965,6 +981,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      is_restaurant_open: {
+        Args: { p_restaurant_id: string }
+        Returns: boolean
       }
       mark_notification: {
         Args: {
@@ -1072,6 +1092,41 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "menu_items"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      set_restaurant_closed: {
+        Args: { p_closed: boolean; p_restaurant_id: string }
+        Returns: {
+          accepts_delivery: boolean
+          accepts_takeaway: boolean
+          address: string | null
+          brand_color: string
+          city: string
+          closes_at: string | null
+          commission_rate: number
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          is_temporarily_closed: boolean
+          logo_url: string | null
+          max_active_orders_per_phone: number
+          max_orders_per_phone_hour: number
+          min_order_fcfa: number
+          name: string
+          opens_at: string | null
+          phone: string | null
+          slug: string
+          tagline: string | null
+          updated_at: string
+          whatsapp_number: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "restaurants"
           isOneToOne: true
           isSetofReturn: false
         }
