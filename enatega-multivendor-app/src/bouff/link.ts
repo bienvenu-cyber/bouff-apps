@@ -862,6 +862,23 @@ export function createBouffLink(): ApolloLink {
       new Observable<any>((observer) => {
         const name = operation.operationName;
 
+        if (name === "SingleVendorOrderTrackingUpdated") {
+          const id = String(operation.variables?.id ?? "");
+          const stopStatus = subscribe(name, observer);
+          const timer = setInterval(async () => {
+            try {
+              const t = await orders.trackOrder(id);
+              if (t) observer.next({ data: { subscriptionOrderTracking: t } });
+            } catch {
+              /* nouvel essai dans 10 s */
+            }
+          }, 10000);
+          return () => {
+            clearInterval(timer);
+            stopStatus();
+          };
+        }
+
         if (name === "SubscriptionNewMessage") {
           return subscribeMessages(String(operation.variables?.order ?? ""), observer);
         }

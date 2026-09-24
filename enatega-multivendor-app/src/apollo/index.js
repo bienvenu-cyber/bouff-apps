@@ -23,6 +23,8 @@ import { invalidateUserSession } from '../utils/session'
 import { FlashMessage } from '../ui/FlashMessage/FlashMessage'
 import i18n from '../../i18next'
 import { APP_MODES } from '../mode/constants'
+import { createBouffLink } from '../bouff/link'
+import { IS_BOUFF } from '../bouff/config'
 
 const getNextFetchPolicy = (currentFetchPolicy, context) => {
   if (context?.reason === 'variables-changed') {
@@ -36,7 +38,23 @@ const getNextFetchPolicy = (currentFetchPolicy, context) => {
   return currentFetchPolicy
 }
 
-const setupApollo = ({
+const setupApollo = (options) => {
+  if (IS_BOUFF) {
+    const client = new ApolloClient({
+      link: createBouffLink(),
+      cache: new InMemoryCache(),
+      defaultOptions: {
+        watchQuery: { fetchPolicy: 'cache-and-network', errorPolicy: 'all' },
+        query: { fetchPolicy: 'network-only', errorPolicy: 'all' }
+      }
+    })
+    client.dispose = () => client.clearStore()
+    return client
+  }
+  return setupEnategaApollo(options)
+}
+
+const setupEnategaApollo = ({
   GRAPHQL_URL,
   WS_GRAPHQL_URL,
   mode = APP_MODES.MULTI,

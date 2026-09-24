@@ -13,6 +13,7 @@ import FlashMessage from 'react-native-flash-message'
 import 'react-native-gesture-handler'
 import useEnvVars from './environment'
 import setupApolloClient from './src/apollo/index'
+import { hydrateBouffStorage } from './src/bouff/storage'
 import { MessageComponent } from './src/components/FlashMessage/MessageComponent'
 import ReviewModal from './src/components/Review'
 import { AuthProvider } from './src/context/Auth'
@@ -183,6 +184,7 @@ function ModeAwareApp() {
         MuseoSans500: require('./src/assets/font/MuseoSans/MuseoSans500.ttf'),
         MuseoSans700: require('./src/assets/font/MuseoSans/MuseoSans700.ttf')
       })
+      await hydrateBouffStorage()
       setAppIsReady(true)
     }
 

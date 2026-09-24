@@ -13,7 +13,8 @@ export const VENDOR_MODE_POLICIES = Object.freeze({
 })
 
 export const getVendorModePolicy = () => {
-  const policy = process.env.EXPO_PUBLIC_VENDOR_MODE?.toUpperCase()
+  // BOUFF : app d'un seul restaurant, sauf réglage contraire explicite.
+  const policy = (process.env.EXPO_PUBLIC_VENDOR_MODE || 'SINGLE').toUpperCase()
   return Object.values(VENDOR_MODE_POLICIES).includes(policy)
     ? policy
     : VENDOR_MODE_POLICIES.TOGGLE

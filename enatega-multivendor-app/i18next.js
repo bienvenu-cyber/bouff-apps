@@ -80,8 +80,8 @@ export const languageResources = {
 // Initialize i18next synchronously with fallback language
 i18next.use(initReactI18next).init({
   compatibilityJSON: 'v3',
-  lng: 'en', // default language
-  fallbackLng: 'en',
+  lng: 'fr', // BOUFF : français par défaut
+  fallbackLng: 'fr',
   resources: languageResources,
   interpolation: {
     escapeValue: false // React already escapes by default
@@ -96,11 +96,9 @@ const detectAndSetLanguage = async() => {
     const availableLanguages = Object.keys(languageResources)
 
     // Prefer stored language if available, else system language if supported, else fallback to 'en'
-    let languageToUse = 'en'
+    let languageToUse = 'fr'
     if (storedLanguage && availableLanguages.includes(storedLanguage)) {
       languageToUse = storedLanguage
-    } else if (availableLanguages.includes(systemLanguage)) {
-      languageToUse = systemLanguage
     }
 
     await i18next.changeLanguage(languageToUse)
