@@ -26,7 +26,7 @@ module.exports = {
         'expo-location',
         {
           locationAlwaysAndWhenInUsePermission:
-            'Enatega Multivendor Rider uses your precise location during active deliveries so customers and dispatchers can follow delivery progress even when the app is not in use.',
+            'BOUFF Livreur utilise votre position pendant les livraisons pour que le client et le restaurant suivent la course, même lorsque l’app est en arrière-plan.',
           isIosBackgroundLocationEnabled: true,
           isAndroidBackgroundLocationEnabled: true,
           isAndroidForegroundServiceEnabled: true
