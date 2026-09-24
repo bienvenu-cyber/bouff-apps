@@ -154,12 +154,12 @@ module.exports = () => {
           // a 1x1 transparent PNG — only the background color shows. The animated
           // pin / wordmark is drawn by the JS AnimatedSplash component, whose
           // first frame uses these same colors so the handoff shows no flash.
-          backgroundColor: '#f4f8f5', // light ("Pink")
+          backgroundColor: '#0B0B0C', // light ("Pink")
           image: './assets/splashTransparent.png',
           imageWidth: 1,
           resizeMode: 'contain',
           dark: {
-            backgroundColor: '#0b1225', // dark
+            backgroundColor: '#0B0B0C', // dark
             image: './assets/splashTransparent.png'
           }
         }
