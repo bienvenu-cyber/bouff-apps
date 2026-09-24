@@ -201,7 +201,9 @@ async function restaurantStats(id: string, from?: string | null, to?: string | n
   const args: any = { p_restaurant_id: id };
   if (from) args.p_from = from;
   if (to) args.p_to = to;
-  return (await must(db().rpc('restaurant_stats', args))) as any;
+  const { data, error } = await db().rpc('restaurant_stats', args);
+  if (error) console.warn('[BOUFF] stats', error.message);
+  return (data ?? {}) as any;
 }
 
 async function paymentBreakdown(restaurant: string, from?: string | null, to?: string | null) {
@@ -221,6 +223,11 @@ async function paymentBreakdown(restaurant: string, from?: string | null, to?: s
   const cod = rows.filter((o) => o.payment_method === 'cash');
   const card = rows.filter((o) => o.payment_method !== 'cash');
   const all = sum(rows);
+  const split = (list: any[]) => [
+    { __typename: 'PaymentGroup', _type: 'all', data: sum(list) },
+    { __typename: 'PaymentGroup', _type: 'isPickedUp', data: sum(list.filter((o) => o.order_type === 'takeaway')) },
+    { __typename: 'PaymentGroup', _type: 'isNotPickedUp', data: sum(list.filter((o) => o.order_type === 'delivery')) },
+  ];
   return {
     ...all,
     pickup_total_orders: pickup.length,
@@ -229,9 +236,9 @@ async function paymentBreakdown(restaurant: string, from?: string | null, to?: s
     delivery_orders: delivery.length,
     pickup: { total_orders: pickup.length },
     delivery: { total_orders: delivery.length },
-    all: [{ _type: 'all', data: all }],
-    cod: [{ _type: 'cod', data: sum(cod) }],
-    card: [{ _type: 'card', data: sum(card) }],
+    all: split(rows),
+    cod: split(cod),
+    card: split(card),
   };
 }
 
