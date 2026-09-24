@@ -92,7 +92,9 @@ i18next.use(initReactI18next).init({
 const detectAndSetLanguage = async() => {
   try {
     const storedLanguage = await AsyncStorage.getItem('enatega-language')
-    const systemLanguage = Localization?.locale?.split('-')[0]
+    const locale = Localization.getLocales?.()?.[0]
+    const rawSystem = (locale?.languageCode || Localization?.locale?.split('-')[0] || '').toLowerCase()
+    const systemLanguage = rawSystem === 'ja' ? 'jp' : rawSystem
     const availableLanguages = Object.keys(languageResources)
 
     // 1. choix enregistré par le client  2. langue du téléphone si traduite  3. français
