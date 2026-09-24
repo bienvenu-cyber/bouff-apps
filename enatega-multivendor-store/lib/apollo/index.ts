@@ -19,6 +19,7 @@ import { DefinitionNode, FragmentDefinitionNode } from "graphql";
 import { Subscription } from "zen-observable-ts";
 import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createBouffLink } from "../bouff/link";
 import PublicAccessTokenService, {
   STORE_PUBLIC_ACCESS_USER_AGENT,
 } from "../services/public-access-token.service";
@@ -70,6 +71,16 @@ const setupApollo = ({
   storeIdKey,
 }: ApolloSetupOptions) => {
   const { GRAPHQL_URL, WS_GRAPHQL_URL, PUBLIC_ACCESS_REQUIRED } = environment;
+
+  // BOUFF : l'app parle directement à la base BOUFF, plus au serveur Enatega.
+  if (environment.BOUFF) {
+    const bouffClient: ApolloClient<NormalizedCacheObject> = new ApolloClient({
+      link: createBouffLink(),
+      cache: new InMemoryCache(),
+    });
+    Object.assign(bouffClient, { disposeModeClient: () => bouffClient.stop() });
+    return bouffClient;
+  }
 
   const cache = new InMemoryCache(); // eslint-disable-next-line new-cap
   const httpLink = createHttpLink({

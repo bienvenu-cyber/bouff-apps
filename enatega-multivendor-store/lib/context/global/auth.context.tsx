@@ -8,6 +8,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 // Constants
 import { getStoreId, removeItem } from "@/lib/services";
 import { useStoreMode } from "@/lib/context/global/store-mode.context";
+import { clearBouffSession } from "@/lib/bouff/link";
 
 // Interfaces
 import { IAuthContext, IAuthProviderProps } from "@/lib/utils/interfaces";
@@ -78,6 +79,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({
         client.clearStore(),
         SecureStore.deleteItemAsync(tokenKey),
         removeItem(storeIdKey),
+        clearBouffSession(),
       ]);
 
       setToken("");

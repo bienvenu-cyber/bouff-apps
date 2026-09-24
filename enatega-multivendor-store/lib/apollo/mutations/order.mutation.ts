@@ -42,3 +42,13 @@ export const PICK_UP_ORDER = gql`
     }
   }
 `;
+
+// BOUFF : la cuisine marque la commande « prête ».
+export const MARK_ORDER_READY = gql`
+  mutation MarkOrderReady($_id: String!) {
+    markOrderReady(_id: $_id) {
+      _id
+      orderStatus
+    }
+  }
+`;

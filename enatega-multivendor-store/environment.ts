@@ -4,7 +4,16 @@ export interface StoreEnvironment {
   GRAPHQL_URL: string;
   WS_GRAPHQL_URL: string;
   PUBLIC_ACCESS_REQUIRED: boolean;
+  // true : données servies par la base BOUFF (Lovable Cloud)
+  BOUFF?: boolean;
 }
+
+const BOUFF_ENVIRONMENT: StoreEnvironment = {
+  GRAPHQL_URL: "bouff://local",
+  WS_GRAPHQL_URL: "bouff://local",
+  PUBLIC_ACCESS_REQUIRED: false,
+  BOUFF: true,
+};
 
 const MULTI_VENDOR_ENVIRONMENT: StoreEnvironment = {
   GRAPHQL_URL: "https://aws-server-v2.enatega.com/graphql",
@@ -40,7 +49,9 @@ const getSingleVendorEnvironment = (): StoreEnvironment => ({
 const getEnvVars = (
   mode: StoreServerMode = STORE_SERVER_MODES.MULTI,
 ): StoreEnvironment =>
-  mode === STORE_SERVER_MODES.SINGLE
+  process.env.EXPO_PUBLIC_BOUFF !== "false"
+    ? BOUFF_ENVIRONMENT
+    : mode === STORE_SERVER_MODES.SINGLE
     ? getSingleVendorEnvironment()
     : MULTI_VENDOR_ENVIRONMENT;
 
