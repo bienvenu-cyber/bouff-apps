@@ -429,7 +429,6 @@ const resolvers: Record<string, Resolver> = {
 
   /* --- commandes --- */
   SingleVendorPlaceOrder: async (v) => ({ placeOrder: await orders.placeOrder(v) }),
-  PlaceOrder: async (v) => ({ placeOrder: await orders.placeOrder(v) }),
   SingleVendorActiveOrders: async (v) => ({
     getUsersActiveOrders: await orders.activeOrders(v.limit, v.page),
   }),
@@ -457,14 +456,7 @@ const resolvers: Record<string, Resolver> = {
   }),
 
   /* --- compte client --- */
-  SingleVendorProfile: async () => ({ profile: await auth.fetchProfile() }),
-  Profile: async () => ({ profile: await auth.fetchProfile() }),
-  LoginSingleVendor: async (v) => ({ login: await auth.login(v) }),
-  Login: async (v) => ({ login: await auth.login(v) }),
-  CreateUser: async (v) => ({ createUser: await auth.createUser(v) }),
   UpdateUser: async (v) => ({ updateUser: await auth.updateUser(v) }),
-  EmailExistSingleVendor: async () => ({ emailExist: null }),
-  EmailExist: async () => ({ emailExist: null }),
   PhoneExistSingleVendor: async () => ({ phoneExist: null }),
   PhoneExist: async () => ({ phoneExist: null }),
   ForgotPassword: async (v) => ({ forgotPassword: await auth.forgotPassword(v.email) }),
