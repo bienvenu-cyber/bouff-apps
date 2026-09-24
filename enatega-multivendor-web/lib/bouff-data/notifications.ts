@@ -19,6 +19,7 @@ export interface BouffNotification {
 const GUEST_ORDERS_KEY = "bouff/guest-orders";
 const GUEST_NOTIFS_KEY = "bouff/guest-notifications";
 const GUEST_STATUS_KEY = "bouff/guest-order-status";
+const GUEST_IDS_KEY = "bouff/guest-order-ids";
 
 const MESSAGES: Record<string, (takeaway: boolean) => string> = {
   received: () => "Nous avons bien reçu votre commande.",
@@ -46,7 +47,13 @@ function writeJson(key: string, value: unknown) {
     window.localStorage.setItem(key, JSON.stringify(value));
 }
 
-export function rememberGuestOrder(orderNumber: string) {
+export function rememberGuestOrder(orderNumber: string, orderId?: string) {
+  if (orderId) {
+    const ids = readJson<Record<string, string>>(GUEST_IDS_KEY, {});
+    ids[orderId] = orderNumber;
+    const entries = Object.entries(ids).slice(-10);
+    writeJson(GUEST_IDS_KEY, Object.fromEntries(entries));
+  }
   const list = readJson<string[]>(GUEST_ORDERS_KEY, []);
   writeJson(GUEST_ORDERS_KEY, [orderNumber, ...list.filter((o) => o !== orderNumber)].slice(0, 10));
 }
@@ -130,7 +137,7 @@ export async function markAllRead() {
 // Écoute en direct les nouvelles notifications du client connecté.
 export async function subscribeNotifications(onChange: () => void) {
   const uid = await userId();
-  if (!uid) return () => {};
+  if (!uid) return subscribeGuestOrders(() => onChange());
   const channel = bouffDb()
     .channel(`notifications-${uid}`)
     .on(
@@ -141,5 +148,32 @@ export async function subscribeNotifications(onChange: () => void) {
     .subscribe();
   return () => {
     void bouffDb().removeChannel(channel);
+  };
+}
+
+// Identifiants des commandes invité encore en cours (id -> numéro).
+export function guestOrderIds(): Record<string, string> {
+  const ids = readJson<Record<string, string>>(GUEST_IDS_KEY, {});
+  const statuses = readJson<Record<string, string>>(GUEST_STATUS_KEY, {});
+  return Object.fromEntries(
+    Object.entries(ids).filter(
+      ([, n]) => statuses[n] !== "delivered" && statuses[n] !== "cancelled",
+    ),
+  );
+}
+
+// Client sans compte : écoute en direct le statut de ses commandes en cours.
+export function subscribeGuestOrders(
+  onChange: (p: { order_number: string; status: string }) => void,
+) {
+  const db = bouffDb();
+  const channels = Object.keys(guestOrderIds()).map((id) =>
+    db
+      .channel(`order:${id}`)
+      .on("broadcast", { event: "status" }, (msg: any) => onChange(msg.payload))
+      .subscribe(),
+  );
+  return () => {
+    channels.forEach((c) => void db.removeChannel(c));
   };
 }
