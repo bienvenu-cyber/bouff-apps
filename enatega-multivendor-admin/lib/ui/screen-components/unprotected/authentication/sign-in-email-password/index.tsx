@@ -68,7 +68,7 @@ export default function LoginEmailPasswordMain() {
       message:
         graphQLErrors[0]?.message ??
         networkError?.message ??
-        `Something went wrong - Please try again`,
+        `Une erreur est survenue, réessayez`,
     });
   }
 
