@@ -18,7 +18,7 @@ type SupportedLanguage = keyof typeof LANGUAGE_LOADERS;
 
 const LANGUAGE_KEY = "lang";
 const LEGACY_LANGUAGE_KEY = "enatega-language";
-const DEFAULT_LANGUAGE: SupportedLanguage = "en";
+const DEFAULT_LANGUAGE: SupportedLanguage = "fr";
 
 const normalizeLanguage = (language?: string | null): SupportedLanguage =>
   language && language in LANGUAGE_LOADERS

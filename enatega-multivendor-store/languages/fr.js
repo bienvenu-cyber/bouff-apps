@@ -299,6 +299,11 @@ export const fr = {
   "Set Preparation Time": "Définir le temps de préparation",
   "Show Details": "Afficher les détails",
   "Hide Details": "Masquer les détails",
-  "Tax": "Taxe"
-
+  "Tax": "Taxe",
+  "Mark as ready": "Commande prête",
+  "Deliver Order to Customer": "Remise au client",
+  "Waiting for Rider": "En attente d'un livreur",
+  "Your order is confirmed. We're waiting for a rider to accept and deliver your order.": "La commande est prête. Un livreur va la prendre en charge.",
+  "Auto decline in": "Refus automatique dans",
+  "Invalid credentials": "E-mail ou mot de passe incorrect"
 };

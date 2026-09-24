@@ -14,6 +14,8 @@ export type StoreServerMode =
 export const DEFAULT_STORE_SERVER_MODE = STORE_SERVER_MODES.MULTI;
 
 export const getForcedStoreServerMode = (): StoreServerMode | null => {
+  // BOUFF : un seul mode, branché sur la base BOUFF.
+  if (process.env.EXPO_PUBLIC_BOUFF !== "false") return STORE_SERVER_MODES.SINGLE;
   const policy = process.env.EXPO_PUBLIC_VENDOR_MODE?.toUpperCase();
   if (policy === STORE_SERVER_MODES.SINGLE) return STORE_SERVER_MODES.SINGLE;
   if (policy === STORE_SERVER_MODES.MULTI) return STORE_SERVER_MODES.MULTI;

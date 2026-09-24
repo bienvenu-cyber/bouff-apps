@@ -32,6 +32,7 @@ import {
 import { useSoundContext } from "@/lib/context/global/sound.context";
 import { useApptheme } from "@/lib/context/theme.context";
 import useCancelOrder from "@/lib/hooks/useCancelOrder";
+import useMarkOrderReady from "@/lib/hooks/useMarkOrderReady";
 import useOrderPickedUp from "@/lib/hooks/useOrderPickedUp";
 import { useTranslation } from "react-i18next";
 
@@ -65,6 +66,7 @@ const Order = ({
   const { t } = useTranslation();
   const { cancelOrder, loading: loadingCancelOrder } = useCancelOrder();
   const { pickedUp, loading: loadingPicked } = useOrderPickedUp();
+  const { markReady, loading: loadingReady } = useMarkOrderReady();
   const { isSingleVendor } = useStoreMode();
   const statusPalette = getStatusPalette(tab, currentTheme === "dark");
 
@@ -253,7 +255,7 @@ const Order = ({
             ))}
         </View>
 
-        {order.orderStatus === "ACCEPTED" &&
+        {order.orderStatus === "ASSIGNED" &&
           !order.isPickedUp &&
           !order.rider?._id && (
             <View
@@ -450,9 +452,38 @@ const Order = ({
               </View>
             </View>
 
-            {order.orderStatus === "ACCEPTED" && order.isPickedUp && (
+            {/* En cuisine → prête (livraison et emporter) */}
+            {order.orderStatus === "ACCEPTED" && (
               <View style={styles.actionRow}>
-                {/* Hand Order to Rider */}
+                <TouchableOpacity
+                  accessibilityRole="button"
+                  disabled={loadingReady}
+                  onPress={() => markReady(order._id)}
+                  style={[
+                    styles.primaryButton,
+                    { backgroundColor: appTheme.primary },
+                  ]}
+                >
+                  {loadingReady ? (
+                    <SpinnerComponent color={appTheme.white} />
+                  ) : (
+                    <Text
+                      style={{
+                        color: appTheme.black,
+                        fontSize: 16,
+                        fontWeight: "700",
+                      }}
+                    >
+                      {t("Mark as ready")}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* À emporter prête → remise au client */}
+            {order.orderStatus === "ASSIGNED" && order.isPickedUp && (
+              <View style={styles.actionRow}>
                 <TouchableOpacity
                   accessibilityRole="button"
                   disabled={loadingPicked}
