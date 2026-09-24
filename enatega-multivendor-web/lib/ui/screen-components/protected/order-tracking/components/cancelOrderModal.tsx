@@ -58,7 +58,7 @@ function CancelOrderModal({
   });
 
   const handleCancelOrder = () => {
-    if (!authToken) {
+    if (false && !authToken) {
       console.error("No authentication token available");
       showToast({
         type: "error",

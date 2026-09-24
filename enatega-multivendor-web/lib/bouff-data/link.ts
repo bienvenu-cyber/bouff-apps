@@ -2,6 +2,7 @@ import { ApolloLink, Observable, type Operation } from "@apollo/client";
 import type { DocumentNode, OperationDefinitionNode } from "graphql";
 import { CURRENCY, CURRENCY_SYMBOL } from "./config";
 import { bouffDb } from "./supabase";
+import { subscribeGuestOrders } from "./notifications";
 import {
   findItem,
   loadMenu,
@@ -436,6 +437,7 @@ const resolvers: Record<string, Resolver> = {
   SingleVendorOrderDetailsPage: async (v) => ({
     orderDetailsPage: await orders.orderDetails(String(v.orderId)),
   }),
+  AbortOrder: async (v) => ({ abortOrder: await orders.cancelOrder(String(v.id)) }),
   SingleVendorOrderTracking: async (v) => ({
     orderTracking: await orders.trackOrder(String(v.id)),
   }),
@@ -524,7 +526,25 @@ function subscribe(operationName: string, observer: any) {
     )
     .subscribe();
 
+  // Client sans compte : statut diffusé en direct sur le canal de sa commande.
+  const stopGuest = subscribeGuestOrders(async (p) => {
+    if (operationName !== "SingleVendorOrderTrackingUpdated") return;
+    const details = await orders.orderDetails(p.order_number);
+    if (!details?.rawOrder) return;
+    observer.next({
+      data: {
+        subscriptionOrderTracking: {
+          orderId: details.rawOrder.orderId,
+          status: details.rawOrder.orderStatus,
+          riderLocation: null,
+          eta: null,
+        },
+      },
+    });
+  });
+
   return () => {
+    stopGuest();
     void db.removeChannel(channel);
   };
 }

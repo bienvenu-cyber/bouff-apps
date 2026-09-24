@@ -93,7 +93,7 @@ export async function placeOrder(variables: Record<string, any>) {
 
   clearCart();
   const result = data as Record<string, any>;
-  if (result?.order_number) rememberGuestOrder(result.order_number);
+  if (result?.order_number) rememberGuestOrder(result.order_number, result.order_id);
   return {
     _id: result.order_id,
     orderId: result.order_number,
@@ -466,6 +466,34 @@ export async function trackOrder(orderId: string) {
     orderId: details.rawOrder.orderId,
     status: details.rawOrder.orderStatus,
     riderLocation: null,
+    eta: null,
+  };
+}
+
+// Annulation par le client : possible seulement tant que la cuisine n'a pas accepté.
+export async function cancelOrder(idOrNumber: string) {
+  const db = bouffDb();
+  let orderNumber = idOrNumber;
+  if (idOrNumber.includes("-") && idOrNumber.length > 20) {
+    const { data } = await db
+      .from("orders")
+      .select("order_number")
+      .eq("id", idOrNumber)
+      .maybeSingle();
+    const { guestOrderIds } = await import("./notifications");
+    orderNumber = data?.order_number ?? guestOrderIds()[idOrNumber] ?? idOrNumber;
+  }
+  const { error } = await db.rpc("cancel_my_order", {
+    p_order_number: orderNumber,
+    p_phone: getGuest()?.phone ?? null,
+  });
+  if (error) throw new Error(error.message);
+  return {
+    _id: idOrNumber,
+    orderId: orderNumber,
+    orderStatus: "CANCELLED",
+    cancelledAt: new Date().toISOString(),
+    reason: "Annulée par le client",
     eta: null,
   };
 }
