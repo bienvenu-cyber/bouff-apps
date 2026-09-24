@@ -53,6 +53,14 @@ export interface BouffZone {
   id: string;
   name: string;
   fee: number;
+  cityId: string;
+}
+
+export interface BouffCity {
+  id: string;
+  name: string;
+  isDefault: boolean;
+  isActive: boolean;
 }
 
 export interface BouffMenu {
@@ -77,6 +85,7 @@ export interface BouffMenu {
   categories: BouffCategory[];
   items: BouffItem[];
   zones: BouffZone[];
+  cities: BouffCity[];
 }
 
 let cache: { at: number; menu: BouffMenu } | null = null;
@@ -101,7 +110,7 @@ export async function loadMenu(force = false): Promise<BouffMenu> {
     if (restError) throw restError;
     if (!restaurant) throw new Error("Restaurant BOUFF introuvable.");
 
-    const [categories, items, variants, zones] = await Promise.all([
+    const [categories, items, variants, zones, cities] = await Promise.all([
       db
         .from("categories")
         .select("*")
@@ -120,6 +129,7 @@ export async function loadMenu(force = false): Promise<BouffMenu> {
         .eq("restaurant_id", restaurant.id)
         .eq("is_active", true)
         .order("sort_order"),
+      db.from("cities").select("*").order("sort_order"),
     ]);
 
     const itemIds = (items.data ?? []).map((i) => i.id);
@@ -206,6 +216,13 @@ export async function loadMenu(force = false): Promise<BouffMenu> {
         id: z.id,
         name: z.name,
         fee: z.fee_fcfa,
+        cityId: z.city_id,
+      })),
+      cities: (cities.data ?? []).map((c) => ({
+        id: c.id,
+        name: c.name,
+        isDefault: c.is_default,
+        isActive: c.is_active,
       })),
     };
 
