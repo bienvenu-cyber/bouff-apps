@@ -32,6 +32,7 @@ import {
 import { useSoundContext } from "@/lib/context/global/sound.context";
 import { useApptheme } from "@/lib/context/theme.context";
 import useCancelOrder from "@/lib/hooks/useCancelOrder";
+import useMarkOrderReady from "@/lib/hooks/useMarkOrderReady";
 import useOrderPickedUp from "@/lib/hooks/useOrderPickedUp";
 import { useTranslation } from "react-i18next";
 
@@ -65,6 +66,7 @@ const Order = ({
   const { t } = useTranslation();
   const { cancelOrder, loading: loadingCancelOrder } = useCancelOrder();
   const { pickedUp, loading: loadingPicked } = useOrderPickedUp();
+  const { markReady, loading: loadingReady } = useMarkOrderReady();
   const { isSingleVendor } = useStoreMode();
   const statusPalette = getStatusPalette(tab, currentTheme === "dark");
 
@@ -253,7 +255,7 @@ const Order = ({
             ))}
         </View>
 
-        {order.orderStatus === "ACCEPTED" &&
+        {order.orderStatus === "ASSIGNED" &&
           !order.isPickedUp &&
           !order.rider?._id && (
             <View
