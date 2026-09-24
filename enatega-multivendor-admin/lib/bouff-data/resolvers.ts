@@ -692,7 +692,7 @@ export const resolvers: Record<string, Resolver> = {
   async getRestaurantDashboardOrdersSalesStats(a) {
     const { from, to } = dateRange(a);
     const b = await paymentBreakdown(a.restaurant, from, to);
-    return { totalOrders: b.total_orders, totalSales: b.total_sales, totalCODOrders: b.cod.data.total_orders, totalCardOrders: b.card.data.total_orders };
+    return { totalOrders: b.total_orders, totalSales: b.total_sales, totalCODOrders: b.cod[0].data.total_orders, totalCardOrders: b.card[0].data.total_orders };
   },
   async getRestaurantDashboardSalesOrderCountDetailsByYear({ restaurant, year }) {
     const s = await restaurantStats(restaurant, `${year}-01-01`, `${year}-12-31`);
