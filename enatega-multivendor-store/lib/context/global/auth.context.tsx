@@ -58,7 +58,9 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({
       }
 
       // Use stored language preference or fall back to system language
-      const selectedLanguage = lng || systemLanguage;
+      // BOUFF : français par défaut, sauf choix explicite dans l'app.
+      void systemLanguage;
+      const selectedLanguage = lng || "fr";
 
       const appliedLanguage = await setAppLanguage(selectedLanguage);
       setIsSelected(appliedLanguage);
