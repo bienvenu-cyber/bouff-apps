@@ -64,7 +64,7 @@ export default function LoginEmailPasswordMain() {
   function onError({ graphQLErrors, networkError }: ApolloError) {
     showToast({
       type: 'error',
-      title: 'Login',
+      title: 'Connexion',
       message:
         graphQLErrors[0]?.message ??
         networkError?.message ??
@@ -100,8 +100,8 @@ export default function LoginEmailPasswordMain() {
       if (!verifiedUser) {
         showToast({
           type: 'error',
-          title: 'Login',
-          message: 'Unable to verify your session. Please try again.',
+          title: 'Connexion',
+          message: 'Impossible de vérifier votre session. Réessayez.',
         });
         return;
       }
@@ -110,13 +110,13 @@ export default function LoginEmailPasswordMain() {
 
       showToast({
         type: 'success',
-        title: 'Login',
-        message: 'User has been logged in successfully.',
+        title: 'Connexion',
+        message: 'Connexion réussie.',
       });
     } catch (err) {
       showToast({
         type: 'error',
-        title: 'Login',
+        title: 'Connexion',
         message: 'Échec de la connexion',
       });
     }
