@@ -7,6 +7,7 @@ import {
 } from "./cart";
 import { getGuest, setGuest } from "./auth";
 import { loadMenu } from "./catalog";
+import { rememberGuestOrder } from "./notifications";
 
 export const STATUS_MAP: Record<string, string> = {
   received: "PENDING",
@@ -92,6 +93,7 @@ export async function placeOrder(variables: Record<string, any>) {
 
   clearCart();
   const result = data as Record<string, any>;
+  if (result?.order_number) rememberGuestOrder(result.order_number);
   return {
     _id: result.order_id,
     orderId: result.order_number,
