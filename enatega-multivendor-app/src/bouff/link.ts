@@ -1,8 +1,11 @@
 import { ApolloLink, Observable, type Operation } from "@apollo/client";
 import type { DocumentNode, OperationDefinitionNode } from "graphql";
-import { CURRENCY, CURRENCY_SYMBOL } from "./config";
-import { bouffDb } from "./supabase";
+import { ADDRESSES_STORAGE_KEY, CURRENCY, CURRENCY_SYMBOL } from "./config";
+import { bouffDb, currentUserId } from "./supabase";
+import { bouffStorage } from "./storage";
 import { subscribeGuestOrders } from "./notifications";
+// @ts-ignore — module JavaScript de l'app d'origine
+import { subscribeToSessionInvalidation } from "../utils/session";
 import {
   findItem,
   loadMenu,
@@ -14,7 +17,9 @@ import {
   getCartLines,
   priceCart,
   removeLine,
+  resolveZoneId,
   setLineQuantity,
+  setSelectedZoneId,
   upsertLine,
 } from "./cart";
 import * as auth from "./auth";
