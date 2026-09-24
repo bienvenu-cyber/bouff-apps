@@ -592,6 +592,8 @@ export type Database = {
           delivered_at: string | null
           delivery_address: string | null
           delivery_fee_fcfa: number
+          delivery_lat: number | null
+          delivery_lng: number | null
           delivery_zone_id: string | null
           estimated_ready_at: string | null
           id: string
@@ -620,6 +622,8 @@ export type Database = {
           delivered_at?: string | null
           delivery_address?: string | null
           delivery_fee_fcfa?: number
+          delivery_lat?: number | null
+          delivery_lng?: number | null
           delivery_zone_id?: string | null
           estimated_ready_at?: string | null
           id?: string
@@ -648,6 +652,8 @@ export type Database = {
           delivered_at?: string | null
           delivery_address?: string | null
           delivery_fee_fcfa?: number
+          delivery_lat?: number | null
+          delivery_lng?: number | null
           delivery_zone_id?: string | null
           estimated_ready_at?: string | null
           id?: string
@@ -786,7 +792,9 @@ export type Database = {
           id: string
           is_active: boolean
           is_temporarily_closed: boolean
+          latitude: number | null
           logo_url: string | null
+          longitude: number | null
           max_active_orders_per_phone: number
           max_orders_per_phone_hour: number
           min_order_fcfa: number
@@ -812,7 +820,9 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_temporarily_closed?: boolean
+          latitude?: number | null
           logo_url?: string | null
+          longitude?: number | null
           max_active_orders_per_phone?: number
           max_orders_per_phone_hour?: number
           min_order_fcfa?: number
@@ -838,7 +848,9 @@ export type Database = {
           id?: string
           is_active?: boolean
           is_temporarily_closed?: boolean
+          latitude?: number | null
           logo_url?: string | null
+          longitude?: number | null
           max_active_orders_per_phone?: number
           max_orders_per_phone_hour?: number
           min_order_fcfa?: number
@@ -988,6 +1000,8 @@ export type Database = {
           delivered_at: string | null
           delivery_address: string | null
           delivery_fee_fcfa: number
+          delivery_lat: number | null
+          delivery_lng: number | null
           delivery_zone_id: string | null
           estimated_ready_at: string | null
           id: string
@@ -1029,6 +1043,8 @@ export type Database = {
           delivered_at: string | null
           delivery_address: string | null
           delivery_fee_fcfa: number
+          delivery_lat: number | null
+          delivery_lng: number | null
           delivery_zone_id: string | null
           estimated_ready_at: string | null
           id: string
@@ -1074,6 +1090,8 @@ export type Database = {
           delivered_at: string | null
           delivery_address: string | null
           delivery_fee_fcfa: number
+          delivery_lat: number | null
+          delivery_lng: number | null
           delivery_zone_id: string | null
           estimated_ready_at: string | null
           id: string
@@ -1131,6 +1149,7 @@ export type Database = {
         Args: { p_order: string; p_phone?: string }
         Returns: Json
       }
+      order_route: { Args: { p_order: string; p_phone: string }; Returns: Json }
       payment_order_lookup: {
         Args: { p_order_number: string; p_phone: string; p_token: string }
         Returns: Json
@@ -1186,6 +1205,8 @@ export type Database = {
           delivered_at: string | null
           delivery_address: string | null
           delivery_fee_fcfa: number
+          delivery_lat: number | null
+          delivery_lng: number | null
           delivery_zone_id: string | null
           estimated_ready_at: string | null
           id: string
@@ -1250,6 +1271,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      set_order_location: {
+        Args: { p_lat: number; p_lng: number; p_order: string; p_phone: string }
+        Returns: undefined
+      }
       set_restaurant_closed: {
         Args: { p_closed: boolean; p_restaurant_id: string }
         Returns: {
@@ -1266,7 +1291,9 @@ export type Database = {
           id: string
           is_active: boolean
           is_temporarily_closed: boolean
+          latitude: number | null
           logo_url: string | null
+          longitude: number | null
           max_active_orders_per_phone: number
           max_orders_per_phone_hour: number
           min_order_fcfa: number
