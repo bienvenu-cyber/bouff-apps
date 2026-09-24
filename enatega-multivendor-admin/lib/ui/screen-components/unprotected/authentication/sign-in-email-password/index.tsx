@@ -64,11 +64,11 @@ export default function LoginEmailPasswordMain() {
   function onError({ graphQLErrors, networkError }: ApolloError) {
     showToast({
       type: 'error',
-      title: 'Login',
+      title: 'Connexion',
       message:
         graphQLErrors[0]?.message ??
         networkError?.message ??
-        `Something went wrong - Please try again`,
+        `Une erreur est survenue, réessayez`,
     });
   }
 
@@ -100,8 +100,8 @@ export default function LoginEmailPasswordMain() {
       if (!verifiedUser) {
         showToast({
           type: 'error',
-          title: 'Login',
-          message: 'Unable to verify your session. Please try again.',
+          title: 'Connexion',
+          message: 'Impossible de vérifier votre session. Réessayez.',
         });
         return;
       }
@@ -110,14 +110,14 @@ export default function LoginEmailPasswordMain() {
 
       showToast({
         type: 'success',
-        title: 'Login',
-        message: 'User has been logged in successfully.',
+        title: 'Connexion',
+        message: 'Connexion réussie.',
       });
     } catch (err) {
       showToast({
         type: 'error',
-        title: 'Login',
-        message: 'Login Failed',
+        title: 'Connexion',
+        message: 'Échec de la connexion',
       });
     }
   };
@@ -129,10 +129,10 @@ export default function LoginEmailPasswordMain() {
           <div className="flex flex-col gap-2 ">
             <div className="mb-2 flex flex-col items-center gap-y-[0.5rem] p-2">
               <span className="font-inter text-center text-3xl font-semibold dark:text-white">
-                Login to your account
+                Connexion à votre espace
               </span>
               <span className="font-inter text-center text-base font-normal text-[#667085] dark:bg-dark-900 dark:text-white">
-                Welcome back! Please enter your details.
+                Bon retour ! Saisissez vos identifiants.
               </span>
             </div>
 
@@ -148,7 +148,7 @@ export default function LoginEmailPasswordMain() {
                     <Form>
                       <div className="mb-2">
                         <CustomIconTextField
-                          placeholder="Email"
+                          placeholder="E-mail"
                           name="email"
                           type="email"
                           maxLength={35}
@@ -177,9 +177,9 @@ export default function LoginEmailPasswordMain() {
                       <div className="mb-2">
                         <CustomPasswordTextField
                           className="h-[2.4rem] w-full"
-                          placeholder="Password"
+                          placeholder="Mot de passe"
                           name="password"
-                          maxLength={20}
+                          maxLength={72}
                           showLabel={false}
                           value={values.password}
                           onChange={handleChange}
@@ -198,7 +198,7 @@ export default function LoginEmailPasswordMain() {
 
                       <CustomButton
                         className="hover-border-black h-10 w-full border border-black dark:border-dark-600 bg-[#18181B] px-32 text-white hover:bg-white hover:text-black"
-                        label="Login"
+                        label="Se connecter"
                         type="submit"
                         loading={loading}
                       />
