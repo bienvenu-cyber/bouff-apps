@@ -7,7 +7,7 @@ import type { DocumentNode, OperationDefinitionNode } from "graphql";
 import { bouffDb } from "./supabase";
 
 const ORDER_SELECT =
-  "*, order_items(*, order_item_options(id, name, price_delta_fcfa)), riders(id, full_name, phone), restaurants(id, name, logo_url, address), delivery_zones(name)";
+  "*, order_items(*, order_item_options(id, name, price_delta_fcfa)), riders(id, full_name, phone), restaurants(id, name, logo_url, address, latitude, longitude), delivery_zones(name)";
 
 type Rider = {
   id: string;
@@ -54,6 +54,11 @@ function statuses(o: any) {
 }
 
 const loc = { __typename: "Location", coordinates: ["0", "0"] };
+// GeoJSON : [longitude, latitude]. "0" = position inconnue.
+const geo = (lat: any, lng: any) =>
+  lat != null && lng != null
+    ? { __typename: "Location", coordinates: [String(lng), String(lat)] }
+    : loc;
 
 function mapOrder(o: any) {
   const { orderStatus, orderState } = statuses(o);
@@ -77,11 +82,11 @@ function mapOrder(o: any) {
       name: o.restaurants?.name ?? "",
       image: o.restaurants?.logo_url ?? "",
       address: o.restaurants?.address ?? "",
-      location: loc,
+      location: geo(o.restaurants?.latitude, o.restaurants?.longitude),
     },
     deliveryAddress: {
       __typename: "OrderAddress",
-      location: loc,
+      location: geo(o.delivery_lat, o.delivery_lng),
       deliveryAddress: `${zone}${o.delivery_address ?? ""}`,
       label: "Livraison",
       details: o.note ?? "",
