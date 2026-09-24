@@ -84,12 +84,12 @@ export async function checkCoupon(code: string, subtotal: number): Promise<Coupo
 }
 
 export function rememberCoupon(code: string | null) {
-  if (code) bouffStorage.set(COUPON_KEY, code.toUpperCase());
-  else bouffStorage.delete(COUPON_KEY);
+  if (code) bouffStorage.setItem(COUPON_KEY, code.toUpperCase());
+  else bouffStorage.removeItem(COUPON_KEY);
 }
 
 export function rememberedCoupon(): string | null {
-  return bouffStorage.getString(COUPON_KEY) ?? null;
+  return bouffStorage.getItem(COUPON_KEY) ?? null;
 }
 
 export async function publicCoupons() {
@@ -121,7 +121,7 @@ export async function registerPushToken(token: string | null | undefined, platfo
     p_platform: platform ?? null,
   });
   if (error) throw new Error(error.message);
-  bouffStorage.set(PUSH_TOKEN_KEY, token);
+  bouffStorage.setItem(PUSH_TOKEN_KEY, token);
   const prefs = pushPrefs();
   // réapplique les préférences choisies sur cet appareil
   if (!prefs.order || !prefs.offer) await setPushPrefs(prefs.order, prefs.offer);
@@ -129,12 +129,12 @@ export async function registerPushToken(token: string | null | undefined, platfo
 }
 
 export function storedPushToken(): string | null {
-  return bouffStorage.getString(PUSH_TOKEN_KEY) ?? null;
+  return bouffStorage.getItem(PUSH_TOKEN_KEY) ?? null;
 }
 
 export function pushPrefs(): { order: boolean; offer: boolean } {
   try {
-    const raw = bouffStorage.getString(PUSH_PREFS_KEY);
+    const raw = bouffStorage.getItem(PUSH_PREFS_KEY);
     if (raw) return { order: true, offer: true, ...JSON.parse(raw) };
   } catch {
     /* valeurs par défaut */
@@ -143,7 +143,7 @@ export function pushPrefs(): { order: boolean; offer: boolean } {
 }
 
 export async function setPushPrefs(order: boolean, offer: boolean) {
-  bouffStorage.set(PUSH_PREFS_KEY, JSON.stringify({ order, offer }));
+  bouffStorage.setItem(PUSH_PREFS_KEY, JSON.stringify({ order, offer }));
   if (!(await currentUserId())) return { order, offer };
   const { error } = await bouffDb().rpc("set_push_preferences", {
     p_order_updates: order,
