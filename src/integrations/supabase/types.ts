@@ -232,6 +232,7 @@ export type Database = {
       }
       item_variants: {
         Row: {
+          addon_ids: string[]
           created_at: string
           id: string
           is_available: boolean
@@ -244,6 +245,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          addon_ids?: string[]
           created_at?: string
           id?: string
           is_available?: boolean
@@ -256,6 +258,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          addon_ids?: string[]
           created_at?: string
           id?: string
           is_available?: boolean
@@ -454,6 +457,7 @@ export type Database = {
           min_select: number
           name: string
           sort_order: number
+          source_addon_id: string | null
           updated_at: string
         }
         Insert: {
@@ -465,6 +469,7 @@ export type Database = {
           min_select?: number
           name: string
           sort_order?: number
+          source_addon_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -476,6 +481,7 @@ export type Database = {
           min_select?: number
           name?: string
           sort_order?: number
+          source_addon_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -484,6 +490,13 @@ export type Database = {
             columns: ["menu_item_id"]
             isOneToOne: false
             referencedRelation: "menu_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "option_groups_source_addon_id_fkey"
+            columns: ["source_addon_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_addons"
             referencedColumns: ["id"]
           },
         ]
@@ -497,6 +510,7 @@ export type Database = {
           name: string
           price_delta_fcfa: number
           sort_order: number
+          source_option_id: string | null
           updated_at: string
         }
         Insert: {
@@ -507,6 +521,7 @@ export type Database = {
           name: string
           price_delta_fcfa?: number
           sort_order?: number
+          source_option_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -517,6 +532,7 @@ export type Database = {
           name?: string
           price_delta_fcfa?: number
           sort_order?: number
+          source_option_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -525,6 +541,13 @@ export type Database = {
             columns: ["group_id"]
             isOneToOne: false
             referencedRelation: "option_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "options_source_option_id_fkey"
+            columns: ["source_option_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_options"
             referencedColumns: ["id"]
           },
         ]
@@ -914,6 +937,94 @@ export type Database = {
         }
         Relationships: []
       }
+      restaurant_addons: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          max_select: number
+          min_select: number
+          option_ids: string[]
+          restaurant_id: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          max_select?: number
+          min_select?: number
+          option_ids?: string[]
+          restaurant_id: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          max_select?: number
+          min_select?: number
+          option_ids?: string[]
+          restaurant_id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restaurant_addons_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      restaurant_options: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          price_fcfa: number
+          restaurant_id: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          price_fcfa?: number
+          restaurant_id: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          price_fcfa?: number
+          restaurant_id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restaurant_options_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       restaurants: {
         Row: {
           accepts_delivery: boolean
@@ -1164,6 +1275,48 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      admin_assign_staff: {
+        Args: {
+          p_full_name?: string
+          p_phone?: string
+          p_restaurant_id: string
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      admin_find_user: { Args: { p_email: string }; Returns: string }
+      admin_list_customers: {
+        Args: { p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: Json
+      }
+      admin_list_staff: {
+        Args: { p_restaurant_id?: string }
+        Returns: {
+          created_at: string
+          email: string
+          full_name: string
+          phone: string
+          restaurant_id: string
+          restaurant_name: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }[]
+      }
+      admin_my_access: { Args: never; Returns: Json }
+      admin_remove_staff: {
+        Args: {
+          p_restaurant_id: string
+          p_role: Database["public"]["Enums"]["app_role"]
+          p_user_id: string
+        }
+        Returns: undefined
+      }
+      admin_save_food: { Args: { p: Json }; Returns: string }
+      admin_sync_library: {
+        Args: { p_restaurant_id: string }
+        Returns: undefined
       }
       advance_order_status: {
         Args: {
@@ -1526,6 +1679,7 @@ export type Database = {
       set_variant_availability: {
         Args: { p_available: boolean; p_variant_id: string }
         Returns: {
+          addon_ids: string[]
           created_at: string
           id: string
           is_available: boolean

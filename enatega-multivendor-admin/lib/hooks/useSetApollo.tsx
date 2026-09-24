@@ -13,6 +13,8 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { useEffect, useRef } from 'react';
+import { createBouffLink } from '../bouff-data/link';
+import { IS_BOUFF } from '../bouff-data/supabase';
 
 // Utility imports
 import { Subscription } from 'zen-observable-ts';
@@ -282,6 +284,7 @@ export const useSetupApollo = (): ApolloClient<NormalizedCacheObject> => {
   const wsClientRef = useRef<SubscriptionClient | null>(null);
 
   useEffect(() => {
+    if (IS_BOUFF) return;
     if (shouldRefreshToken()) {
       void fetchMetricsToken(process.env.NEXT_PUBLIC_SERVER_URL);
     }
@@ -294,6 +297,16 @@ export const useSetupApollo = (): ApolloClient<NormalizedCacheObject> => {
   }, []);
 
   if (clientRef.current) {
+    return clientRef.current;
+  }
+
+  if (IS_BOUFF) {
+    // BOUFF : toutes les données viennent de la base BOUFF.
+    clientRef.current = new ApolloClient({
+      link: createBouffLink(),
+      cache: new InMemoryCache(),
+      connectToDevTools: process.env.NODE_ENV !== 'production',
+    });
     return clientRef.current;
   }
 
