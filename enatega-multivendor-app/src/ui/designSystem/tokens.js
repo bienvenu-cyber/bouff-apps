@@ -47,7 +47,7 @@ const lightColors = Object.freeze({
   textPrimary: '#18181B',
   textSecondary: '#52525B',
   textMuted: '#71717A',
-  textOnAccent: '#10200A',
+  textOnAccent: '#0B0B0C',
   textOnDanger: '#FFFFFF',
   borderSubtle: 'rgba(24, 24, 27, 0.10)',
   borderStandard: 'rgba(24, 24, 27, 0.18)',
@@ -68,7 +68,7 @@ const darkColors = Object.freeze({
   textPrimary: '#FAFAFA',
   textSecondary: '#D4D4D8',
   textMuted: '#A1A1AA',
-  textOnAccent: '#10200A',
+  textOnAccent: '#0B0B0C',
   textOnDanger: '#2B0909',
   borderSubtle: 'rgba(161, 161, 170, 0.22)',
   borderStandard: 'rgba(161, 161, 170, 0.34)',
@@ -89,10 +89,10 @@ export const resolveMultivendorTokens = (themeName, legacyTheme = {}) => {
     isDark,
     colors: {
       ...colors,
-      accent: legacyTheme.main || '#90E36D',
-      accentForeground: isDark ? '#B9F3A0' : '#397A20',
-      accentSubtle: isDark ? 'rgba(144, 227, 109, 0.14)' : 'rgba(144, 227, 109, 0.18)',
-      focus: legacyTheme.main || '#90E36D'
+      accent: legacyTheme.main || '#FF7A1A',
+      accentForeground: isDark ? '#FFB27A' : '#C85400',
+      accentSubtle: isDark ? 'rgba(255, 122, 26, 0.14)' : 'rgba(255, 122, 26, 0.18)',
+      focus: legacyTheme.main || '#FF7A1A'
     },
     spacing,
     radii,
