@@ -71,6 +71,7 @@ import { Dialog } from "primereact/dialog";
 
 import CustomButton from "@/lib/ui/useable-components/button";
 import SingleVendorCart from "@/lib/ui/single-vendor/Cart";
+import NotificationBell from "@/lib/ui/single-vendor/NotificationBell";
 import { modeStorage, useAppMode } from "@/lib/mode";
 import { getModeHomeRoute } from "@/lib/mode/routes";
 import VendorModeToggle from "@/lib/ui/useable-components/vendor-mode-toggle";
@@ -610,6 +611,11 @@ const AppTopbar = ({ handleModalToggle }: IAppBarProps) => {
                 {!authToken && !isSearchFocused && !isMarketplaceLanding && (
                   <div className="order-1 hidden md:block">
                     <VendorModeToggle compact />
+                  </div>
+                )}
+                {!isSearchFocused && (
+                  <div className="order-2 p-0">
+                    <NotificationBell />
                   </div>
                 )}
                 <div className="order-2 p-0">

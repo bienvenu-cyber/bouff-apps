@@ -9,7 +9,7 @@ import {
 import { useModeSensitiveOperation } from "@/lib/mode";
 import useUser from "@/lib/hooks/useUser";
 import useCurrencyFormatter from "@/lib/hooks/useCurrencyFormatter";
-import { loadMenu, type BouffZone } from "@/lib/bouff-data/catalog";
+import { loadMenu, type BouffCity, type BouffZone } from "@/lib/bouff-data/catalog";
 import { getGuest, setGuest } from "@/lib/bouff-data/auth";
 import { setSelectedZoneId } from "@/lib/bouff-data/cart";
 
@@ -22,6 +22,8 @@ export default function SingleVendorCheckout() {
   const [instructions, setInstructions] = useState("");
   const [zones, setZones] = useState<BouffZone[]>([]);
   const [zoneId, setZoneId] = useState<string | null>(null);
+  const [cities, setCities] = useState<BouffCity[]>([]);
+  const [cityId, setCityId] = useState<string | null>(null);
   const [address, setAddress] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -48,7 +50,11 @@ export default function SingleVendorCheckout() {
   useEffect(() => {
     void loadMenu().then((menu) => {
       setZones(menu.zones);
-      setZoneId((current) => current ?? menu.zones[0]?.id ?? null);
+      setCities(menu.cities);
+      const city =
+        menu.cities.find((c) => c.isDefault && c.isActive) ??
+        menu.cities.find((c) => c.isActive);
+      setCityId((current) => current ?? city?.id ?? null);
     });
     const guest = getGuest();
     setName((current) => current || profile?.name || guest?.name || "");
@@ -67,11 +73,18 @@ export default function SingleVendorCheckout() {
   useModeSensitiveOperation(placeState.loading);
   const summary = checkout.data?.calculateCheckout;
 
+  const city = cities.find((c) => c.id === cityId);
+  const cityZones = zones.filter((z) => z.cityId === cityId);
+  const zone = cityZones.find((z) => z.id === zoneId);
+  const fullAddress = [city?.name, zone?.name, address.trim()]
+    .filter(Boolean)
+    .join(" — ");
+
   const canSubmit =
     cart.length > 0 &&
     name.trim().length > 1 &&
     phone.trim().length >= 8 &&
-    (pickup || (Boolean(zoneId) && address.trim().length > 3));
+    (pickup || (Boolean(zone) && address.trim().length > 3));
 
   const submit = async () => {
     setError(null);
@@ -86,7 +99,7 @@ export default function SingleVendorCheckout() {
           zoneId: pickup ? null : zoneId,
           address: pickup
             ? { label: "Pickup", deliveryAddress: "", details: "" }
-            : { label: "Livraison", deliveryAddress: address.trim(), details: "" },
+            : { label: "Livraison", deliveryAddress: fullAddress, details: address.trim() },
           orderDate: new Date().toISOString(),
           isPickedUp: pickup,
           specialInstructions: instructions,
@@ -203,25 +216,50 @@ export default function SingleVendorCheckout() {
           {!pickup && (
             <>
               <label className="mt-4 block text-sm dark:text-gray-200">
-                Zone de livraison
+                1. Ville
                 <select
-                  value={zoneId ?? ""}
-                  onChange={(event) => setZoneId(event.target.value || null)}
+                  value={cityId ?? ""}
+                  onChange={(event) => {
+                    setCityId(event.target.value || null);
+                    setZoneId(null);
+                  }}
                   className={field}
                 >
-                  {zones.map((zone) => (
-                    <option key={zone.id} value={zone.id}>
-                      {zone.name} — {formatCurrency(zone.fee)}
+                  {cities.map((c) => (
+                    <option key={c.id} value={c.id} disabled={!c.isActive}>
+                      {c.name}
+                      {c.isActive ? "" : " — bientôt disponible"}
                     </option>
                   ))}
                 </select>
               </label>
               <label className="mt-4 block text-sm dark:text-gray-200">
-                Adresse précise
+                2. Quartier
+                <select
+                  value={zoneId ?? ""}
+                  onChange={(event) => setZoneId(event.target.value || null)}
+                  className={field}
+                  disabled={!cityZones.length}
+                >
+                  <option value="">
+                    {cityZones.length ? "Choisissez votre quartier" : "Aucun quartier desservi"}
+                  </option>
+                  {cityZones.map((z) => (
+                    <option key={z.id} value={z.id}>
+                      {z.name} — {formatCurrency(z.fee)}
+                    </option>
+                  ))}
+                </select>
+                <span className="mt-1 block text-xs text-gray-500 dark:text-gray-400">
+                  Frais de livraison à partir de {formatCurrency(Math.min(...(cityZones.length ? cityZones.map((z) => z.fee) : [0])))}, selon le quartier.
+                </span>
+              </label>
+              <label className="mt-4 block text-sm dark:text-gray-200">
+                3. Adresse précise ou repère
                 <input
                   value={address}
                   onChange={(event) => setAddress(event.target.value)}
-                  placeholder="Repère, rue, en face de…"
+                  placeholder="Ex. : derrière la pharmacie, portail bleu…"
                   className={field}
                 />
               </label>
