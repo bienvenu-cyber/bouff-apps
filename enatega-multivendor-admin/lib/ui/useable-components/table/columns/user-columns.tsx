@@ -1,3 +1,4 @@
+import { formatDateFr } from '@/lib/utils/methods/bouff-date';
 // Interfaces and Types
 import { ActionMenu } from '@/lib/ui/screen-components/protected/super-admin/users/view/main/ActionMenu';
 import { IUserResponse } from '@/lib/utils/interfaces/users.interface';
@@ -87,9 +88,7 @@ export const USERS_TABLE_COLUMNS = (openMenuId?: string | null, setOpenMenuId?: 
       headerName: t('Created At'),
       propertyName: 'createdAt',
       body: (user: IUserResponse) => {
-        const formattedDate = new Date(
-          Number(user.createdAt)
-        ).toLocaleDateString('en-GB');
+        const formattedDate = formatDateFr(user.createdAt, { day: '2-digit', month: '2-digit', year: 'numeric' });
         return <div className="flex items-center gap-2">{formattedDate}</div>;
       },
     },

@@ -1,3 +1,4 @@
+import { formatDateFr } from '@/lib/utils/methods/bouff-date';
 import { IExtendedOrder } from '@/lib/utils/interfaces';
 import { useTranslations } from 'next-intl';
 const dateOptions: Intl.DateTimeFormatOptions = {
@@ -34,9 +35,7 @@ export const ORDER_COLUMNS = () => {
       headerName: t('Created At'),
       propertyName: 'DateCreated',
       body: (rowData: IExtendedOrder) => {
-        const formatedDate = new Date(
-          Number(rowData?.createdAt)
-        ).toLocaleDateString('en-US', dateOptions);
+        const formatedDate = formatDateFr(rowData?.createdAt, dateOptions);
         return <span>{formatedDate}</span>;
       },
     },

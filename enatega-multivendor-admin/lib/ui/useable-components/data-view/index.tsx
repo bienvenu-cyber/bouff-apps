@@ -1,3 +1,4 @@
+import { formatDateFr } from '@/lib/utils/methods/bouff-date';
 import React from 'react';
 import { DataView } from 'primereact/dataview';
 import ProfileCard from '../Icon-Card';
@@ -21,7 +22,7 @@ const CustomDataView: React.FC<ICustomDataViewProps> = ({
       : '';
 
     const createdAt = review?.createdAt
-      ? new Date(parseInt(review?.createdAt)).toLocaleDateString()
+      ? formatDateFr(review?.createdAt, { day: '2-digit', month: 'short', year: 'numeric' })
       : '';
 
     return (

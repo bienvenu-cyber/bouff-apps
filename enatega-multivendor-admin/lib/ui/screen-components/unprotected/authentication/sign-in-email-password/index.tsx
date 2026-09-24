@@ -26,7 +26,6 @@ import { onErrorMessageMatcher } from '@/lib/utils/methods/error';
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faArrowUpRightFromSquare,
   faEnvelope,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -48,9 +47,6 @@ const initialValues: ISignInForm = {
   password: process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? '',
 };
 
-const singleVendorAdminUrl =
-  process.env.NEXT_PUBLIC_SINGLE_VENDOR_ADMIN_URL ??
-  'https://enatega-singlevendor-admin.netlify.app/';
 
 export default function LoginEmailPasswordMain() {
   // Context
@@ -139,19 +135,6 @@ export default function LoginEmailPasswordMain() {
                 Welcome back! Please enter your details.
               </span>
             </div>
-
-            <a
-              href={singleVendorAdminUrl}
-              className="mb-2 inline-flex h-10 w-full items-center justify-center gap-2 rounded-md border border-gray-200 px-3 text-sm font-medium text-gray-700 transition-colors hover:border-primary-color hover:bg-secondary-color hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-color focus-visible:ring-offset-2 dark:border-dark-600 dark:text-white dark:hover:border-primary-color dark:hover:bg-dark-600"
-              aria-label="Open Single Vendor Admin"
-              title="Open Single Vendor Admin"
-            >
-              <FontAwesomeIcon
-                icon={faArrowUpRightFromSquare}
-                className="h-3.5 w-3.5"
-              />
-              <span>Single Vendor Admin</span>
-            </a>
 
             <div>
               <Formik
