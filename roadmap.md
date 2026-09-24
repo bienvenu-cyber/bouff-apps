@@ -27,7 +27,8 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 - [ ] Photos des plats et logo définitif
 - [ ] Mise en ligne du site client sur un hébergement Node
 - [ ] App mobile client : carte, panier, commande, suivi
-- [ ] App cuisine : commandes en direct, reçue → en cuisine → prête, annulation, ruptures
+- [x] App cuisine branchée : connexion e-mail, commandes en direct, accepter (temps de préparation), prête, remise (emporter), refus, fermeture d'urgence, français par défaut
+- [ ] App cuisine : ruptures de stock depuis l'app (écran carte absent de l'app d'origine → back-office)
 - [ ] App livreur : disponibilité, courses libres, prise en charge, en route, remise
 - [ ] Back-office : restaurants, carte, comptes de l'équipe, livreurs, commissions, statistiques
 - [ ] Retirer les adresses de serveurs Enatega écrites en dur
