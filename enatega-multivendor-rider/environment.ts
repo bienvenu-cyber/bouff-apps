@@ -54,6 +54,19 @@ const getEnvVars = (
   }
 
   const isSingleVendor = mode === RIDER_SERVER_MODES.SINGLE;
+  // BOUFF : pas de serveur GraphQL, la passerelle parle directement à la base.
+  if (process.env.EXPO_PUBLIC_BOUFF !== "false") {
+    return {
+      GRAPHQL_URL: "bouff://",
+      WS_GRAPHQL_URL: "bouff://",
+      GOOGLE_MAPS_KEY:
+        Platform.OS === "ios"
+          ? process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_IOS
+          : process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY_ANDROID,
+      ENVIRONMENT: __DEV__ ? "development" : "production",
+      PUBLIC_ACCESS_REQUIRED: false,
+    };
+  }
 
   return {
     GRAPHQL_URL: isSingleVendor ? singleVendorGraphqlUrl() : MULTI_GRAPHQL_URL,
