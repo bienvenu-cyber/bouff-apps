@@ -465,9 +465,56 @@ export async function trackOrder(orderId: string) {
   return {
     orderId: details.rawOrder.orderId,
     status: details.rawOrder.orderStatus,
-    riderLocation: null,
+    riderLocation: await riderLocation(details.rawOrder.orderId),
     eta: null,
   };
+}
+
+// Dernière position du livreur (seulement pendant la course, et seulement pour ce client).
+export async function riderLocation(orderNumber: string) {
+  const { data, error } = await bouffDb().rpc("order_rider_location", {
+    p_order: String(orderNumber),
+    p_phone: getGuest()?.phone ?? null,
+  });
+  if (error || !data) return null;
+  return data as {
+    latitude: number;
+    longitude: number;
+    accuracy: number | null;
+    heading: number | null;
+    speed: number | null;
+    recordedAt: string;
+  };
+}
+
+/* ---------------- Chat client <-> livreur ---------------- */
+
+function mapMessage(m: any) {
+  return {
+    id: m.id,
+    message: m.body,
+    user: { id: m.sender_role, name: m.sender_name },
+    createdAt: m.created_at,
+  };
+}
+
+export async function listMessages(order: string) {
+  const { data, error } = await bouffDb().rpc("list_order_messages", {
+    p_order: String(order),
+    p_phone: getGuest()?.phone ?? null,
+  });
+  if (error) throw new Error(error.message);
+  return ((data ?? []) as any[]).map(mapMessage);
+}
+
+export async function sendMessage(order: string, body: string) {
+  const { data, error } = await bouffDb().rpc("send_order_message", {
+    p_order: String(order),
+    p_body: body,
+    p_phone: getGuest()?.phone ?? null,
+  });
+  if (error) return { success: false, message: error.message, data: null };
+  return { success: true, message: null, data: mapMessage(data) };
 }
 
 // Annulation par le client : possible seulement tant que la cuisine n'a pas accepté.

@@ -17,6 +17,7 @@ import useUser from "@/lib/hooks/useUser";
 import GoogleMapTrackingComponent from "@/lib/ui/screen-components/protected/order-tracking/components/gm-tracking-comp";
 import TrackingOrderDetails from "@/lib/ui/screen-components/protected/order-tracking/components/tracking-order-details";
 import TrackingStatusCard from "@/lib/ui/screen-components/protected/order-tracking/components/tracking-status-card";
+import RiderChat from "./RiderChat";
 import { PaddingContainer } from "@/lib/ui/useable-components/containers";
 import type { IOrderTrackingDetail } from "@/lib/utils/interfaces/order-tracking-detail.interface";
 import type { IOrderTracking } from "@/lib/utils/interfaces/orders.interface";
@@ -82,6 +83,8 @@ export default function SingleVendorOrderTracking({
     variables: { id: trackingId || "" },
     skip: !trackingEnabled,
     fetchPolicy: "network-only",
+    // Position du livreur rafraîchie toutes les 10 secondes pendant la course.
+    pollInterval: trackingEnabled ? 10000 : 0,
   });
   const live = useSubscription(SINGLE_VENDOR_TRACKING_UPDATED, {
     variables: { id: trackingId || "" },
@@ -132,7 +135,8 @@ export default function SingleVendorOrderTracking({
       ? { lat: etaLatitude, lng: etaLongitude }
       : null;
   }, [eta?.origin, order?.restaurant?.location]);
-  const riderLocation = latest?.riderLocation || null;
+  const riderLocation =
+    tracking.data?.orderTracking?.riderLocation || latest?.riderLocation || null;
   const normalizedOrder = useMemo(
     () =>
       order
@@ -154,7 +158,12 @@ export default function SingleVendorOrderTracking({
       }) as IOrderTracking,
     [eta, latest, riderLocation],
   );
-  const showLiveMap = trackingEnabled && Boolean(destination);
+  const showLiveMap =
+    trackingEnabled && Boolean(destination || riderLocation);
+  const chatOpen =
+    !isCustomerPickup &&
+    Boolean(order?.rider) &&
+    ["ASSIGNED", "PICKED", "ON_ROUTE"].includes(status);
 
   if (details.loading || (isLegacyObjectId && legacyOrder.loading)) {
     return (
@@ -195,7 +204,7 @@ export default function SingleVendorOrderTracking({
               <TrackingUnavailable message="La carte n'est pas encore configurée." />
             ) : mapLoadError ? (
               <TrackingUnavailable message="La carte n'a pas pu être chargée. Réessayez." />
-            ) : destination ? (
+            ) : destination || riderLocation ? (
               <GoogleMapTrackingComponent
                 isLoaded={isLoaded}
                 destination={destination}
@@ -227,6 +236,12 @@ export default function SingleVendorOrderTracking({
                   >
                     Appeler le livreur
                   </a>
+                )}
+                {chatOpen && (
+                  <RiderChat
+                    order={String(order.orderId ?? order._id)}
+                    riderName={normalizedOrder.rider?.name}
+                  />
                 )}
               </div>
             </div>
