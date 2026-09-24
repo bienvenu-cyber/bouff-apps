@@ -73,7 +73,8 @@ export const languageResources: { [key: string]: { translation: object } } = {
   kk: { translation: kk },
 };
 
-const defaultLanguage = Localization.getLocales()[0]?.languageCode || "en";
+// BOUFF : français par défaut.
+const defaultLanguage = "fr";
 
 i18next.use(initReactI18next).init({
   lng: defaultLanguage,

@@ -19,6 +19,8 @@ export const DEFAULT_RIDER_SERVER_MODE: RiderServerMode =
   RIDER_SERVER_MODES.MULTI;
 
 export const getForcedRiderServerMode = (): RiderServerMode | null => {
+  // BOUFF : un seul mode, branché sur la base BOUFF.
+  if (process.env.EXPO_PUBLIC_BOUFF !== "false") return RIDER_SERVER_MODES.SINGLE;
   const policy = process.env.EXPO_PUBLIC_VENDOR_MODE?.toUpperCase();
   if (policy === RIDER_SERVER_MODES.SINGLE) return RIDER_SERVER_MODES.SINGLE;
   if (policy === RIDER_SERVER_MODES.MULTI) return RIDER_SERVER_MODES.MULTI;

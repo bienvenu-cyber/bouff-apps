@@ -22,6 +22,8 @@ import { SubscriptionClient } from "subscriptions-transport-ws";
 import { Subscription } from "zen-observable-ts";
 
 import { RiderEnvironment } from "@/environment";
+import { createBouffLink } from "@/lib/bouff/link";
+import { IS_BOUFF } from "@/lib/bouff/supabase";
 import PublicAccessTokenService, {
   RIDER_PUBLIC_ACCESS_USER_AGENT,
 } from "@/lib/services/public-access-token.service";
@@ -111,8 +113,13 @@ export default function setupApollo({
   riderIdKey,
   tokenKey,
 }: SetupApolloOptions): ApolloRuntime {
-  const { GRAPHQL_URL, PUBLIC_ACCESS_REQUIRED, WS_GRAPHQL_URL } = environment;
   const cache = createCache();
+  // BOUFF : toutes les données viennent de la base BOUFF.
+  if (IS_BOUFF) {
+    const client = new ApolloClient({ cache, link: createBouffLink() });
+    return { client, dispose: () => client.stop() };
+  }
+  const { GRAPHQL_URL, PUBLIC_ACCESS_REQUIRED, WS_GRAPHQL_URL } = environment;
   const httpLink = createHttpLink({ uri: GRAPHQL_URL });
 
   const handleInvalidSession = async () => {

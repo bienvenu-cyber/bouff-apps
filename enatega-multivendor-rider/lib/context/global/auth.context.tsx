@@ -1,3 +1,4 @@
+import { clearBouffSession } from "@/lib/bouff/link";
 import * as Location from "expo-location";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -60,7 +61,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({
     setToken("");
 
     try {
-      await Promise.all([removeSecureItem(tokenKey), removeSecureItem(riderIdKey)]);
+      await Promise.all([removeSecureItem(tokenKey), removeSecureItem(riderIdKey), clearBouffSession()]);
 
       try {
         await client.clearStore();
