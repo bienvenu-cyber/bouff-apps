@@ -1,5 +1,5 @@
-import { formatDateFr } from '@/lib/utils/methods/bouff-date';
 'use client';
+import { formatDateFr } from '@/lib/utils/methods/bouff-date';
 import React from 'react';
 import { IUserResponse } from '@/lib/utils/interfaces/users.interface';
 import { useTranslations } from 'next-intl';
