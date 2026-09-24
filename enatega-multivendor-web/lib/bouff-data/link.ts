@@ -2,6 +2,7 @@ import { ApolloLink, Observable, type Operation } from "@apollo/client";
 import type { DocumentNode, OperationDefinitionNode } from "graphql";
 import { CURRENCY, CURRENCY_SYMBOL } from "./config";
 import { bouffDb } from "./supabase";
+import { subscribeGuestOrders } from "./notifications";
 import {
   findItem,
   loadMenu,

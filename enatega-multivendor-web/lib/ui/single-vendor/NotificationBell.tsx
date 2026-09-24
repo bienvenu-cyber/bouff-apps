@@ -10,7 +10,8 @@ import {
   type BouffNotification,
 } from "@/lib/bouff-data/notifications";
 
-const POLL_MS = 20_000;
+// Filet de sécurité : le direct fait le travail, on revérifie rarement.
+const POLL_MS = 120_000;
 
 function timeAgo(iso: string) {
   const min = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
