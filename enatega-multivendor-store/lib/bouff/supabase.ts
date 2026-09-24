@@ -1,0 +1,38 @@
+import "react-native-url-polyfill/auto";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { AppState } from "react-native";
+
+// Base BOUFF (Lovable Cloud). La clé publique peut être dans le code :
+// les droits sont contrôlés côté base (rôles + règles d'accès).
+export const SUPABASE_URL =
+  process.env.EXPO_PUBLIC_SUPABASE_URL ??
+  "https://txyqwlatzlkurjrnlxhe.supabase.co";
+export const SUPABASE_PUBLISHABLE_KEY =
+  process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+  "sb_publishable_mL30STWaoMLv30cWEZnI8g_e_WZn8j3";
+
+export const CURRENCY = "XOF";
+export const CURRENCY_SYMBOL = "FCFA ";
+
+let client: SupabaseClient | null = null;
+
+export function bouffDb(): SupabaseClient {
+  if (!client) {
+    client = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        storage: AsyncStorage,
+        storageKey: "bouff-store-auth",
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: false,
+      },
+    });
+    // Rafraîchit la session seulement quand l'app est au premier plan.
+    AppState.addEventListener("change", (state) => {
+      if (state === "active") client?.auth.startAutoRefresh();
+      else client?.auth.stopAutoRefresh();
+    });
+  }
+  return client;
+}
