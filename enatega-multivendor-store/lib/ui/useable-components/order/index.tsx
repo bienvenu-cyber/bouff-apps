@@ -450,9 +450,38 @@ const Order = ({
               </View>
             </View>
 
-            {order.orderStatus === "ACCEPTED" && order.isPickedUp && (
+            {/* En cuisine → prête (livraison et emporter) */}
+            {order.orderStatus === "ACCEPTED" && (
               <View style={styles.actionRow}>
-                {/* Hand Order to Rider */}
+                <TouchableOpacity
+                  accessibilityRole="button"
+                  disabled={loadingReady}
+                  onPress={() => markReady(order._id)}
+                  style={[
+                    styles.primaryButton,
+                    { backgroundColor: appTheme.primary },
+                  ]}
+                >
+                  {loadingReady ? (
+                    <SpinnerComponent color={appTheme.white} />
+                  ) : (
+                    <Text
+                      style={{
+                        color: appTheme.black,
+                        fontSize: 16,
+                        fontWeight: "700",
+                      }}
+                    >
+                      {t("Mark as ready")}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* À emporter prête → remise au client */}
+            {order.orderStatus === "ASSIGNED" && order.isPickedUp && (
+              <View style={styles.actionRow}>
                 <TouchableOpacity
                   accessibilityRole="button"
                   disabled={loadingPicked}
