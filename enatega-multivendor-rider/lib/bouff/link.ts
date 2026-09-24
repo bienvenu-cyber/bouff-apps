@@ -374,19 +374,22 @@ function subscribe(operation: Operation, observer: any) {
           if (!row?.id || row.order_type !== "delivery") return;
           const mine = row.rider_id === r.id;
           const wasMine = payload.old?.rider_id === r.id;
-          if (assign && !mine && !wasMine) return;
-          if (zone && (row.rider_id || !["in_kitchen", "ready"].includes(row.status))) {
+          if (assign && !mine && !wasMine) {
             // Course prise par un autre livreur : on la retire de la liste.
-            if (row.rider_id && !mine) {
+            if (row.rider_id) {
               observer.next({
                 data: {
-                  subscriptionAssignRider: undefined,
-                  subscriptionZoneOrders: null,
+                  subscriptionAssignRider: {
+                    __typename: "SubscriptionAssignRider",
+                    origin: "remove",
+                    order: { ...mapOrder(row), items: [], rider: null },
+                  },
                 },
               });
             }
             return;
           }
+          if (zone && (row.rider_id || !["in_kitchen", "ready"].includes(row.status))) return;
           const order = await fetchOrder(row.id).catch(() => null);
           if (!order || stopped) return;
           const origin = payload.eventType === "INSERT" ? "new" : "update";
