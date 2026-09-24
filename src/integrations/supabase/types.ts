@@ -544,6 +544,41 @@ export type Database = {
           },
         ]
       }
+      order_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          order_id: string
+          sender_name: string
+          sender_role: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          order_id: string
+          sender_name: string
+          sender_role: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          order_id?: string
+          sender_name?: string
+          sender_role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_messages_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           accepted_at: string | null
@@ -817,6 +852,44 @@ export type Database = {
         }
         Relationships: []
       }
+      rider_locations: {
+        Row: {
+          accuracy: number | null
+          heading: number | null
+          latitude: number
+          longitude: number
+          recorded_at: string
+          rider_id: string
+          speed: number | null
+        }
+        Insert: {
+          accuracy?: number | null
+          heading?: number | null
+          latitude: number
+          longitude: number
+          recorded_at?: string
+          rider_id: string
+          speed?: number | null
+        }
+        Update: {
+          accuracy?: number | null
+          heading?: number | null
+          latitude?: number
+          longitude?: number
+          recorded_at?: string
+          rider_id?: string
+          speed?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rider_locations_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: true
+            referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       riders: {
         Row: {
           created_at: string
@@ -1028,6 +1101,23 @@ export type Database = {
         Args: { p_restaurant_id: string }
         Returns: boolean
       }
+      list_order_messages: {
+        Args: { p_order: string; p_phone?: string }
+        Returns: {
+          body: string
+          created_at: string
+          id: string
+          order_id: string
+          sender_name: string
+          sender_role: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "order_messages"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       mark_notification: {
         Args: {
           p_error?: string
@@ -1036,6 +1126,10 @@ export type Database = {
           p_token: string
         }
         Returns: undefined
+      }
+      order_rider_location: {
+        Args: { p_order: string; p_phone?: string }
+        Returns: Json
       }
       payment_order_lookup: {
         Args: { p_order_number: string; p_phone: string; p_token: string }
@@ -1111,6 +1205,23 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      send_order_message: {
+        Args: { p_body: string; p_order: string; p_phone?: string }
+        Returns: {
+          body: string
+          created_at: string
+          id: string
+          order_id: string
+          sender_name: string
+          sender_role: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "order_messages"
           isOneToOne: true
           isSetofReturn: false
         }
@@ -1227,6 +1338,16 @@ export type Database = {
           p_raw?: Json
           p_status: string
           p_token: string
+        }
+        Returns: undefined
+      }
+      update_rider_location: {
+        Args: {
+          p_accuracy?: number
+          p_heading?: number
+          p_latitude: number
+          p_longitude: number
+          p_speed?: number
         }
         Returns: undefined
       }
