@@ -1,5 +1,6 @@
 import { IUploadImageToCloudinary } from '../utils/interfaces/services.interface';
 import imageCompression from 'browser-image-compression';
+import { IS_BOUFF, uploadImage } from '../bouff-data/supabase';
 const base64ToFile = (base64: string, filename: string): File => {
   const arr = base64.split(',');
   const mimeMatch = arr[0].match(/:(.*?);/);
@@ -21,6 +22,16 @@ export const uploadImageToCloudinary: IUploadImageToCloudinary = async (
   const isImage = file.startsWith('data:image/');
   const isVideo = file.startsWith('data:video/');
   const _file = base64ToFile(file, 'upload.jpg');
+  if (isImage && IS_BOUFF) {
+    // BOUFF : photos stockées dans l'espace photos de la base.
+    const compressed = await imageCompression(_file, {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1280,
+      useWebWorker: true,
+    });
+    const dataUrl = await imageCompression.getDataUrlFromFile(compressed);
+    return uploadImage(dataUrl);
+  }
   if (isImage) {
     const options = {
       maxSizeMB: 1,
