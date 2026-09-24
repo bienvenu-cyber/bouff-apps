@@ -26,7 +26,7 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 - [x] Notifications WhatsApp (wapiway) et e-mail (Resend) préparées (à activer avec les clés)
 - [ ] Photos des plats et logo définitif
 - [ ] Mise en ligne du site client sur un hébergement Node
-- [ ] App mobile client : carte, panier, commande, suivi
+- [x] App mobile client branchée (carte, panier, commande, suivi, chat, adresses) — à tester sur téléphone, branding à faire
 - [x] App cuisine branchée : connexion e-mail, commandes en direct, accepter (temps de préparation), prête, remise (emporter), refus, fermeture d'urgence, français par défaut
 - [ ] App cuisine : ruptures de stock depuis l'app (écran carte absent de l'app d'origine → back-office)
 - [ ] App livreur : disponibilité, courses libres, prise en charge, en route, remise
