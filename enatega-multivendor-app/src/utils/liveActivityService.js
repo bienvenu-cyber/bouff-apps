@@ -46,7 +46,7 @@ const { ActivityController } = NativeModules
 const SESSION_KEY = 'enatega-live-activity-session-v2'
 const RETRY_DELAYS_MS = [750, 2000, 5000]
 const defaultConfiguration = {
-  appGroupId: 'group.com.enatega.multivendor.shared',
+  appGroupId: 'group.bj.bouff.app.shared',
   appScheme: 'enategamultivendor',
   brandName: 'Enatega',
   primaryColor: '#FF7A1A',
