@@ -12,6 +12,7 @@ import useCurrencyFormatter from "@/lib/hooks/useCurrencyFormatter";
 import { loadMenu, type BouffCity, type BouffZone } from "@/lib/bouff-data/catalog";
 import { getGuest, setGuest } from "@/lib/bouff-data/auth";
 import { setSelectedZoneId } from "@/lib/bouff-data/cart";
+import { bouffDb } from "@/lib/bouff-data/supabase";
 
 export default function SingleVendorCheckout() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function SingleVendorCheckout() {
   const [error, setError] = useState<string | null>(null);
   const [payerPhone, setPayerPhone] = useState("");
   const [momoNotice, setMomoNotice] = useState<string | null>(null);
+  const [shop, setShop] = useState<{ open: boolean; min: number; hours: string } | null>(null);
   // Paiement Mobile Money en ligne (pawaPay) : activé dès que les clés sont
   // en place côté serveur (NEXT_PUBLIC_PAWAPAY_ENABLED=true).
   const onlineMomoEnabled = process.env.NEXT_PUBLIC_PAWAPAY_ENABLED === "true";
@@ -48,7 +50,18 @@ export default function SingleVendorCheckout() {
   );
 
   useEffect(() => {
-    void loadMenu().then((menu) => {
+    void loadMenu().then(async (menu) => {
+      const db = bouffDb();
+      const [{ data: open }, { data: r }] = await Promise.all([
+        db.rpc("is_restaurant_open", { p_restaurant_id: menu.restaurant.id }),
+        db.from("restaurants").select("min_order_fcfa, opens_at, closes_at").eq("id", menu.restaurant.id).maybeSingle(),
+      ]);
+      const h = (t?: string | null) => (t ? t.slice(0, 5).replace(":", "h") : "");
+      setShop({
+        open: open !== false,
+        min: r?.min_order_fcfa ?? 0,
+        hours: r?.opens_at ? `${h(r.opens_at)} à ${h(r.closes_at)}` : "",
+      });
       setZones(menu.zones);
       setCities(menu.cities);
       const city =
@@ -80,7 +93,10 @@ export default function SingleVendorCheckout() {
     .filter(Boolean)
     .join(" — ");
 
+  const belowMin = Boolean(shop && (summary?.subtotal ?? 0) < shop.min);
   const canSubmit =
+    shop?.open !== false &&
+    !belowMin &&
     cart.length > 0 &&
     name.trim().length > 1 &&
     phone.trim().length >= 8 &&
@@ -328,6 +344,16 @@ export default function SingleVendorCheckout() {
             <dd>{formatCurrency(summary?.grandTotal ?? 0)}</dd>
           </div>
         </dl>
+        {shop && !shop.open && (
+          <p className="mb-3 rounded-bouff-md border border-bouff-primary p-3 text-sm">
+            Le restaurant est fermé pour le moment{shop.hours ? ` (ouvert de ${shop.hours})` : ""}.
+          </p>
+        )}
+        {shop?.open && belowMin && (
+          <p className="mb-3 text-sm text-bouff-primary">
+            Commande minimum : {formatCurrency(shop.min)} (hors livraison).
+          </p>
+        )}
         <button
           disabled={placeState.loading || !canSubmit}
           onClick={() => void submit()}
