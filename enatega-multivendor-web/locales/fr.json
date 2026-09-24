@@ -1029,5 +1029,18 @@
   "terms_paragraph_20_3": "BOUFF shall neither be liable for actions or omissions of the Vendor nor you in regard to provision of the Goods and where Vendor Delivery applies to your Order. BOUFF does not assume any liability for the quantity, quality, condition or other representations of the Goods and/or services provided by Vendors or guarantee the accuracy or completeness of the information (including menu information, photos and images of the Goods) displayed on the Vendor’s listing/offering on the Platform. Nothing in these Terms shall exclude Vendor’s liability for death or personal injury arising from Vendor’s gross negligence or willful misconduct.",
   "you_currently_have": "Vous avez actuellement",
   "active": "en cours",
-  "you_can_only_delete_account": "Vous pourrez supprimer votre compte une fois toutes vos commandes terminées"
+  "you_can_only_delete_account": "Vous pourrez supprimer votre compte une fois toutes vos commandes terminées",
+  "status_label_PENDING": "Reçue",
+  "status_label_ACCEPTED": "En cuisine",
+  "status_label_ASSIGNED": "Prête",
+  "status_label_PICKED": "En route",
+  "status_label_ON_ROUTE": "En route",
+  "status_label_DELIVERED": "Livrée",
+  "status_label_COMPLETED": "Terminée",
+  "status_label_CANCELLED": "Annulée",
+  "ReadyForPickup": "Votre commande est prête ! Vous pouvez venir la récupérer.",
+  "PreparationLonger": "La préparation prend un peu plus de temps.",
+  "PreparationLongerRider": "La préparation prend un peu plus de temps. Votre livreur est assigné.",
+  "RiderLocationUnavailable": "Position du livreur momentanément indisponible.",
+  "RiderLocationUnavailableSince": "Position du livreur momentanément indisponible — dernière mise à jour {time}."
 }
