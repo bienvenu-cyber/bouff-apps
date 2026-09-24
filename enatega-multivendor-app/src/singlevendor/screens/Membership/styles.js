@@ -104,7 +104,7 @@ const styles = (currentTheme, isDisable) =>
       position: 'absolute',
       top: -12,
       right: scale(20),
-      backgroundColor: currentTheme?.singleVendorBrand || '#90E36D',
+      backgroundColor: currentTheme?.singleVendorBrand || '#FF7A1A',
       paddingHorizontal: scale(12),
       paddingVertical: verticalScale(6),
       borderRadius: scale(8)
@@ -163,7 +163,7 @@ const styles = (currentTheme, isDisable) =>
     },
     subscribeButton: {
       width: '100%',
-      backgroundColor: isDisable ? currentTheme?.colorBgTertiary : currentTheme?.singleVendorBrand || '#90E36D',
+      backgroundColor: isDisable ? currentTheme?.colorBgTertiary : currentTheme?.singleVendorBrand || '#FF7A1A',
       borderRadius: scale(8),
       paddingVertical: verticalScale(10),
       alignItems: 'center',

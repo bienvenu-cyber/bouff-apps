@@ -89,7 +89,7 @@ module.exports = () => {
     },
     notification: {
       iosDisplayInForeground: true,
-      color: '#90E36D',
+      color: '#FF7A1A',
       icon: './assets/not-icon.png',
       androidMode: 'default',
       androidCollapsedTitle: 'Enatega Multivendor'
@@ -220,7 +220,7 @@ module.exports = () => {
         appGroupId: 'group.com.enatega.multivendor.shared',
         appScheme: 'enategamultivendor',
         brandName: 'Enatega',
-        primaryColor: '#90E36D',
+        primaryColor: '#FF7A1A',
         accentColor: '#FFA921',
         logoResourceName: 'enatega_logo',
         riderResourceName: 'enatega_rider'

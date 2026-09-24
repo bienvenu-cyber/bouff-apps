@@ -120,7 +120,7 @@ const DeliveredStatus = ({
   const iconName = isCancelled ? 'x' : 'check'
   const mainColor = isCancelled
     ? currentTheme.red || '#E53935'
-    : currentTheme.success || '#16A34A'
+    : currentTheme.success || '#E5650A'
 
   const resolvedTitle =
     title || (isCancelled ? t('Order cancelled') : isPickUpOrder ? t('Collected') : t('Delivered'))

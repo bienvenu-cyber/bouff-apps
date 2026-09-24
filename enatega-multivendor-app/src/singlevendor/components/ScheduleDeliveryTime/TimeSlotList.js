@@ -64,7 +64,7 @@ const styles = (props = null) =>
     },
     timeSlotButtonSelected: {
       backgroundColor: props !== null ? props.singleVendorBrandSubtle : '#F3FFEE',
-      borderColor: props !== null ? props.singleVendorBrand : '#90E36D',
+      borderColor: props !== null ? props.singleVendorBrand : '#FF7A1A',
       borderWidth: 1
     }
   });

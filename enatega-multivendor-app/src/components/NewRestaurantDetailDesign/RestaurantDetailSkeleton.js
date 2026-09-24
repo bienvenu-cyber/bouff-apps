@@ -173,7 +173,7 @@ const RestaurantDetailSkeleton = ({ currentTheme }) => {
               {/* Plus button in actual position */}
               <View style={[
                 styles.plusButtonSkeleton, 
-                { backgroundColor: currentTheme.plusIcon || '#AAC810' }
+                { backgroundColor: currentTheme.plusIcon || '#FF7A1A' }
               ]}>
                 <SkeletonPlaceholder currentTheme={currentTheme} style={{ width: scale(16), height: scale(16), borderRadius: scale(8) }} />
               </View>

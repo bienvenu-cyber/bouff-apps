@@ -61,7 +61,7 @@ const styles = (props = null) =>
       minHeight: scale(50),
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: props?.colors?.accent ?? props?.main ?? '#90E36D',
+      backgroundColor: props?.colors?.accent ?? props?.main ?? '#FF7A1A',
       borderRadius: scale(14)
     },
     clearBtn: {

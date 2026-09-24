@@ -35,7 +35,7 @@ const styles = (props = null) => {
       elevation: 8
     },
     placeOrderButton: {
-      backgroundColor: props !== null ? props.singleVendorBrand : '#90E36D',
+      backgroundColor: props !== null ? props.singleVendorBrand : '#FF7A1A',
       minHeight: scale(50),
       paddingVertical: scale(13),
       borderRadius: scale(12),

@@ -204,7 +204,7 @@ const styles = (props = null) =>
       position: 'relative'
     },
     useButton: {
-      backgroundColor: props?.singleVendorBrand || '#90E36D',
+      backgroundColor: props?.singleVendorBrand || '#FF7A1A',
       borderRadius: scale(8),
       paddingHorizontal: scale(12),
       paddingVertical: verticalScale(6),

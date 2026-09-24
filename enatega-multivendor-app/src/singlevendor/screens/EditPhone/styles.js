@@ -84,7 +84,7 @@ const styles = (currentTheme) =>
       borderTopColor: currentTheme?.horizontalLine || '#E5E5E5'
     },
     updateButton: {
-      backgroundColor: currentTheme?.singleVendorBrand || '#90E36D',
+      backgroundColor: currentTheme?.singleVendorBrand || '#FF7A1A',
       borderRadius: 8,
       paddingVertical: verticalScale(10),
       alignItems: 'center',

@@ -37,7 +37,7 @@ const styles = (props = null) =>
     tabsItemActive: {
       backgroundColor: props?.colorBgPrimary || props?.cardColor || '#FFFFFF',
       borderWidth: 1,
-      borderColor: props?.singleVendorBrand || '#90E36D',
+      borderColor: props?.singleVendorBrand || '#FF7A1A',
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.08,
@@ -58,7 +58,7 @@ const styles = (props = null) =>
       backgroundColor: props?.colorBgPrimary || props?.cardColor || '#FFFFFF'
     },
     sortButtonActive: {
-      borderColor: props?.singleVendorBrand || '#90E36D',
+      borderColor: props?.singleVendorBrand || '#FF7A1A',
       backgroundColor: props?.singleVendorBrandSubtle || '#F3FFEE'
     },
     sortButtonText: {
@@ -111,13 +111,13 @@ const styles = (props = null) =>
       width: scale(8),
       height: scale(8),
       borderRadius: scale(4),
-      backgroundColor: props?.singleVendorBrand || '#90E36D',
+      backgroundColor: props?.singleVendorBrand || '#FF7A1A',
       marginBottom: verticalScale(4)
     },
     bottomIndicatorLine: {
       width: scale(1),
       height: scale(30),
-      backgroundColor: props?.singleVendorBrand || '#90E36D',
+      backgroundColor: props?.singleVendorBrand || '#FF7A1A',
       opacity: 0.3
     }
   })

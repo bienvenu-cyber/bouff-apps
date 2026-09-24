@@ -92,7 +92,7 @@ const styles = (props = null) =>
         justifyContent: 'center'
       },
       trackProgressButton: {
-        backgroundColor: props?.singleVendorBrand || '#90E36D',
+        backgroundColor: props?.singleVendorBrand || '#FF7A1A',
         borderRadius: scale(12),
         paddingVertical: verticalScale(14),
         paddingHorizontal: scale(16),

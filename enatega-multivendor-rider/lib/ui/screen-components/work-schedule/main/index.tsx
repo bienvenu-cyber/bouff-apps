@@ -764,6 +764,6 @@ const style = StyleSheet.create({
   },
   tappedSlot: {
     borderWidth: 1,
-    borderColor: "#22c55e",
+    borderColor: "#FF7A1A",
   },
 });
