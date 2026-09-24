@@ -42,22 +42,22 @@ const GLOW = require('./assets/glow.png')
 
 const THEMES = {
   dark: {
-    bg: ['#111c33', '#0b1225', '#070d1e'],
+    bg: ['#1C1B1E', '#0B0B0C', '#050505'],
     wordmark: WM_WHITE,
     ring: 'rgba(110,224,122,0.85)',
-    underline: '#6ee07a',
+    underline: '#FF7A1A',
     orbOpacity: 1
   },
   light: {
-    bg: ['#ffffff', '#f4f8f5', '#e7efe9'],
-    wordmark: WM_NAVY,
+    bg: ['#1C1B1E', '#0B0B0C', '#050505'],
+    wordmark: WM_WHITE,
     ring: 'rgba(47,164,87,0.75)',
-    underline: '#3fb85a',
+    underline: '#FF7A1A',
     orbOpacity: 0.8
   }
 }
 
-const GREEN = '#5ecf72'
+const GREEN = '#FF7A1A'
 const OUT_CUBIC = Easing.out(Easing.cubic)
 const IN_CUBIC = Easing.in(Easing.cubic)
 const INOUT_CUBIC = Easing.inOut(Easing.cubic)

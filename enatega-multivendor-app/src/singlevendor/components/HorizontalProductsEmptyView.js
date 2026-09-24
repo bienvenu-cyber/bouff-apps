@@ -33,7 +33,7 @@ const styles = (currentTheme) =>
       height: 180,
       backgroundColor: currentTheme?.singleVendorBrandSubtle || '#F3FFEE',
       borderWidth: 1,
-      borderColor: currentTheme?.singleVendorBrand || '#90E36D',
+      borderColor: currentTheme?.singleVendorBrand || '#FF7A1A',
       borderRadius: 10,
       // marginHorizontal: 20,
       display: 'flex',

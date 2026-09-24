@@ -100,7 +100,7 @@ const styles = (currentTheme) =>
     },
     shareButton: {
       width: '100%',
-      backgroundColor: currentTheme?.singleVendorBrand || '#90E36D',
+      backgroundColor: currentTheme?.singleVendorBrand || '#FF7A1A',
       borderRadius: scale(6),
       paddingVertical: verticalScale(12),
       alignItems: 'center',

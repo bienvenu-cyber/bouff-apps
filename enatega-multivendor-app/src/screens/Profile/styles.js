@@ -38,7 +38,7 @@ const styles = (props = null) =>
       width: scale(7),
       height: scale(7),
       borderRadius: scale(999),
-      backgroundColor: props?.colors?.accent ?? '#90E36D'
+      backgroundColor: props?.colors?.accent ?? '#FF7A1A'
     },
     activeOrderText: {
       flex: 1,
@@ -91,7 +91,7 @@ const styles = (props = null) =>
       ...alignment.PLmedium
     },
     saveContainer: {
-      backgroundColor: props !== null ? props?.main : '#90E36D',
+      backgroundColor: props !== null ? props?.main : '#FF7A1A',
       padding: scale(8),
       borderRadius: scale(16),
       justifyContent: 'center',

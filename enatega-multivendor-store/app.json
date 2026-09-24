@@ -18,12 +18,12 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#f4f8f5",
+          "backgroundColor": "#0B0B0C",
           "image": "./lib/assets/images/splashTransparent.png",
           "imageWidth": 1,
           "resizeMode": "contain",
           "dark": {
-            "backgroundColor": "#0b1225",
+            "backgroundColor": "#0B0B0C",
             "image": "./lib/assets/images/splashTransparent.png"
           }
         }
@@ -76,7 +76,7 @@
       "package": "multivendor.enatega.restaurant",
       "adaptiveIcon": {
         "foregroundImage": "./lib/assets/images/appIcon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#0B0B0C"
       }
     },
     "extra": {

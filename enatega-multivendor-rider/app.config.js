@@ -26,7 +26,7 @@ module.exports = {
         'expo-location',
         {
           locationAlwaysAndWhenInUsePermission:
-            'Enatega Multivendor Rider uses your precise location during active deliveries so customers and dispatchers can follow delivery progress even when the app is not in use.',
+            'BOUFF Livreur utilise votre position pendant les livraisons pour que le client et le restaurant suivent la course, même lorsque l’app est en arrière-plan.',
           isIosBackgroundLocationEnabled: true,
           isAndroidBackgroundLocationEnabled: true,
           isAndroidForegroundServiceEnabled: true
@@ -40,12 +40,12 @@ module.exports = {
           // a 1x1 transparent PNG — only the background color shows. The animated
           // pin / wordmark is drawn by the JS AnimatedSplash component, whose
           // first frame uses these same colors so the handoff shows no flash.
-          backgroundColor: '#f4f8f5', // light
+          backgroundColor: '#0B0B0C', // light
           image: './lib/assets/images/splashTransparent.png',
           imageWidth: 1,
           resizeMode: 'contain',
           dark: {
-            backgroundColor: '#0b1225', // dark
+            backgroundColor: '#0B0B0C', // dark
             image: './lib/assets/images/splashTransparent.png'
           }
         }
@@ -108,7 +108,7 @@ module.exports = {
       icon: './lib/assets/images/appIcon.png',
       adaptiveIcon: {
         foregroundImage: './lib/assets/images/appIcon.png',
-        backgroundColor: '#ffffff'
+        backgroundColor: '#0B0B0C'
       }
     },
     extra: {

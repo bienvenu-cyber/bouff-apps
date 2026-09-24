@@ -135,10 +135,10 @@ const OrderSummary = ({
 
           {deliveryDiscount > 0 && (
             <View style={styles().summaryRow}>
-              <TextDefault textColor={currentTheme.success || '#16A34A'} isRTL>
+              <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
                 {t('deliveryDiscount') || 'Delivery discount'}
               </TextDefault>
-              <TextDefault textColor={currentTheme.success || '#16A34A'} isRTL>
+              <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
                 -{deliveryDiscount.toFixed(2)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
@@ -146,10 +146,10 @@ const OrderSummary = ({
 
           {couponDiscountAmount > 0 && (
             <View style={styles().summaryRow}>
-              <TextDefault textColor={currentTheme.success || '#16A34A'} isRTL>
+              <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
                 {t('Coupon Amount') || 'Coupon Amount'}
               </TextDefault>
-              <TextDefault textColor={currentTheme.success || '#16A34A'} isRTL>
+              <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
                 -{couponDiscountAmount.toFixed(2)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
@@ -157,10 +157,10 @@ const OrderSummary = ({
 
           {dealDiscount > 0 && (
             <View style={styles().summaryRow}>
-              <TextDefault textColor={currentTheme.success || '#16A34A'} isRTL>
+              <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
                 {t('Deals savings', { defaultValue: 'Deals savings' })}
               </TextDefault>
-              <TextDefault textColor={currentTheme.success || '#16A34A'} isRTL>
+              <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
                 -{dealDiscount.toFixed(2)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
@@ -168,10 +168,10 @@ const OrderSummary = ({
 
           {creditsUsed > 0 && (
             <View style={styles().summaryRow}>
-              <TextDefault textColor={currentTheme.success || '#16A34A'} isRTL>
+              <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
                 {t('Credits Used') || 'Credits Used'}
               </TextDefault>
-              <TextDefault textColor={currentTheme.success || '#16A34A'} isRTL>
+              <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
                 -{creditsUsed.toFixed(2)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>

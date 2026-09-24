@@ -159,7 +159,7 @@ export default function LocationPermissionComponent({
                 style={{ color: appTheme.fontSecondColor }}
               >
                 {t(
-                  "Enatega Multivendor Rider uses your precise location while you use the app to show your current position and support pickup and delivery navigation.",
+                  "BOUFF Livreur uses your precise location while you use the app to show your current position and support pickup and delivery navigation.",
                 )}
               </Text>
             </View>
@@ -212,7 +212,7 @@ export default function LocationPermissionComponent({
               style={{ color: appTheme.fontSecondColor }}
             >
               {t(
-                "Enatega Multivendor Rider collects and transmits your precise location to the delivery server to enable live delivery tracking for customers and dispatchers during an active delivery, even when the app is not in use. Location sharing starts only after you accept a delivery and stops when the delivery ends or you log out.",
+                "BOUFF Livreur collects and transmits your precise location to the delivery server to enable live delivery tracking for customers and dispatchers during an active delivery, even when the app is not in use. Location sharing starts only after you accept a delivery and stops when the delivery ends or you log out.",
               )}
             </Text>
 

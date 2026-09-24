@@ -400,7 +400,7 @@ const styles = (props = null) => {
       backgroundColor: props ? props.themeBackground : '#fff'
     },
     optionCardSelected: {
-      borderColor: props ? props.singleVendorBrand : '#90E36D',
+      borderColor: props ? props.singleVendorBrand : '#FF7A1A',
       borderWidth: 1,
       backgroundColor: selectedBackground
     },
@@ -417,13 +417,13 @@ const styles = (props = null) => {
       justifyContent: 'center'
     },
     radioOuterSelected: {
-      borderColor: props ? props.singleVendorBrand : '#90E36D'
+      borderColor: props ? props.singleVendorBrand : '#FF7A1A'
     },
     radioInner: {
       width: scale(10),
       height: scale(10),
       borderRadius: scale(5),
-      backgroundColor: props ? props.singleVendorBrand : '#90E36D'
+      backgroundColor: props ? props.singleVendorBrand : '#FF7A1A'
     },
     optionContent: {
       flex: 1
@@ -493,7 +493,7 @@ const styles = (props = null) => {
       paddingHorizontal: scale(14),
       borderRadius: scale(8),
       marginLeft: scale(8),
-      backgroundColor: props ? props.singleVendorBrand : '#90E36D',
+      backgroundColor: props ? props.singleVendorBrand : '#FF7A1A',
       alignItems: 'center',
       justifyContent: 'center'
     },

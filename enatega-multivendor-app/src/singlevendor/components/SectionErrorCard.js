@@ -118,7 +118,7 @@ const styles = (colors, compact) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: scale(10),
-    backgroundColor: colors.singleVendorBrand || '#90E36D'
+    backgroundColor: colors.singleVendorBrand || '#FF7A1A'
   },
   retryPressed: { opacity: 0.78 },
   retryText: { color: colors.singleVendorOnBrand || '#10200A', fontSize: scale(12) }

@@ -63,7 +63,7 @@ const styles = (props = null) =>
       alignItems: 'center',
       justifyContent: 'center',
       height: scale(50),
-      backgroundColor: props !== null ? props.singleVendorBrand : '#90E36D',
+      backgroundColor: props !== null ? props.singleVendorBrand : '#FF7A1A',
       borderRadius: scale(8),
       marginTop: scale(12)
     },
