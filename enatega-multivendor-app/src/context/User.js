@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { bouffDb } from '../bouff/supabase'
+import { resetFavorites, unregisterPushToken } from '../bouff/engagement'
 import gql from 'graphql-tag'
 import { v1 as uuidv1 } from 'uuid'
 import { profile } from '../apollo/queries'
@@ -282,6 +283,8 @@ export const UserProvider = (props) => {
       if (clearStoredToken) {
         await deleteToken(mode)
       }
+      await unregisterPushToken()
+      resetFavorites()
       await bouffDb().auth.signOut().catch(() => {})
       await clearCart()
       if (mode === APP_MODES.MULTI) await clearPublicToken()

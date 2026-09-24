@@ -3,6 +3,7 @@ import Constants from 'expo-constants'
 import * as Device from 'expo-device'
 import * as Notifications from 'expo-notifications'
 import { useContext, useEffect, useMemo } from 'react'
+import { Platform } from 'react-native'
 
 import { pushToken } from '../apollo/mutations'
 import UserContext from '../context/User'
@@ -31,7 +32,17 @@ const ModeNotificationRegistration = () => {
     let cancelled = false
     const register = async() => {
       try {
-        const { status } = await Notifications.getPermissionsAsync()
+        if (Platform.OS === 'android') {
+          await Notifications.setNotificationChannelAsync('default', {
+            name: 'Commandes',
+            importance: Notifications.AndroidImportance.HIGH,
+            sound: 'default'
+          })
+        }
+        let { status, canAskAgain } = await Notifications.getPermissionsAsync()
+        if (status !== 'granted' && canAskAgain) {
+          status = (await Notifications.requestPermissionsAsync()).status
+        }
         if (status !== 'granted') return
 
         const projectId = Constants.expoConfig?.extra?.eas?.projectId

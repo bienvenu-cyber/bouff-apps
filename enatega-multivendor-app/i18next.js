@@ -95,17 +95,17 @@ const detectAndSetLanguage = async() => {
     const systemLanguage = Localization?.locale?.split('-')[0]
     const availableLanguages = Object.keys(languageResources)
 
-    // Prefer stored language if available, else system language if supported, else fallback to 'en'
+    // 1. choix enregistré par le client  2. langue du téléphone si traduite  3. français
     let languageToUse = 'fr'
     if (storedLanguage && availableLanguages.includes(storedLanguage)) {
       languageToUse = storedLanguage
+    } else if (systemLanguage && availableLanguages.includes(systemLanguage)) {
+      languageToUse = systemLanguage
     }
 
-    await i18next.changeLanguage(languageToUse)
-
-    // Optionally clear stored language keys if you want fresh detection next time
-    await AsyncStorage.removeItem('enatega-language')
-    await AsyncStorage.removeItem('enatega-language-name')
+    if (i18next.language !== languageToUse) {
+      await i18next.changeLanguage(languageToUse)
+    }
   } catch (error) {
     console.error('Error detecting or setting language:', error)
   }
