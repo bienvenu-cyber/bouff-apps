@@ -442,6 +442,15 @@ const resolvers: Record<string, Resolver> = {
     orderTracking: await orders.trackOrder(String(v.id)),
   }),
 
+  /* --- chat avec le livreur --- */
+  Chat: async (v) => ({ chat: await orders.listMessages(String(v.order)) }),
+  SendChatMessage: async (v) => ({
+    sendChatMessage: await orders.sendMessage(
+      String(v.orderId),
+      String(v.messageInput?.message ?? ""),
+    ),
+  }),
+
   /* --- compte client --- */
   SingleVendorProfile: async () => ({ profile: await auth.fetchProfile() }),
   Profile: async () => ({ profile: await auth.fetchProfile() }),
@@ -567,11 +576,42 @@ function rootFields(document: DocumentNode): string[] {
     .filter((name): name is string => Boolean(name));
 }
 
+// Nouveaux messages du chat : vérification rapide tant que le chat est ouvert
+// (fonctionne aussi pour les clients sans compte).
+function subscribeMessages(order: string, observer: any) {
+  const seen = new Set<string>();
+  let stopped = false;
+  let first = true;
+  const tick = async () => {
+    try {
+      const list = await orders.listMessages(order);
+      for (const m of list) {
+        if (seen.has(m.id)) continue;
+        seen.add(m.id);
+        if (!first && !stopped) observer.next({ data: { subscriptionNewMessage: m } });
+      }
+      first = false;
+    } catch {
+      /* réessai au prochain passage */
+    }
+  };
+  void tick();
+  const timer = setInterval(tick, 4000);
+  return () => {
+    stopped = true;
+    clearInterval(timer);
+  };
+}
+
 export function createBouffLink(): ApolloLink {
   return new ApolloLink(
     (operation: Operation) =>
       new Observable<any>((observer) => {
         const name = operation.operationName;
+
+        if (name === "SubscriptionNewMessage") {
+          return subscribeMessages(String(operation.variables?.order ?? ""), observer);
+        }
 
         if (subscriptions.has(name)) {
           return subscribe(name, observer);
