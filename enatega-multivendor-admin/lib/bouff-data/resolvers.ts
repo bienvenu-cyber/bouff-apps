@@ -229,9 +229,9 @@ async function paymentBreakdown(restaurant: string, from?: string | null, to?: s
     delivery_orders: delivery.length,
     pickup: { total_orders: pickup.length },
     delivery: { total_orders: delivery.length },
-    all: { _type: 'all', data: all },
-    cod: { _type: 'cod', data: sum(cod) },
-    card: { _type: 'card', data: sum(card) },
+    all: [{ _type: 'all', data: all }],
+    cod: [{ _type: 'cod', data: sum(cod) }],
+    card: [{ _type: 'card', data: sum(card) }],
   };
 }
 
