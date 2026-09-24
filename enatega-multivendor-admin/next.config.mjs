@@ -6,6 +6,8 @@ const nextConfig = {
   images: {
     dangerouslyAllowSVG: false,
     remotePatterns: [
+      { protocol: 'https', hostname: 'txyqwlatzlkurjrnlxhe.supabase.co' },
+      { protocol: 'https', hostname: '*.vercel.app' },
       {
         protocol: 'https',
         hostname: 'placehold.co',
