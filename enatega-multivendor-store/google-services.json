@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "505610605704",
-    "project_id": "enatega-b7cd2",
-    "storage_bucket": "enatega-b7cd2.firebasestorage.app"
+    "project_number": "734256130139",
+    "project_id": "bouff-1b8b3",
+    "storage_bucket": "bouff-1b8b3.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:505610605704:android:afcc7d7f2999c6cae6bb3d",
+        "mobilesdk_app_id": "1:734256130139:android:6fcb196e1896b15176b77e",
         "android_client_info": {
-          "package_name": "com.enatega.multivendor"
+          "package_name": "bj.bouff.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDh11TdrC7Ux0kOo7AkipQNrwh3kUPpEzU"
+          "current_key": "AIzaSyD5zHs2P0kPaLxhmtlBcn-nMEMYIV1mzd8"
         }
       ],
       "services": {
@@ -26,15 +26,34 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:505610605704:android:813774e02c36eba1e6bb3d",
+        "mobilesdk_app_id": "1:734256130139:android:99852dd1840b4b3c76b77e",
         "android_client_info": {
-          "package_name": "multivendor.enatega.restaurant"
+          "package_name": "bj.bouff.cuisine"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDh11TdrC7Ux0kOo7AkipQNrwh3kUPpEzU"
+          "current_key": "AIzaSyD5zHs2P0kPaLxhmtlBcn-nMEMYIV1mzd8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:734256130139:android:1cbcce29af937d7e76b77e",
+        "android_client_info": {
+          "package_name": "bj.bouff.livreur"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5zHs2P0kPaLxhmtlBcn-nMEMYIV1mzd8"
         }
       ],
       "services": {
