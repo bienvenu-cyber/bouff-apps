@@ -9,7 +9,7 @@ const androidGoogleMapsApiKey =
 
 module.exports = {
   expo: {
-    name: 'The Bouff App Rider',
+    name: 'BOUFF Livreur',
     description: "The Bouff App Rider Application",
     version: '1.0.0',
     slug: 'the-bouff-app-rider',
@@ -82,7 +82,7 @@ module.exports = {
     platforms: ['ios', 'android'],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.enatega.multirider',
+      bundleIdentifier: 'bj.bouff.livreur',
       config: {
         ...(iosGoogleMapsApiKey ? { googleMapsApiKey: iosGoogleMapsApiKey } : {})
       },
@@ -104,7 +104,7 @@ module.exports = {
           ...(androidGoogleMapsApiKey ? { apiKey: androidGoogleMapsApiKey } : {})
         }
       },
-      package: 'com.enatega.multirider',
+      package: 'bj.bouff.livreur',
       icon: './lib/assets/images/appIcon.png',
       adaptiveIcon: {
         foregroundImage: './lib/assets/images/appIcon.png',

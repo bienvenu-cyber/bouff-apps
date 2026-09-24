@@ -26,7 +26,7 @@ module.exports = () => {
   ]
 
   return {
-    name: 'The Bouff App',
+    name: 'BOUFF',
     scheme: 'thebouffapp',
     version: '1.0.0',
     description: "The Bouff App - Food Delivery Application",
@@ -51,7 +51,7 @@ module.exports = () => {
         'com.apple.developer.networking.wifi-info': true,
         'com.apple.developer.usernotifications.time-sensitive': true,
         'com.apple.security.application-groups': [
-          'group.com.enatega.multivendor.shared'
+          'group.bj.bouff.app.shared'
         ],
         // Use the production APNs gateway for production builds so push
         // notifications are not silently rejected on App Store devices (SEC-013).
@@ -60,7 +60,7 @@ module.exports = () => {
       },
       supportsTablet: true,
       userInterfaceStyle: 'automatic',
-      bundleIdentifier: 'com.enatega.multivendor',
+      bundleIdentifier: 'bj.bouff.app',
       buildNumber: '143',
       icon: './assets/icon.png',
       googleServicesFile: './GoogleService-Info.plist',
@@ -96,7 +96,7 @@ module.exports = () => {
     },
     android: {
       versionCode: 144,
-      package: 'com.enatega.multivendor',
+      package: 'bj.bouff.app',
       userInterfaceStyle: 'automatic',
       // Disable ADB/cloud backups so the AsyncStorage DB (JWT) can't be pulled
       // off a connected device without root (SEC-002).
@@ -217,7 +217,7 @@ module.exports = () => {
         process.env.EXPO_PUBLIC_SINGLE_VENDOR_CUSTOMER_DEMO_PASSWORD ??
         (process.env.NODE_ENV !== 'production' ? 'Customer@12345' : ''),
       liveActivity: {
-        appGroupId: 'group.com.enatega.multivendor.shared',
+        appGroupId: 'group.bj.bouff.app.shared',
         appScheme: 'enategamultivendor',
         brandName: 'Enatega',
         primaryColor: '#FF7A1A',
