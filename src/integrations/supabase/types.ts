@@ -88,6 +88,71 @@ export type Database = {
         }
         Relationships: []
       }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          ends_at: string | null
+          id: string
+          is_active: boolean
+          is_public: boolean
+          kind: Database["public"]["Enums"]["coupon_kind"]
+          max_discount_fcfa: number | null
+          max_uses: number | null
+          max_uses_per_customer: number
+          min_order_fcfa: number
+          restaurant_id: string | null
+          starts_at: string | null
+          title: string
+          updated_at: string
+          value: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_public?: boolean
+          kind?: Database["public"]["Enums"]["coupon_kind"]
+          max_discount_fcfa?: number | null
+          max_uses?: number | null
+          max_uses_per_customer?: number
+          min_order_fcfa?: number
+          restaurant_id?: string | null
+          starts_at?: string | null
+          title: string
+          updated_at?: string
+          value: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_public?: boolean
+          kind?: Database["public"]["Enums"]["coupon_kind"]
+          max_discount_fcfa?: number | null
+          max_uses?: number | null
+          max_uses_per_customer?: number
+          min_order_fcfa?: number
+          restaurant_id?: string | null
+          starts_at?: string | null
+          title?: string
+          updated_at?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupons_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       delivery_zones: {
         Row: {
           city_id: string
@@ -135,6 +200,32 @@ export type Database = {
             columns: ["restaurant_id"]
             isOneToOne: false
             referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      favorites: {
+        Row: {
+          created_at: string
+          menu_item_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          menu_item_id: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          menu_item_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_menu_item_id_fkey"
+            columns: ["menu_item_id"]
+            isOneToOne: false
+            referencedRelation: "menu_items"
             referencedColumns: ["id"]
           },
         ]
@@ -585,6 +676,8 @@ export type Database = {
           cancel_reason: string | null
           cancelled_at: string | null
           commission_fcfa: number
+          coupon_code: string | null
+          coupon_id: string | null
           created_at: string
           customer_id: string | null
           customer_name: string
@@ -595,6 +688,7 @@ export type Database = {
           delivery_lat: number | null
           delivery_lng: number | null
           delivery_zone_id: string | null
+          discount_fcfa: number
           estimated_ready_at: string | null
           id: string
           items_total_fcfa: number
@@ -615,6 +709,8 @@ export type Database = {
           cancel_reason?: string | null
           cancelled_at?: string | null
           commission_fcfa?: number
+          coupon_code?: string | null
+          coupon_id?: string | null
           created_at?: string
           customer_id?: string | null
           customer_name: string
@@ -625,6 +721,7 @@ export type Database = {
           delivery_lat?: number | null
           delivery_lng?: number | null
           delivery_zone_id?: string | null
+          discount_fcfa?: number
           estimated_ready_at?: string | null
           id?: string
           items_total_fcfa?: number
@@ -645,6 +742,8 @@ export type Database = {
           cancel_reason?: string | null
           cancelled_at?: string | null
           commission_fcfa?: number
+          coupon_code?: string | null
+          coupon_id?: string | null
           created_at?: string
           customer_id?: string | null
           customer_name?: string
@@ -655,6 +754,7 @@ export type Database = {
           delivery_lat?: number | null
           delivery_lng?: number | null
           delivery_zone_id?: string | null
+          discount_fcfa?: number
           estimated_ready_at?: string | null
           id?: string
           items_total_fcfa?: number
@@ -671,6 +771,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "orders_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "orders_delivery_zone_id_fkey"
             columns: ["delivery_zone_id"]
@@ -774,6 +881,36 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
+      push_tokens: {
+        Row: {
+          created_at: string
+          offers: boolean
+          order_updates: boolean
+          platform: string | null
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          offers?: boolean
+          order_updates?: boolean
+          platform?: string | null
+          token: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          offers?: boolean
+          order_updates?: boolean
+          platform?: string | null
+          token?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -993,6 +1130,8 @@ export type Database = {
           cancel_reason: string | null
           cancelled_at: string | null
           commission_fcfa: number
+          coupon_code: string | null
+          coupon_id: string | null
           created_at: string
           customer_id: string | null
           customer_name: string
@@ -1003,6 +1142,7 @@ export type Database = {
           delivery_lat: number | null
           delivery_lng: number | null
           delivery_zone_id: string | null
+          discount_fcfa: number
           estimated_ready_at: string | null
           id: string
           items_total_fcfa: number
@@ -1036,6 +1176,8 @@ export type Database = {
           cancel_reason: string | null
           cancelled_at: string | null
           commission_fcfa: number
+          coupon_code: string | null
+          coupon_id: string | null
           created_at: string
           customer_id: string | null
           customer_name: string
@@ -1046,6 +1188,7 @@ export type Database = {
           delivery_lat: number | null
           delivery_lng: number | null
           delivery_zone_id: string | null
+          discount_fcfa: number
           estimated_ready_at: string | null
           id: string
           items_total_fcfa: number
@@ -1072,6 +1215,15 @@ export type Database = {
         Args: { p_order_number: string; p_phone?: string }
         Returns: Json
       }
+      check_coupon: {
+        Args: {
+          p_code: string
+          p_phone?: string
+          p_restaurant: string
+          p_subtotal: number
+        }
+        Returns: Json
+      }
       claim_notifications: {
         Args: { p_limit?: number; p_token: string }
         Returns: Json
@@ -1083,6 +1235,8 @@ export type Database = {
           cancel_reason: string | null
           cancelled_at: string | null
           commission_fcfa: number
+          coupon_code: string | null
+          coupon_id: string | null
           created_at: string
           customer_id: string | null
           customer_name: string
@@ -1093,6 +1247,7 @@ export type Database = {
           delivery_lat: number | null
           delivery_lng: number | null
           delivery_zone_id: string | null
+          discount_fcfa: number
           estimated_ready_at: string | null
           id: string
           items_total_fcfa: number
@@ -1114,6 +1269,16 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      coupon_quote: {
+        Args: {
+          p_code: string
+          p_exclude_order?: string
+          p_phone?: string
+          p_restaurant: string
+          p_subtotal: number
+        }
+        Returns: Json
       }
       email_exists: { Args: { p_email: string }; Returns: boolean }
       is_restaurant_open: {
@@ -1157,6 +1322,7 @@ export type Database = {
       }
       place_order: {
         Args: {
+          p_coupon_code?: string
           p_customer_name: string
           p_customer_phone: string
           p_delivery_address?: string
@@ -1173,6 +1339,18 @@ export type Database = {
         Args: { p_from?: string; p_to?: string }
         Returns: Json
       }
+      public_coupons: {
+        Args: { p_restaurant: string }
+        Returns: {
+          code: string
+          ends_at: string
+          kind: Database["public"]["Enums"]["coupon_kind"]
+          max_discount_fcfa: number
+          min_order_fcfa: number
+          title: string
+          value: number
+        }[]
+      }
       record_payment_intent: {
         Args: {
           p_amount: number
@@ -1184,6 +1362,10 @@ export type Database = {
           p_token: string
         }
         Returns: string
+      }
+      register_push_token: {
+        Args: { p_platform?: string; p_token: string }
+        Returns: Json
       }
       restaurant_stats: {
         Args: { p_from?: string; p_restaurant_id: string; p_to?: string }
@@ -1199,6 +1381,8 @@ export type Database = {
           cancel_reason: string | null
           cancelled_at: string | null
           commission_fcfa: number
+          coupon_code: string | null
+          coupon_id: string | null
           created_at: string
           customer_id: string | null
           customer_name: string
@@ -1209,6 +1393,7 @@ export type Database = {
           delivery_lat: number | null
           delivery_lng: number | null
           delivery_zone_id: string | null
+          discount_fcfa: number
           estimated_ready_at: string | null
           id: string
           items_total_fcfa: number
@@ -1275,6 +1460,10 @@ export type Database = {
       set_order_location: {
         Args: { p_lat: number; p_lng: number; p_order: string; p_phone: string }
         Returns: undefined
+      }
+      set_push_preferences: {
+        Args: { p_offers: boolean; p_order_updates: boolean }
+        Returns: Json
       }
       set_restaurant_closed: {
         Args: { p_closed: boolean; p_restaurant_id: string }
@@ -1359,6 +1548,7 @@ export type Database = {
         Args: { p_order_number: string; p_phone: string }
         Returns: Json
       }
+      unregister_push_token: { Args: { p_token: string }; Returns: undefined }
       update_payment_status: {
         Args: {
           p_failure_reason?: string
@@ -1387,6 +1577,7 @@ export type Database = {
         | "rider"
         | "restaurant_admin"
         | "super_admin"
+      coupon_kind: "percent" | "fixed"
       order_status:
         | "received"
         | "in_kitchen"
@@ -1532,6 +1723,7 @@ export const Constants = {
         "restaurant_admin",
         "super_admin",
       ],
+      coupon_kind: ["percent", "fixed"],
       order_status: [
         "received",
         "in_kitchen",
