@@ -484,7 +484,263 @@ const resolvers: Record<string, Resolver> = {
   GetAllUserCredits: async () => ({ getAllUserCredits: { credits: 0 } }),
   GetAllSubscriptionPlans: async () => ({ getAllSubscriptionPlans: { plans: [] } }),
   GetMyReferralCode: async () => ({ getMyReferralCode: null }),
+
+  /* ================================================================ */
+  /* App mobile client (mode restaurant unique)                        */
+  /* ================================================================ */
+
+  SingleVendorDealSection: async (v) => {
+    const menu = await loadMenu();
+    const section = String(v.section ?? "").toUpperCase();
+    const list =
+      section === "LIMITED_TIME" || section === "POPULAR" || section === "RECOMMENDED"
+        ? menu.items.filter((i) => i.isFeatured)
+        : [];
+    const skip = Number(v.skip ?? 0);
+    const limit = Number(v.limit ?? 20);
+    const items = list.slice(skip, skip + limit).map(shortItem);
+    return {
+      singleVendorDeals: {
+        items,
+        totalCount: list.length,
+        hasMore: skip + limit < list.length,
+      },
+    };
+  },
+  EditSingleVendorCartItem: async (v) => {
+    const input = v.input ?? {};
+    const optionIds: string[] = (input.addons ?? []).flatMap(
+      (addon: any) => addon.options ?? [],
+    );
+    if (input.cartItemId) removeLine(String(input.cartItemId));
+    upsertLine({
+      foodId: input.foodId,
+      variationId: input.variationId,
+      quantity: Math.max(1, Number(input.quantity ?? 1)),
+      optionIds,
+      note: input.specialInstructions || null,
+    });
+    return { editSingleVendorCartItem: await cartPayload() };
+  },
+
+  /* --- commandes (noms utilisés par l'app mobile) --- */
+  PlaceOrder: async (v) => {
+    const addr = v.address ?? {};
+    const text = [addr.deliveryAddress, addr.details]
+      .filter((s, i, all) => s && all.indexOf(s) === i)
+      .join(" — ");
+    const lat = Number(addr.latitude);
+    const lng = Number(addr.longitude);
+    const menu = await loadMenu();
+    return {
+      placeOrder: await orders.placeOrder({
+        ...v,
+        address: { deliveryAddress: text || null },
+        zoneId: v.isPickedUp ? null : resolveZoneId(menu, text),
+        location:
+          Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0)
+            ? { lat, lng }
+            : null,
+      }),
+    };
+  },
+  GetUsersActiveOrders: async (v) => ({
+    getUsersActiveOrders: await orders.activeOrders(v.limit, v.page),
+  }),
+  GetUsersPastOrders: async (v) => ({
+    getUsersPastOrders: await orders.pastOrders(v.limit, v.page),
+  }),
+  OrderDetailsPage: async (v) => ({
+    orderDetailsPage: await orders.orderDetails(String(v.orderId)),
+  }),
+  RecentActiveOrder: async () => ({
+    recentActiveOrder: await orders.recentActiveOrder(),
+  }),
+
+  /* --- compte --- */
+  SingleVendorProfile: async () => ({ profile: await profileWithAddresses() }),
+  Profile: async () => ({ profile: await profileWithAddresses() }),
+  LoginSingleVendor: async (v) => ({ login: withAppToken(await auth.login(v)) }),
+  Login: async (v) => ({ login: withAppToken(await auth.login(v)) }),
+  CreateUser: async (v) => ({ createUser: withAppToken(await auth.createUser(v)) }),
+  EmailExistSingleVendor: async (v) => ({ emailExist: await emailExists(v.email) }),
+  EmailExist: async (v) => ({ emailExist: await emailExists(v.email) }),
+  ChangePassword: async (v) => {
+    const { data } = await bouffDb().auth.getUser();
+    const email = data.user?.email;
+    if (!email) throw new Error("Connexion requise.");
+    const check = await bouffDb().auth.signInWithPassword({
+      email,
+      password: String(v.oldPassword ?? ""),
+    });
+    if (check.error) throw new Error("Ancien mot de passe incorrect.");
+    await auth.resetPassword(String(v.newPassword ?? ""));
+    return { changePassword: true };
+  },
+
+  /* --- adresses (gardées sur le téléphone du client) --- */
+  CreateAddress: async (v) => {
+    const list = await readAddresses();
+    const input = v.addressInput ?? {};
+    const address = {
+      ...normalizeAddress(input),
+      _id: `adr-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      selected: true,
+    };
+    const next = [address, ...list.map((a) => ({ ...a, selected: false }))];
+    await writeAddresses(next);
+    await selectZoneFor(address);
+    return { createAddress: await addressesPayload() };
+  },
+  EditAddress: async (v) => {
+    const input = v.addressInput ?? {};
+    const list = await readAddresses();
+    const next = list.map((a) =>
+      a._id === input._id ? { ...a, ...normalizeAddress(input), _id: a._id } : a,
+    );
+    await writeAddresses(next);
+    const edited = next.find((a) => a._id === input._id);
+    if (edited?.selected) await selectZoneFor(edited);
+    return { editAddress: await addressesPayload() };
+  },
+  DeleteAddress: async (v) => {
+    await writeAddresses((await readAddresses()).filter((a) => a._id !== v.id));
+    return { deleteAddress: await addressesPayload() };
+  },
+  DeleteBulkAddresses: async (v) => {
+    const ids = new Set<string>(v.ids ?? []);
+    await writeAddresses((await readAddresses()).filter((a) => !ids.has(a._id)));
+    return { deleteBulkAddresses: await addressesPayload() };
+  },
+  SelectAddress: async (v) => {
+    const next = (await readAddresses()).map((a) => ({ ...a, selected: a._id === v.id }));
+    await writeAddresses(next);
+    const chosen = next.find((a) => a.selected);
+    if (chosen) await selectZoneFor(chosen);
+    return { selectAddress: await addressesPayload() };
+  },
+
+  /* --- sans objet chez BOUFF pour l'instant --- */
+  GetFavoriteFoodsStatus: async () => ({ getFavoriteFoodsStatus: [] }),
+  Coupon: async () => ({
+    coupon: { _id: null, title: null, discount: 0, enabled: false, success: false, message: "Codes promo bientôt disponibles." },
+  }),
+  PushToken: async () => ({ pushToken: null }),
+  PushSingleVendorNotificationToken: async () => ({ pushSingleVendorNotificationToken: null }),
+  UpdateNotificationStatus: async () => ({ updateNotificationStatus: null }),
 };
+
+/* ------------------------------------------------------------------ */
+/* Aides pour l'app mobile                                             */
+/* ------------------------------------------------------------------ */
+
+async function emailExists(email?: string) {
+  if (!email) return null;
+  const { data, error } = await bouffDb().rpc("email_exists", { p_email: email });
+  if (error) throw new Error(error.message);
+  return data ? { _id: email } : null;
+}
+
+// L'app mobile garde un jeton local pour savoir que le client est connecté.
+// La vraie session (renouvelée automatiquement) reste celle de la base BOUFF.
+function base64Url(value: string) {
+  return btoa(unescape(encodeURIComponent(value)))
+    .replace(/=+$/, "")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_");
+}
+
+function withAppToken<T extends { token?: string; userId?: string }>(payload: T): T {
+  if (!payload?.token) return payload;
+  const exp = Math.floor(Date.now() / 1000) + 60 * 24 * 3600;
+  const token = [
+    base64Url(JSON.stringify({ alg: "none", typ: "JWT" })),
+    base64Url(JSON.stringify({ sub: payload.userId, exp, iss: "bouff" })),
+    "bouff",
+  ].join(".");
+  return { ...payload, token, tokenExpiration: String(exp * 1000) };
+}
+
+interface StoredAddress {
+  _id: string;
+  label: string;
+  deliveryAddress: string;
+  details: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  selected: boolean;
+}
+
+async function addressesKey() {
+  const uid = await currentUserId();
+  return uid ? `${ADDRESSES_STORAGE_KEY}/${uid}` : null;
+}
+
+async function readAddresses(): Promise<StoredAddress[]> {
+  const key = await addressesKey();
+  if (!key) return [];
+  try {
+    const parsed = JSON.parse(bouffStorage.getItem(key) ?? "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+async function writeAddresses(list: StoredAddress[]) {
+  const key = await addressesKey();
+  if (!key) throw new Error("Connectez-vous pour enregistrer une adresse.");
+  bouffStorage.setItem(key, JSON.stringify(list.slice(0, 20)));
+}
+
+function normalizeAddress(input: any): Omit<StoredAddress, "_id" | "selected"> {
+  const lat = Number(input.latitude);
+  const lng = Number(input.longitude);
+  return {
+    label: String(input.label ?? "Adresse"),
+    deliveryAddress: String(input.deliveryAddress ?? "").slice(0, 300),
+    details: input.details ? String(input.details).slice(0, 300) : null,
+    latitude: Number.isFinite(lat) ? lat : null,
+    longitude: Number.isFinite(lng) ? lng : null,
+  };
+}
+
+function mapAddress(a: StoredAddress) {
+  return {
+    _id: a._id,
+    id: a._id,
+    label: a.label,
+    deliveryAddress: a.deliveryAddress,
+    details: a.details,
+    location: { coordinates: [String(a.longitude ?? 0), String(a.latitude ?? 0)] },
+    selected: a.selected,
+  };
+}
+
+async function addressesPayload() {
+  const uid = await currentUserId();
+  return { _id: uid, addresses: (await readAddresses()).map(mapAddress) };
+}
+
+async function profileWithAddresses() {
+  const profile = await auth.fetchProfile();
+  if (!profile) return null;
+  return { ...profile, addresses: (await readAddresses()).map(mapAddress) };
+}
+
+// Frais de livraison : la zone est retrouvée à partir du texte de l'adresse
+// (quartier), sinon la zone par défaut de Parakou.
+async function selectZoneFor(address: StoredAddress) {
+  const menu = await loadMenu();
+  const needle = `${address.deliveryAddress} ${address.details ?? ""}`.toLowerCase();
+  const match = menu.zones.find((z) => needle.includes(z.name.toLowerCase()));
+  setSelectedZoneId(match?.id ?? null);
+}
+
+// Fermer la session de la base quand l'app déconnecte le client.
+subscribeToSessionInvalidation(() => {
+  void bouffDb().auth.signOut();
+});
 
 /* ------------------------------------------------------------------ */
 /* Abonnements temps réel (suivi de commande)                          */
