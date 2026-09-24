@@ -24,6 +24,10 @@ export const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 export const ORDER_SELECT =
   '*, order_items(*, order_item_options(id, name, price_delta_fcfa)), riders(id, full_name, phone, status), restaurants(id, name, logo_url, cover_url, address, latitude, longitude)';
 
+// Les photos de démonstration sont servies par le site client.
+const WEB_URL = (process.env.NEXT_PUBLIC_BOUFF_WEB_URL ?? 'https://bouff-apps.vercel.app').replace(/\/$/, '');
+export const img = (u?: string | null) => (!u ? '' : u.startsWith('/') ? `${WEB_URL}${u}` : u);
+
 const hm = (t?: string | null, fallback = '00:00') =>
   (t ?? fallback).slice(0, 5).split(':');
 
@@ -53,7 +57,7 @@ export function mapFood(m: any) {
     _id: m.id,
     title: m.name,
     description: m.description ?? '',
-    image: m.image_url ?? '',
+    image: img(m.image_url),
     isOutOfStock: !m.is_available,
     isActive: m.is_available,
     subCategory: null,
@@ -83,8 +87,8 @@ export function mapRestaurant(r: any, extra: Record<string, any> = {}) {
     orderPrefix: 'BF',
     slug: r.slug,
     name: r.name,
-    image: r.cover_url ?? r.logo_url ?? '',
-    logo: r.logo_url ?? '',
+    image: img(r.cover_url ?? r.logo_url),
+    logo: img(r.logo_url),
     phone: r.phone ?? '',
     address: r.address ?? '',
     city: r.city ?? '',
@@ -186,15 +190,13 @@ export function mapOrder(o: any) {
       address: r.address ?? '',
       location: point(r.latitude, r.longitude),
     },
-    deliveryAddress: takeaway
-      ? null
-      : {
-          __typename: 'OrderAddress',
-          location: point(o.delivery_lat, o.delivery_lng),
-          deliveryAddress: o.delivery_address ?? '',
-          details: o.delivery_address ?? '',
-          label: 'Livraison',
-        },
+    deliveryAddress: {
+      __typename: 'OrderAddress',
+      location: point(o.delivery_lat, o.delivery_lng),
+      deliveryAddress: takeaway ? 'À emporter' : o.delivery_address ?? '',
+      details: takeaway ? 'À emporter' : o.delivery_address ?? '',
+      label: takeaway ? 'À emporter' : 'Livraison',
+    },
     items,
     user: {
       __typename: 'User',

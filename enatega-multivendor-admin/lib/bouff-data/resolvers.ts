@@ -8,6 +8,7 @@ import {
   ORDER_SELECT,
   paged,
   STATUS_BACK,
+  img,
 } from './mappers';
 
 export class BouffError extends Error {
@@ -99,7 +100,7 @@ async function fullRestaurant(id: string): Promise<any> {
       __typename: 'Category',
       _id: c.id,
       title: c.name,
-      image: c.image_url ?? '',
+      image: img(c.image_url),
       createdAt: c.created_at,
       updatedAt: c.updated_at,
       foods: foods.filter((f) => f.category === c.id),
