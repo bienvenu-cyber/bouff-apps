@@ -94,6 +94,16 @@ export async function placeOrder(variables: Record<string, any>) {
   clearCart();
   const result = data as Record<string, any>;
   if (result?.order_number) rememberGuestOrder(result.order_number, result.order_id);
+  const loc = variables.location;
+  if (!isPickedUp && result?.order_number && loc && Number.isFinite(loc.lat) && Number.isFinite(loc.lng)) {
+    // Facultatif : la commande reste valide même si la position n'est pas enregistrée.
+    await db.rpc("set_order_location", {
+      p_order: result.order_number,
+      p_phone: who.phone,
+      p_lat: loc.lat,
+      p_lng: loc.lng,
+    });
+  }
   return {
     _id: result.order_id,
     orderId: result.order_number,
@@ -462,12 +472,29 @@ export async function checkout(variables: Record<string, any>) {
 export async function trackOrder(orderId: string) {
   const details = await orderDetails(orderId);
   if (!details?.rawOrder) return null;
+  const [rider, route] = await Promise.all([
+    riderLocation(details.rawOrder.orderId),
+    orderRoute(details.rawOrder.orderId),
+  ]);
   return {
     orderId: details.rawOrder.orderId,
     status: details.rawOrder.orderStatus,
-    riderLocation: await riderLocation(details.rawOrder.orderId),
-    eta: null,
+    riderLocation: rider,
+    eta: route,
   };
+}
+
+// Point de départ (restaurant) et d'arrivée (position partagée par le client).
+export async function orderRoute(orderNumber: string) {
+  const { data, error } = await bouffDb().rpc("order_route", {
+    p_order: String(orderNumber),
+    p_phone: getGuest()?.phone ?? null,
+  });
+  if (error || !data) return null;
+  const r = data as any;
+  if (!r.origin && !r.destination) return null;
+  const pt = (p: any) => (p ? { latitude: p.lat, longitude: p.lng } : null);
+  return { origin: pt(r.origin), destination: pt(r.destination), encodedPolyline: null };
 }
 
 // Dernière position du livreur (seulement pendant la course, et seulement pour ce client).

@@ -32,6 +32,23 @@ export default function SingleVendorCheckout() {
   const [payerPhone, setPayerPhone] = useState("");
   const [momoNotice, setMomoNotice] = useState<string | null>(null);
   const [shop, setShop] = useState<{ open: boolean; min: number; hours: string } | null>(null);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [geoState, setGeoState] = useState<"idle" | "loading" | "error">("idle");
+  const useMyPosition = () => {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setGeoState("error");
+      return;
+    }
+    setGeoState("loading");
+    navigator.geolocation.getCurrentPosition(
+      (p) => {
+        setCoords({ lat: p.coords.latitude, lng: p.coords.longitude });
+        setGeoState("idle");
+      },
+      () => setGeoState("error"),
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
+    );
+  };
   // Paiement Mobile Money en ligne (pawaPay) : activé dès que les clés sont
   // en place côté serveur (NEXT_PUBLIC_PAWAPAY_ENABLED=true).
   const onlineMomoEnabled = process.env.NEXT_PUBLIC_PAWAPAY_ENABLED === "true";
@@ -118,6 +135,7 @@ export default function SingleVendorCheckout() {
             : { label: "Livraison", deliveryAddress: fullAddress, details: address.trim() },
           orderDate: new Date().toISOString(),
           isPickedUp: pickup,
+          location: pickup ? null : coords,
           specialInstructions: instructions,
           instructions,
           idempotencyKey: idempotencyKey.current,
@@ -279,6 +297,25 @@ export default function SingleVendorCheckout() {
                   className={field}
                 />
               </label>
+              <div className="mt-3 text-sm dark:text-gray-200">
+                <button
+                  type="button"
+                  onClick={useMyPosition}
+                  disabled={geoState === "loading"}
+                  className="rounded-lg border border-primary-color px-3 py-2 font-medium text-primary-color disabled:opacity-60"
+                >
+                  {geoState === "loading"
+                    ? "Localisation…"
+                    : coords
+                      ? "Position enregistrée ✓ (mettre à jour)"
+                      : "📍 Utiliser ma position (facultatif)"}
+                </button>
+                <span className="mt-1 block text-xs text-gray-500 dark:text-gray-400">
+                  {geoState === "error"
+                    ? "Position indisponible. Le livreur utilisera votre adresse et repère."
+                    : "Aide le livreur à vous trouver plus vite. À utiliser seulement si vous êtes à l'adresse de livraison."}
+                </span>
+              </div>
             </>
           )}
         </section>

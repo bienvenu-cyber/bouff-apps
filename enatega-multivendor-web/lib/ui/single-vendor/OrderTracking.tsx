@@ -97,7 +97,7 @@ export default function SingleVendorOrderTracking({
       ...order,
       orderStatus: latest?.status || order?.orderStatus,
     }) || "PENDING";
-  const eta = latest?.eta || order?.eta;
+  const eta = latest?.eta || tracking.data?.orderTracking?.eta || order?.eta;
   const destination = useMemo(() => {
     const etaLatitudeValue = eta?.destination?.latitude;
     const etaLongitudeValue = eta?.destination?.longitude;
@@ -211,7 +211,7 @@ export default function SingleVendorOrderTracking({
                 origin={storeLocation}
                 eta={trackingEnabled ? eta : null}
                 riderLocation={riderLocation}
-                requireBackendRoute={trackingEnabled && Boolean(riderLocation)}
+                requireBackendRoute={false}
                 showStaticLoadingImage={false}
               />
             ) : (
