@@ -201,6 +201,7 @@ export const en = {
   "Delivery instructions": "Delivery instructions",
   "Auto decline in": "Auto decline in",
   "Waiting for Rider": "Waiting for Rider",
+  "Mark as ready": "Mark as ready",
   "Your order is confirmed. We're waiting for a rider to accept and deliver your order.":
     "Your order is confirmed. We're waiting for a rider to accept and deliver your order.",
   "Order Amount": "Order Amount",
