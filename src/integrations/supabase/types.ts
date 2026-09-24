@@ -558,6 +558,7 @@ export type Database = {
           delivery_address: string | null
           delivery_fee_fcfa: number
           delivery_zone_id: string | null
+          estimated_ready_at: string | null
           id: string
           items_total_fcfa: number
           note: string | null
@@ -585,6 +586,7 @@ export type Database = {
           delivery_address?: string | null
           delivery_fee_fcfa?: number
           delivery_zone_id?: string | null
+          estimated_ready_at?: string | null
           id?: string
           items_total_fcfa?: number
           note?: string | null
@@ -612,6 +614,7 @@ export type Database = {
           delivery_address?: string | null
           delivery_fee_fcfa?: number
           delivery_zone_id?: string | null
+          estimated_ready_at?: string | null
           id?: string
           items_total_fcfa?: number
           note?: string | null
@@ -898,6 +901,43 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      accept_order: {
+        Args: { p_minutes?: number; p_order_id: string }
+        Returns: {
+          accepted_at: string | null
+          cancel_reason: string | null
+          cancelled_at: string | null
+          commission_fcfa: number
+          created_at: string
+          customer_id: string | null
+          customer_name: string
+          customer_phone: string
+          delivered_at: string | null
+          delivery_address: string | null
+          delivery_fee_fcfa: number
+          delivery_zone_id: string | null
+          estimated_ready_at: string | null
+          id: string
+          items_total_fcfa: number
+          note: string | null
+          order_number: string
+          order_type: Database["public"]["Enums"]["order_type"]
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          picked_up_at: string | null
+          ready_at: string | null
+          restaurant_id: string
+          rider_id: string | null
+          status: Database["public"]["Enums"]["order_status"]
+          total_fcfa: number
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       advance_order_status: {
         Args: {
           p_cancel_reason?: string
@@ -917,6 +957,7 @@ export type Database = {
           delivery_address: string | null
           delivery_fee_fcfa: number
           delivery_zone_id: string | null
+          estimated_ready_at: string | null
           id: string
           items_total_fcfa: number
           note: string | null
@@ -961,6 +1002,7 @@ export type Database = {
           delivery_address: string | null
           delivery_fee_fcfa: number
           delivery_zone_id: string | null
+          estimated_ready_at: string | null
           id: string
           items_total_fcfa: number
           note: string | null
@@ -1051,6 +1093,7 @@ export type Database = {
           delivery_address: string | null
           delivery_fee_fcfa: number
           delivery_zone_id: string | null
+          estimated_ready_at: string | null
           id: string
           items_total_fcfa: number
           note: string | null
