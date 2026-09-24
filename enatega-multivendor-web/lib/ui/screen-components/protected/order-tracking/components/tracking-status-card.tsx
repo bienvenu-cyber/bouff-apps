@@ -90,7 +90,7 @@ function TrackingStatusCard({
               ? t("AcceptedRestaurantPrep", { min: minLeft, riderMessage: "" })
               : t("AcceptedStorePrep", { min: minLeft, riderMessage: "" });
           }
-          return "Preparation is taking a little longer.";
+          return t("PreparationLonger");
         }
         return isRestaurant
           ? t("AcceptedRestaurantSimple", { riderMessage: "" })
@@ -98,8 +98,9 @@ function TrackingStatusCard({
       }
       case "ASSIGNED": {
         const readyAt = parseBackendDate(eta?.readyAt);
+        if (orderTrackingDetails?.isPickedUp) return t("ReadyForPickup");
         if (readyAt && readyAt.getTime() <= now) {
-          return "Preparation is taking a little longer. Your rider is assigned.";
+          return t("PreparationLongerRider");
         }
         return t("Assigned");
       }
@@ -109,8 +110,8 @@ function TrackingStatusCard({
             trackingData?.riderLocation?.recordedAt || eta?.lastLocationAt,
           );
           return updatedAt
-            ? `Rider location temporarily unavailable — last updated ${updatedAt}.`
-            : "Rider location temporarily unavailable.";
+            ? t("RiderLocationUnavailableSince", { time: updatedAt })
+            : t("RiderLocationUnavailable");
         }
         return t("Picked");
       }
@@ -144,10 +145,10 @@ function TrackingStatusCard({
         return t("Processing");
     }
   };
-  const currentStatusLabel = orderTrackingDetails.orderStatus
-    .toLowerCase()
-    .replaceAll("_", " ")
-    .replace(/^\w/, (character) => character.toUpperCase());
+  const statusKey = `status_label_${orderTrackingDetails.orderStatus}`;
+  const currentStatusLabel = t.has(statusKey)
+    ? t(statusKey)
+    : orderTrackingDetails.orderStatus;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 w-full max-w-2xl">

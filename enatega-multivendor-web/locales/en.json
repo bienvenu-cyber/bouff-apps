@@ -1024,5 +1024,18 @@
   "show_more_orders": "Show more orders",
   "your_email": "your@email.com",
   "Select_your_address_prompt": "Select your address.",
-  "Our-brands": "Our brands"
+  "Our-brands": "Our brands",
+  "status_label_PENDING": "Received",
+  "status_label_ACCEPTED": "In the kitchen",
+  "status_label_ASSIGNED": "Ready",
+  "status_label_PICKED": "On the way",
+  "status_label_ON_ROUTE": "On the way",
+  "status_label_DELIVERED": "Delivered",
+  "status_label_COMPLETED": "Completed",
+  "status_label_CANCELLED": "Cancelled",
+  "ReadyForPickup": "Your order is ready! You can come and pick it up.",
+  "PreparationLonger": "Preparation is taking a little longer.",
+  "PreparationLongerRider": "Preparation is taking a little longer. Your rider is assigned.",
+  "RiderLocationUnavailable": "Rider location temporarily unavailable.",
+  "RiderLocationUnavailableSince": "Rider location temporarily unavailable — last updated {time}."
 }
