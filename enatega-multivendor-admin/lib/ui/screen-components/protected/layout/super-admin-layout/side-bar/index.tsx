@@ -63,7 +63,7 @@ export default function MakeSidebar() {
     {
       text: 'My Website',
       label: t('My Website'),
-      route: 'https://multivendor.enatega.com/',
+      route: process.env.NEXT_PUBLIC_BOUFF_SITE_URL ?? 'https://bouff-web.lovable.app/',
       isParent: true,
       icon: faUpRightFromSquare,
       isClickable: true,

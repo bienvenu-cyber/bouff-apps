@@ -1,3 +1,4 @@
+import { formatDateFr } from '@/lib/utils/methods/bouff-date';
 'use client';
 import React from 'react';
 import { IUserResponse } from '@/lib/utils/interfaces/users.interface';
@@ -64,7 +65,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ user }) => {
           <h4 className="text-base font-semibold">{t('Member Since')}</h4>
           <p>
             {user.createdAt
-              ? new Date(Number(user.createdAt)).toLocaleDateString()
+              ? formatDateFr(user.createdAt, { day: '2-digit', month: 'long', year: 'numeric' })
               : ''}
           </p>
         </div>
@@ -72,7 +73,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ user }) => {
           <h4 className="text-base font-semibold">{t('Last Updated')}</h4>
           <p>
             {user.updatedAt
-              ? new Date(Number(user.updatedAt)).toLocaleString()
+              ? formatDateFr(user.updatedAt)
               : 'N/A'}
           </p>
         </div>
