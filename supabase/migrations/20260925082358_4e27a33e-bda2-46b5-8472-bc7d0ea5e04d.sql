@@ -1,0 +1,1 @@
+grant execute on function public.email_exists(text) to anon, authenticated;
