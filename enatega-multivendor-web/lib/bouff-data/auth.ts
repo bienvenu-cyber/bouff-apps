@@ -190,3 +190,12 @@ export async function resetPassword(password: string) {
 export async function signOut() {
   await bouffDb().auth.signOut();
 }
+
+/** Renvoie un objet (compte existant) ou null (nouveau client). */
+export async function emailExists(email: string) {
+  if (!email) return null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (bouffDb() as any).rpc("email_exists", { p_email: email });
+  if (error) throw new Error(error.message);
+  return data ? { _id: email } : null;
+}
