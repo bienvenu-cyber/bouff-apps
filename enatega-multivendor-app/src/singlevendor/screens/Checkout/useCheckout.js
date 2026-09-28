@@ -4,6 +4,7 @@ import { PLACE_ORDER } from '../../apollo/mutations'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import useCartStore from '../../stores/useCartStore'
 import { useContext, useRef } from 'react'
+import { Alert } from 'react-native'
 import ConfigurationContext from '../../../context/Configuration'
 import { APP_MODES } from '../../../mode/constants'
 import { recordOrderOrigin } from '../../../mode/orderOrigin'
@@ -80,11 +81,16 @@ const useCheckout = ({ fulfillmentMode, deliveryAddress, selectedVoucher, onPlac
       }
     },
     onError: (err) => {
-      console.log('Error placing order from useCheckout', err)
-      const message = err?.graphQLErrors?.[0]?.message || err?.message || ''
+      const message = err?.graphQLErrors?.[0]?.message || err?.networkError?.message || err?.message || ''
       if (message === ADDRESS_DELIVERY_ERROR && onPlaceOrderError) {
         onPlaceOrderError()
+        return
       }
+      // Toujours informer le client : restaurant fermé, minimum, limite de commandes, réseau…
+      Alert.alert(
+        'Commande non envoyée',
+        message || 'Un problème est survenu. Vérifiez votre connexion et réessayez.'
+      )
     }
   })
   useModeSensitiveOperation(placingOrder)
