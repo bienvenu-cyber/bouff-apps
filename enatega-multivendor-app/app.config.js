@@ -125,7 +125,7 @@ module.exports = () => {
         'android.permission.SYSTEM_ALERT_WINDOW',
         'android.permission.WRITE_EXTERNAL_STORAGE'
       ],
-      icon: './assets/appIcon.png',
+      icon: './assets/icon.png',
       queries: {
         packages: ['com.whatsapp', 'com.whatsapp.w4b']
       },
@@ -141,8 +141,8 @@ module.exports = () => {
         }
       ],
       adaptiveIcon: {
-        foregroundImage: './assets/icon.png',
-        backgroundColor: '#000000'
+        foregroundImage: './assets/adaptive-icon.png',
+        backgroundColor: '#0B0B0C'
       }
     },
     plugins: [

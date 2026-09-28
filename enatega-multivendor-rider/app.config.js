@@ -105,7 +105,7 @@ module.exports = {
         }
       },
       package: 'bj.bouff.livreur',
-      icon: './lib/assets/images/appIcon.png',
+      icon: './lib/assets/images/icon.png',
       adaptiveIcon: {
         foregroundImage: './lib/assets/images/appIcon.png',
         backgroundColor: '#0B0B0C'
