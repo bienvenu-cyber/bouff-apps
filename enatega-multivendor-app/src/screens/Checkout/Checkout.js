@@ -415,7 +415,7 @@ function Checkout(props) {
       orderStatus: data?.placeOrder.orderStatus,
       orderDate: data?.placeOrder.orderDate
     })
-    if (paymentMode === 'COD') {
+    if (paymentMode === 'COD' || paymentMode === 'MOBILE_MONEY') {
       if (placedOrder?._id && !placedOrder?.isPickedUp) {
         LiveActivityService.initiateForOrder({
           orderId: placedOrder._id.toString(),
