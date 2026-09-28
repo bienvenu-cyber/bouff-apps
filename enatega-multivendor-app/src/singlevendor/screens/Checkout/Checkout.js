@@ -1,5 +1,5 @@
 import React, { useState, useContext, useLayoutEffect, useRef, useCallback } from 'react'
-import { View, ScrollView, TouchableOpacity, StatusBar, Platform, StyleSheet } from 'react-native'
+import { View, ScrollView, TouchableOpacity, StatusBar, Platform, StyleSheet, Alert } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { HeaderBackButton } from '@react-navigation/elements'
