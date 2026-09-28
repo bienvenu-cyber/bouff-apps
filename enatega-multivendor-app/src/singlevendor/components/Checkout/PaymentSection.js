@@ -174,7 +174,8 @@ const PaymentSection = ({
   applyingVoucher,
   onRemoveVoucher,
   onOpenVouchers,
-  voucherBottomSheetRef
+  voucherBottomSheetRef,
+  isPickup = false
 }) => {
   const { t, i18n } = useTranslation()
   const themeContext = useContext(ThemeContext)
@@ -184,37 +185,20 @@ const PaymentSection = ({
     ...theme[themeContext.ThemeValue]
   }
 
+  // BOUFF : uniquement Mobile Money et paiement en espèces (à la livraison ou au retrait).
+  // Carte, PayPal, Google Pay et Apple Pay sont masqués (non gérés).
   const paymentOptions = [
     {
-      id: 'STRIPE',
-      title: t('Card Payment') || 'Card Payment',
-      subtitle: t('Pay using card') || 'Pay using card'
-    },
-    {
-      id: 'PAYPAL',
-      title: t('paypal') || 'Paypal',
-      subtitle: t('payUsingPaypal') || 'Pay using Paypal'
+      id: 'MOBILE_MONEY',
+      title: 'Mobile Money (MoMo)',
+      subtitle: isPickup ? 'Payez par MoMo au retrait' : 'Payez par MoMo à la réception'
     },
     {
       id: 'COD',
-      title: t('cod') || 'Cash on Delivery',
-      subtitle: 'Cash on Delivery'
+      title: isPickup ? 'Paiement au retrait' : 'Paiement à la livraison',
+      subtitle: isPickup ? 'Espèces au comptoir' : 'Espèces au livreur'
     }
   ]
-
-  if (Platform.OS === 'android') {
-    paymentOptions.push({
-      id: 'GOOGLE_PAY',
-      title: t('googlePay') || 'Google Pay',
-      subtitle: t('payUsingGooglePay') || 'Pay using Google Pay'
-    })
-  } else {
-    paymentOptions.push({
-      id: 'APPLE_PAY',
-      title: t('applePay') || 'Apple Pay',
-      subtitle: t('payUsingApplePay') || 'Pay using Apple Pay'
-    })
-  }
 
   return (
     <View style={styles(currentTheme).container}>

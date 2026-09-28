@@ -386,6 +386,7 @@ const Checkout = (props) => {
         <DeliveryTimeOptions priorityDeliveryFee={priorityDeliveryFee} selectedTime={deliveryTime} onSelectTime={setDeliveryTime} mode={fulfillmentMode} scheduledTime={selectedSchedule} />
         <PaymentSection
           paymentMethod={paymentMethod}
+          isPickup={fulfillmentMode === 'collection'}
           onSelectPaymentMethod={setPaymentMethod}
           selectedCard={selectedCard}
           selectedVoucher={selectedVoucher}

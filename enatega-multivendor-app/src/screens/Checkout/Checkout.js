@@ -415,7 +415,7 @@ function Checkout(props) {
       orderStatus: data?.placeOrder.orderStatus,
       orderDate: data?.placeOrder.orderDate
     })
-    if (paymentMode === 'COD') {
+    if (paymentMode === 'COD' || paymentMode === 'MOBILE_MONEY') {
       if (placedOrder?._id && !placedOrder?.isPickedUp) {
         LiveActivityService.initiateForOrder({
           orderId: placedOrder._id.toString(),
@@ -815,7 +815,17 @@ function Checkout(props) {
                       </TextDefault>
                       <View>
                         <PaymentModeOption
-                          title={t('cod')}
+                          title={'Mobile Money (MoMo)'}
+                          icon={'cellphone'}
+                          iconFamily='material-community'
+                          selected={paymentMode === 'MOBILE_MONEY'}
+                          theme={currentTheme}
+                          onSelect={() => {
+                            setPaymentMode('MOBILE_MONEY')
+                          }}
+                        />
+                        <PaymentModeOption
+                          title={isPickup ? 'Paiement au retrait' : 'Paiement à la livraison'}
                           icon={'cash'}
                           iconFamily='material-community'
                           selected={paymentMode === 'COD'}
@@ -824,26 +834,6 @@ function Checkout(props) {
                             setPaymentMode('COD')
                           }}
                         />
-                        {/* <PaymentModeOption
-                          title={t('paypal')}
-                          icon={'credit-card'}
-                          selected={paymentMode === 'PAYPAL'}
-                          theme={currentTheme}
-                          onSelect={() => {
-                            setPaymentMode('PAYPAL')
-                          }}
-                        /> */}
-                        {restaurant?.stripeDetailsSubmitted && (
-                          <PaymentModeOption
-                            title={t('Stripe')}
-                            icon={'credit-card'}
-                            selected={paymentMode === 'STRIPE'}
-                            theme={currentTheme}
-                            onSelect={() => {
-                              setPaymentMode('STRIPE')
-                            }}
-                          />
-                        )}
                       </View>
                     </View>
                   </>
