@@ -108,6 +108,8 @@ export interface IOrderTrackingDetail {
   pickedAt: string;
   preparationTime: string;
   eta?: IOrderEta | null;
+  scheduledAt?: string | null;
+  reviewRating?: number | null;
   __typename: string;
 }
 

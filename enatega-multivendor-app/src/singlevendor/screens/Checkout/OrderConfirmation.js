@@ -81,7 +81,9 @@ const OrderConfirmationScreen = (props) => {
     orderItems,
     initialOrder,
     orderNo,
-    creditsUsed
+    creditsUsed,
+    scheduledAt,
+    reviewRating
     // riderPhone
   } = useOrderConfirmation({ orderId })
 
@@ -94,6 +96,8 @@ const OrderConfirmationScreen = (props) => {
   })
 
   const orderStatus = liveOrder?.orderStatus || initialOrder?.orderStatus || orderData?.orderStatus
+  const currentReviewRating = liveOrder?.reviewRating ?? reviewRating ?? initialOrder?.reviewRating ?? null
+  const currentScheduledAt = liveOrder?.scheduledAt ?? scheduledAt ?? initialOrder?.scheduledAt ?? null
   const publicOrderId = liveOrder?.orderId || initialOrder?.orderId || orderData?.orderId || orderNo
   const routeOrderId = typeof orderId === 'string' && !/^[a-f\d]{24}$/i.test(orderId)
     ? orderId
@@ -173,17 +177,17 @@ const OrderConfirmationScreen = (props) => {
   // 4️⃣ Navigate to FeedBack when delivered
   // ----------------------------------
   useEffect(() => {
-    if (isDelivered && !hasNavigatedRef.current) {
+    if (isDelivered && currentReviewRating == null && !hasNavigatedRef.current) {
       hasNavigatedRef.current = true
       const timeoutId = setTimeout(() => {
-        navigation.navigate('FeedBack', { isDelivered, orderId: initialOrder?._id })
+        navigation.navigate('FeedBack', { isDelivered, orderId: publicOrderId || orderNo })
       }, 3000)
 
       return () => {
         clearTimeout(timeoutId)
       }
     }
-  }, [isDelivered, navigation, orderId])
+  }, [isDelivered, currentReviewRating, navigation, orderId, publicOrderId, orderNo])
 
   // ----------------------------------
   // 5️⃣ StatusBar handling
@@ -327,6 +331,24 @@ const OrderConfirmationScreen = (props) => {
             <Feather name='hash' size={scale(15)} color={currentTheme.fontSecondColor} />
             <TextDefault bold style={styles(currentTheme).orderIdText} textColor={currentTheme.fontSecondColor}>
               {t('Order')} #{displayOrderId}
+            </TextDefault>
+          </View>
+        )}
+
+        {!!currentScheduledAt && (
+          <View style={styles(currentTheme).orderIdRow}>
+            <Feather name='calendar' size={scale(15)} color={currentTheme.fontSecondColor} />
+            <TextDefault bold style={styles(currentTheme).orderIdText} textColor={currentTheme.fontSecondColor}>
+              {`Programmée pour ${new Date(currentScheduledAt).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}`}
+            </TextDefault>
+          </View>
+        )}
+
+        {tipAmount > 0 && (
+          <View style={styles(currentTheme).orderIdRow}>
+            <Feather name='gift' size={scale(15)} color={currentTheme.fontSecondColor} />
+            <TextDefault bold style={styles(currentTheme).orderIdText} textColor={currentTheme.fontSecondColor}>
+              {`Pourboire livreur : ${tipAmount} ${currencySymbol}`}
             </TextDefault>
           </View>
         )}

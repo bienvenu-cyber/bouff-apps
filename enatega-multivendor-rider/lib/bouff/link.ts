@@ -7,7 +7,7 @@ import type { DocumentNode, OperationDefinitionNode } from "graphql";
 import { bouffDb } from "./supabase";
 
 const ORDER_SELECT =
-  "*, order_items(*, order_item_options(id, name, price_delta_fcfa)), riders(id, full_name, phone), restaurants(id, name, logo_url, address, latitude, longitude), delivery_zones(name)";
+  "*, tip_fcfa, scheduled_for, order_items(*, order_item_options(id, name, price_delta_fcfa)), riders(id, full_name, phone), restaurants(id, name, logo_url, address, latitude, longitude), delivery_zones(name)";
 
 type Rider = {
   id: string;
@@ -139,7 +139,8 @@ function mapOrder(o: any) {
     paymentStatus: "PENDING",
     orderStatus,
     orderState,
-    tipping: 0,
+    tipping: o.tip_fcfa || 0,
+    scheduledAt: o.scheduled_for,
     taxationAmount: 0,
     reason: o.cancel_reason,
     isRiderRinged: !o.rider_id,
@@ -190,7 +191,7 @@ async function rpc(name: string, args: Record<string, unknown>) {
 async function delivered(riderId: string) {
   const { data } = await bouffDb()
     .from("orders")
-    .select("id, order_number, delivery_fee_fcfa, delivered_at, payment_method")
+    .select("id, order_number, delivery_fee_fcfa, tip_fcfa, delivered_at, payment_method")
     .eq("rider_id", riderId)
     .eq("status", "delivered")
     .order("delivered_at", { ascending: false })
@@ -202,7 +203,7 @@ async function profile() {
   const r = await currentRider();
   const { data: auth } = await bouffDb().auth.getUser();
   const total = (await delivered(r.id)).reduce(
-    (s, o: any) => s + (o.delivery_fee_fcfa ?? 0),
+    (s, o: any) => s + (o.delivery_fee_fcfa ?? 0) + (o.tip_fcfa ?? 0),
     0,
   );
   return {
@@ -252,19 +253,20 @@ async function earningsGraph() {
       };
     day.earningsArray.push({
       __typename: "RiderEarningsItem",
-      tip: 0,
+      tip: o.tip_fcfa || 0,
       orderDetails: {
         __typename: "OrderDetails",
         orderType: "delivery",
         orderId: o.order_number,
         paymentMethod: o.payment_method,
       },
-      totalEarnings: o.delivery_fee_fcfa,
+      totalEarnings: (o.delivery_fee_fcfa || 0) + (o.tip_fcfa || 0),
       deliveryFee: o.delivery_fee_fcfa,
       date: o.delivered_at,
     });
     day.totalDeliveries += 1;
-    day.totalEarningsSum += o.delivery_fee_fcfa;
+    day.totalEarningsSum += (o.delivery_fee_fcfa || 0) + (o.tip_fcfa || 0);
+    day.totalTipsSum += (o.tip_fcfa || 0);
     byDay.set(date, day);
   }
   const earnings = [...byDay.values()];

@@ -484,6 +484,24 @@ const resolvers: Record<string, Resolver> = {
   GetAllUserCredits: async () => ({ getAllUserCredits: { credits: 0 } }),
   GetAllSubscriptionPlans: async () => ({ getAllSubscriptionPlans: { plans: [] } }),
   GetMyReferralCode: async () => ({ getMyReferralCode: null }),
+
+  /* --- pourboire & avis --- */
+  Tips: async () => ({ tips: { tipVariations: ["0", "200", "500", "1000"] } }),
+  ReviewOrder: async (v) => ({
+    reviewOrder: await orders.submitReview(
+      String(v.order ?? v.reviewInput?.order ?? ""),
+      Number(v.rating ?? v.reviewInput?.rating ?? 0),
+      v.description ?? v.reviewInput?.description ?? null,
+      v.comments ?? v.reviewInput?.comments ?? null,
+    ),
+  }),
+  GetReviewsByRestaurant: async () => ({
+    reviewsByRestaurant: await orders.restaurantRating().then((r) => ({
+      reviews: [],
+      ratings: r.average,
+      total: r.count,
+    })),
+  }),
 };
 
 /* ------------------------------------------------------------------ */

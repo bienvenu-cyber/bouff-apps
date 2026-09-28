@@ -190,11 +190,13 @@ export const PaymentSummary = ({
   currencySymbol,
   paymentMethod,
   paymentStatus,
+  tipping,
 }: {
   amount: number;
   currencySymbol?: string;
   paymentMethod: string;
   paymentStatus: string;
+  tipping?: number;
 }) => {
   const { appTheme } = useApptheme();
   const { t } = useTranslation();
@@ -217,6 +219,11 @@ export const PaymentSummary = ({
       </View>
       <View style={[styles.paymentColumn, { alignItems: "flex-end" }]}>
         <Text style={[styles.label, { color: appTheme.fontSecondColor }]}>
+        {!!tipping && tipping > 0 && (
+          <Text style={[styles.label, { color: appTheme.fontSecondColor, textAlign: "right" }]}>
+            {t("Pourboire")} : {tipping} F
+          </Text>
+        )}
           {t("Order Amount")}
         </Text>
         <Text

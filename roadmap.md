@@ -58,3 +58,12 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 - [ ] Sessions en cookies sécurisés au lieu du stockage navigateur
 - [ ] Contrôle des rôles validé côté serveur
 - [ ] Suppression des fichiers générés commités, des traces de débogage, alignement des versions
+
+## Fonctions à compléter (28/09)
+- [x] Pourboire livreur
+- [x] Commande programmée
+- [x] Avis et notes
+- [x] Admin : pages Paramètres et Langue
+- [x] Admin : bouton Créditer un client (portefeuille, livraisons, points)
+- [x] Admin : vrais compteurs annulées / en retard / notes
+- [ ] URGENT avant prod : numéro WhatsApp BOUFF

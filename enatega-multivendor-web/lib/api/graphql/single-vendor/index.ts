@@ -736,6 +736,7 @@ export const SINGLE_VENDOR_PLACE_ORDER = gql`
     $isPriority: Boolean
     $idempotencyKey: String
     $checkoutQuoteId: String
+    $scheduledFor: String
   ) {
     placeOrder(
       paymentMethod: $paymentMethod
@@ -750,6 +751,7 @@ export const SINGLE_VENDOR_PLACE_ORDER = gql`
       isPriority: $isPriority
       idempotencyKey: $idempotencyKey
       checkoutQuoteId: $checkoutQuoteId
+      scheduledFor: $scheduledFor
     ) {
       _id
       orderId
@@ -765,6 +767,7 @@ export const SINGLE_VENDOR_PLACE_ORDER = gql`
       orderDate
       expectedTime
       isPickedUp
+      scheduledAt
     }
   }
 `;
@@ -1040,6 +1043,7 @@ export const SINGLE_VENDOR_ORDER_DETAILS = gql`
         deliveredAt
         cancelledAt
         scheduledAt
+        reviewRating
         assignedAt
         instructions
         restaurant {

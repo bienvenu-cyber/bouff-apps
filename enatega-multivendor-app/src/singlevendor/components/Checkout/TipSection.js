@@ -20,13 +20,11 @@ const TipSection = ({ selectedTip, onSelectTip }) => {
   const [showCustomModal, setShowCustomModal] = useState(false)
   const [customAmount, setCustomAmount] = useState('')
 
-  const tipOptions = [1, 2, 3, 5]
-  const MIN_TIP_AMOUNT = 0.5
-  const MAX_TIP_AMOUNT = 50
-  const numericCustomAmount = parseFloat(customAmount)
-  const belowMinTip = !isNaN(numericCustomAmount) && numericCustomAmount > 0 && numericCustomAmount < MIN_TIP_AMOUNT
+  const tipOptions = [0, 200, 500, 1000]
+  const MAX_TIP_AMOUNT = 10000
+  const numericCustomAmount = parseInt(customAmount, 10)
   const exceedsMaxTip = !isNaN(numericCustomAmount) && numericCustomAmount > MAX_TIP_AMOUNT
-  const isInvalidTip = belowMinTip || exceedsMaxTip
+  const isInvalidTip = exceedsMaxTip
 
   const handleCustomTip = () => {
     if (customAmount === '') {
@@ -36,43 +34,35 @@ const TipSection = ({ selectedTip, onSelectTip }) => {
       return
     }
 
-    const amount = parseFloat(customAmount)
-    if (!isNaN(amount) && amount === 0) {
-      onSelectTip(0)
-      setShowCustomModal(false)
-      setCustomAmount('')
-      return
-    }
-
-    if (!isNaN(amount) && amount >= MIN_TIP_AMOUNT && amount <= MAX_TIP_AMOUNT) {
+    const amount = parseInt(customAmount, 10)
+    if (!isNaN(amount) && amount >= 0 && amount <= MAX_TIP_AMOUNT) {
       onSelectTip(amount)
       setShowCustomModal(false)
-      // setCustomAmount('')
     }
   }
 
   return (
     <View style={styles(currentTheme).container}>
       <TextDefault textColor={currentTheme.fontMainColor} bolder H4 isRTL style={styles().sectionTitle}>
-        {t('Tip your courier') || 'Tip your courier'}
+        {t('Tip your courier') || 'Pourboire du livreur'}
       </TextDefault>
 
       <TextDefault textColor={currentTheme.fontSecondColor} small isRTL style={styles().subtitle}>
-        {t('The tip will be paid full to the courier.') || 'The tip will be paid full to the courier.'}
+        {t('The tip will be paid full to the courier.') || 'Le pourboire est intégralement reversé au livreur.'}
       </TextDefault>
 
       <View style={styles().tipOptionsContainer}>
         {tipOptions.map((amount) => (
           <TouchableOpacity key={amount} style={[styles(currentTheme).tipButton, selectedTip === amount && styles(currentTheme).tipButtonSelected]} onPress={() => onSelectTip(amount)} activeOpacity={0.7}>
             <TextDefault textColor={selectedTip === amount ? currentTheme.singleVendorOnBrand : currentTheme.fontMainColor} bold bolder={selectedTip === amount} isRTL>
-              {currencySymbol} {amount}
+              {amount === 0 ? (t('None') || 'Aucun') : `${amount} ${currencySymbol}`}
             </TextDefault>
           </TouchableOpacity>
         ))}
 
         <TouchableOpacity style={[styles(currentTheme).tipButton, !tipOptions.includes(selectedTip) && selectedTip > 0 && styles(currentTheme).tipButtonSelected]} onPress={() => setShowCustomModal(true)} activeOpacity={0.7}>
           <TextDefault textColor={!tipOptions.includes(selectedTip) && selectedTip > 0 ? currentTheme.singleVendorOnBrand : currentTheme.fontMainColor} bold bolder={!tipOptions.includes(selectedTip) && selectedTip > 0} isRTL>
-            + {t('Custom') || 'Custom'}
+            + {t('Custom') || 'Personnalisé'}
           </TextDefault>
         </TouchableOpacity>
       </View>
@@ -82,28 +72,24 @@ const TipSection = ({ selectedTip, onSelectTip }) => {
         <View style={styles().modalOverlay}>
           <View style={styles(currentTheme).modalContent}>
             <TextDefault textColor={currentTheme.fontMainColor} bolder H5 isRTL style={styles().modalTitle}>
-              {t('Enter custom tip amount') || 'Enter custom tip amount'}
+              {t('Enter custom tip amount') || 'Saisir un montant personnalisé'}
             </TextDefault>
 
             <TextInput
               style={[styles(currentTheme).customInput, isInvalidTip && styles().customInputError]}
-              placeholder={`${currencySymbol} 0.00`}
+              placeholder={`0 ${currencySymbol}`}
               placeholderTextColor={currentTheme.fontSecondColor}
-              keyboardType='decimal-pad'
-              maxLength={2}
+              keyboardType='number-pad'
+              maxLength={5}
               value={customAmount}
               onChangeText={(text) => {
-                const sanitized = text.replace(/[^0-9.]/g, '')
-                const parts = sanitized.split('.')
-                const cleaned = parts.length > 2 ? `${parts[0]}.${parts.slice(1).join('')}` : sanitized
-                setCustomAmount(cleaned)
+                const sanitized = text.replace(/[^0-9]/g, '')
+                setCustomAmount(sanitized)
               }}
             />
             {isInvalidTip && (
               <TextDefault textColor='#DC2626' small isRTL style={styles().errorText}>
-                {belowMinTip
-                  ? `${t('Tip must be at least')} ${currencySymbol}${MIN_TIP_AMOUNT}.`
-                  : `${t('Tip cannot exceed')} ${currencySymbol}${MAX_TIP_AMOUNT}. ${t('Please enter a lower amount.')}`}
+                {`${t('Tip cannot exceed') || 'Le pourboire ne peut pas dépasser'} ${MAX_TIP_AMOUNT} ${currencySymbol}.`}
               </TextDefault>
             )}
 
@@ -112,12 +98,11 @@ const TipSection = ({ selectedTip, onSelectTip }) => {
                 style={[styles(currentTheme).modalButton, styles().modalButtonCancel]}
                 onPress={() => {
                   setShowCustomModal(false)
-                  // setCustomAmount('')
                 }}
                 activeOpacity={0.7}
               >
                 <TextDefault textColor={currentTheme.fontMainColor} bolder isRTL>
-                  {t('Cancel') || 'Cancel'}
+                  {t('Cancel') || 'Annuler'}
                 </TextDefault>
               </TouchableOpacity>
 
@@ -128,7 +113,7 @@ const TipSection = ({ selectedTip, onSelectTip }) => {
                 disabled={isInvalidTip}
               >
                 <TextDefault textColor={currentTheme.singleVendorOnBrand} bolder isRTL>
-                  {t('Confirm') || 'Confirm'}
+                  {t('Confirm') || 'Confirmer'}
                 </TextDefault>
               </TouchableOpacity>
             </View>
@@ -144,8 +129,6 @@ const styles = (props = null) =>
     container: {
       paddingHorizontal: scale(16),
       paddingVertical: scale(16)
-      // borderTopWidth: 1,
-      // borderTopColor: props !== null ? props.gray200 : '#E5E7EB'
     },
     sectionTitle: {
       marginBottom: scale(4)
@@ -156,8 +139,6 @@ const styles = (props = null) =>
     tipOptionsContainer: {
       flexDirection: 'row',
       flexWrap: 'wrap'
-      // gap: scale(8)
-      // justifyContent: 'space-between'
     },
     tipButton: {
       paddingVertical: scale(6),
@@ -165,6 +146,7 @@ const styles = (props = null) =>
       borderRadius: scale(4),
       borderWidth: 1,
       marginRight: scale(8),
+      marginBottom: scale(8),
       borderColor: props !== null ? props.gray300 : '#D1D5DB',
       backgroundColor: props !== null ? props.themeBackground : '#fff'
     },

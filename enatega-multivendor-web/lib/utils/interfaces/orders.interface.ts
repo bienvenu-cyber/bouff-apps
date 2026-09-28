@@ -169,6 +169,8 @@ export interface IOrder {
   cancelledAt?: string;
   assignedAt?: string;
   instructions?: string;
+  scheduledAt?: string | null;
+  reviewRating?: number | null;
 }
 
 export interface IOrdersResponse {

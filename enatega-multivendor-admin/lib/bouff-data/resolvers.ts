@@ -748,8 +748,21 @@ export const resolvers: Record<string, Resolver> = {
     const rows = await resolvers.getStoreDetailsByVendorId({ id: vendorId });
     return { totalRestaurants: rows.length, totalOrders: rows.reduce((s: number, r: any) => s + r.totalOrders, 0), totalSales: rows.reduce((s: number, r: any) => s + r.totalSales, 0), totalDeliveries: rows.reduce((s: number, r: any) => s + r.deliveryCount, 0) };
   },
-  async getLiveMonitorData() {
-    return { online_stores: 1, cancelled_orders: 0, delayed_orders: 0, ratings: 0 };
+  async getLiveMonitorData(a) {
+    const { from, to } = dateRange(a);
+    const access0 = await access();
+    const restId = a?.id && a.id !== 'all' ? a.id : (access0.is_super_admin ? null : access0.restaurants?.[0]?.id ?? null);
+    const r = await must(db().rpc('admin_dashboard_counts', {
+      p_restaurant_id: restId,
+      p_from: from,
+      p_to: to,
+    })) as any;
+    return {
+      online_stores: r?.online_stores ?? 0,
+      cancelled_orders: r?.cancelled_orders ?? 0,
+      delayed_orders: r?.delayed_orders ?? 0,
+      ratings: r?.average_rating ?? r?.ratings ?? 0,
+    };
   },
   async getVendorDashboardGrowthDetailsByYear() {
     return { totalRestaurants: Array(12).fill(0), totalOrders: Array(12).fill(0), totalSales: Array(12).fill(0) };
@@ -938,5 +951,54 @@ export const resolvers: Record<string, Resolver> = {
   },
   async fetchShopTypes() {
     return { data: [], totalCount: 0, currentPage: 1, totalPages: 1 };
+  },
+
+  // Notes et Avis
+  async restaurantReviewsPaginated({ restaurantId, page, limit, search, minRating, maxRating }) {
+    const res = await db().rpc('admin_list_reviews', { 
+      p_restaurant_id: restaurantId || null, 
+      p_limit: 200 
+    });
+    let rows = (res.data ?? []) as any[];
+    
+    if (search) {
+        const s = search.toLowerCase();
+        rows = rows.filter(r => 
+            String(r.customer_name ?? '').toLowerCase().includes(s) || 
+            String(r.comment ?? '').toLowerCase().includes(s) ||
+            String(r.order_number ?? '').toLowerCase().includes(s)
+        );
+    }
+    if (minRating !== undefined) rows = rows.filter(r => Number(r.rating) >= minRating);
+    if (maxRating !== undefined) rows = rows.filter(r => Number(r.rating) <= maxRating);
+
+    const data = rows.map(r => ({
+        __typename: 'Review',
+        _id: String(r.id),
+        order: {
+            __typename: 'Order',
+            _id: String(r.id),
+            orderId: String(r.order_number),
+            items: [],
+            user: {
+                __typename: 'User',
+                _id: String(r.customer_name),
+                name: String(r.customer_name),
+                email: ''
+            }
+        },
+        restaurant: {
+            __typename: 'Restaurant',
+            _id: String(r.restaurant_id || r.restaurant || ''),
+            name: String(r.restaurant || ''),
+            image: ''
+        },
+        rating: Number(r.rating),
+        comments: String(r.comment || ''),
+        description: String(r.comment || ''),
+        createdAt: r.created_at
+    }));
+
+    return slice(data, page, limit);
   },
 };

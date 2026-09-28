@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { useMutation } from "@apollo/client";
 import Image from "@/lib/ui/useable-components/safe-image";
 import { IOrderTrackingDetail } from "@/lib/utils/interfaces/order-tracking-detail.interface";
 import CancelOrderModal from "./cancelOrderModal";
@@ -8,6 +9,8 @@ import { onUseLocalStorage } from "@/lib/utils/methods/local-storage";
 import { useConfig } from "@/lib/context/configuration/configuration.context";
 import { useTranslations } from "next-intl";
 import { getOrderVariationPricing } from "../services/tracking-pricing";
+import { ADD_REVIEW_ORDER } from "@/lib/api/graphql/mutations";
+import { ToastContext } from "@/lib/context/global/toast.context";
 
 function TrackingOrderDetails({
   orderTrackingDetails,
@@ -34,6 +37,46 @@ function TrackingOrderDetails({
   const [setshowCancelOrderSuccessModal, setSetshowCancelOrderSuccessModal] =
     useState(orderTrackingDetails?.orderStatus === "CANCELLED" ? true : false);
   const { CURRENCY_SYMBOL } = useConfig();
+  const { showToast } = useContext(ToastContext);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [ratingValue, setRatingValue] = useState(0);
+  const [ratingComment, setRatingComment] = useState("");
+  const [submitReview, { loading: isSubmittingReview }] = useMutation(
+    ADD_REVIEW_ORDER,
+    {
+      onCompleted: () => {
+        showToast({
+          type: "success",
+          title: "Merci !",
+          message: "Votre avis a bien été envoyé.",
+          duration: 3000,
+        });
+        setReviewSubmitted(true);
+      },
+      onError: (mutationError) => {
+        showToast({
+          type: "error",
+          title: "Avis non envoyé",
+          message: mutationError.message,
+          duration: 4000,
+        });
+      },
+    },
+  );
+  const canReviewOrder =
+    orderTrackingDetails?.orderStatus === "DELIVERED" &&
+    orderTrackingDetails?.reviewRating == null &&
+    !reviewSubmitted;
+  const handleSubmitReview = () => {
+    if (!ratingValue) return;
+    void submitReview({
+      variables: {
+        order: orderTrackingDetails._id,
+        rating: ratingValue,
+        description: ratingComment.trim() || undefined,
+      },
+    });
+  };
   // Format currency values
   const formatCurrency = (amount: number) => {
     return `${CURRENCY_SYMBOL}${amount?.toFixed(2) || "0.00"}`;
@@ -164,6 +207,23 @@ function TrackingOrderDetails({
               {orderTrackingDetails?.orderId}
             </h1>
           </div>
+          {orderTrackingDetails?.scheduledAt && (
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+              Programmée pour{" "}
+              {new Date(orderTrackingDetails.scheduledAt).toLocaleString("fr-FR", {
+                weekday: "long",
+                day: "2-digit",
+                month: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </p>
+          )}
+          {(orderTrackingDetails?.tipping ?? 0) > 0 && (
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+              Pourboire livreur : {formatCurrency(orderTrackingDetails.tipping)}
+            </p>
+          )}
         </div>
         <h3 className="text-lg font-semibold mb-2 dark:text-gray-100">
           {t("order_details_heading")}
@@ -397,6 +457,42 @@ function TrackingOrderDetails({
           </span>
         </div>
       </div>
+
+      {/* Noter ma commande - shown once delivered without an existing review */}
+      {canReviewOrder && (
+        <div className="rounded-xl border p-4 dark:border-gray-700">
+          <h4 className="font-semibold mb-3 dark:text-gray-100">
+            Noter ma commande
+          </h4>
+          <div className="flex gap-1 mb-3">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setRatingValue(star)}
+                aria-label={`${star} étoile${star > 1 ? "s" : ""}`}
+                className={`pi ${
+                  star <= ratingValue ? "pi-star-fill text-yellow-500" : "pi-star text-gray-400"
+                } text-2xl`}
+              />
+            ))}
+          </div>
+          <textarea
+            value={ratingComment}
+            onChange={(event) => setRatingComment(event.target.value)}
+            placeholder="Votre commentaire (facultatif)"
+            className="w-full rounded-xl border border-gray-200 bg-transparent p-3 dark:border-gray-700 dark:text-white"
+          />
+          <button
+            type="button"
+            disabled={!ratingValue || isSubmittingReview}
+            onClick={handleSubmitReview}
+            className="mt-3 w-full rounded-full bg-primary-color px-5 py-2.5 font-semibold text-white disabled:opacity-50"
+          >
+            {isSubmittingReview ? "Envoi en cours…" : "Envoyer mon avis"}
+          </button>
+        </div>
+      )}
 
       {/* Cancel Button - only show for pending/accepted orders */}
       {showCancelAction && canCancelOrder() && (

@@ -311,9 +311,9 @@ const Checkout = (props) => {
       couponCode: selectedVoucher?._id || '',
       instructions: orderData?.deliveryPreferences?.courierInstructions || '',
       scheduleData: {
-        scheduleTimeId: selectedSchedule?.timeSlot?.id || null,
         isScheduled: deliveryTime === 'schedule',
-        dayId: selectedSchedule?.dayId || null
+        date: selectedSchedule?.date || null,
+        startTime: selectedSchedule?.timeSlot?.startTime || null
       },
 
       isPriority: deliveryTime === 'priority',

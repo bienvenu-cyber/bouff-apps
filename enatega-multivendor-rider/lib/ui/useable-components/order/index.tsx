@@ -148,6 +148,8 @@ const Order = ({
   user,
   eta,
   tab,
+  tipping,
+  scheduledAt,
 }: IOrderComponentProps) => {
   const { t } = useTranslation();
   const { appTheme } = useApptheme();
@@ -204,7 +206,8 @@ const Order = ({
     backendEtaWindowStart && backendEtaWindowEnd
       ? `${backendEtaWindowStart}–${backendEtaWindowEnd}`
       : null;
-  const deliveryTimeLabel =
+  const scheduledTime = scheduledAt ? new Date(scheduledAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : null;
+  const deliveryTimeLabel = scheduledTime ? `${t("Scheduled")} ${scheduledTime}` :
     backendEtaWindow ?? (etaMinutes !== null ? `${etaMinutes} mins` : "—");
 
   if (
@@ -283,6 +286,7 @@ const Order = ({
           currencySymbol={configuration?.currencySymbol}
           paymentMethod={paymentMethod}
           paymentStatus={paymentStatus}
+          tipping={tipping}
         />
 
         <View style={styles.detailAffordance}>

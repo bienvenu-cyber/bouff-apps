@@ -17,6 +17,8 @@ export interface IOrderComponentProps extends IGlobalComponentProps {
   acceptedAt: IOrder['acceptedAt'];
   user: IOrder['user'];
   eta?: IOrder['eta'];
+  tipping?: number;
+  scheduledAt?: string;
 }
 
 export interface IOrder {
@@ -76,4 +78,6 @@ export interface IOrder {
   isRiderRinged: boolean;
   rider: IRiderProfile;
   restaurant: IRestaurantProfile;
+  tipping?: number;
+  scheduledAt?: string;
 }

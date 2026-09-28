@@ -139,4 +139,5 @@ export interface IOrder {
   isRiderRinged: boolean;
   instructions?: string;
   discountAmount: number
+  scheduledAt?: string;
 }

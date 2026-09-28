@@ -78,6 +78,11 @@ export async function placeOrder(variables: Record<string, any>) {
     note: line.line.note ?? null,
   }));
 
+  const rawTip = Number(variables.tipping ?? variables.tip ?? 0);
+  const tipFcfa = !isPickedUp && Number.isFinite(rawTip) ? Math.max(0, Math.round(rawTip)) : 0;
+  const scheduledForRaw = variables.scheduledFor ?? variables.scheduledAt ?? null;
+  const scheduledFor = scheduledForRaw ? new Date(scheduledForRaw).toISOString() : null;
+
   const { data, error } = await db.rpc("place_order", {
     p_restaurant_id: cart.menu.restaurant.id,
     p_customer_name: who.name,
@@ -88,6 +93,8 @@ export async function placeOrder(variables: Record<string, any>) {
     p_delivery_address: isPickedUp ? null : address,
     p_payment_method: paymentMethodFor(variables.paymentMethod),
     p_note: variables.instructions ?? variables.specialInstructions ?? null,
+    p_tip_fcfa: tipFcfa,
+    p_scheduled_for: scheduledFor,
   });
   if (error) throw new Error(error.message);
 
@@ -113,10 +120,11 @@ export async function placeOrder(variables: Record<string, any>) {
     paymentStatus: "PENDING",
     orderStatus: "PENDING",
     deliveryCharges: result.delivery_fee_fcfa,
-    tipping: 0,
+    tipping: result.tip_fcfa ?? 0,
     taxationAmount: 0,
     createdAt: new Date().toISOString(),
     orderDate: new Date().toISOString(),
+    scheduledAt: result.scheduled_for ?? null,
     expectedTime: null,
     isPickedUp,
   };
@@ -148,6 +156,8 @@ export async function activeOrders(limit?: number, page?: number) {
     restaurant: { name: menu.restaurant.name, image: menu.restaurant.logo },
     orderAmount: o.total_fcfa,
     orderStatus: STATUS_MAP[o.status] ?? "PENDING",
+    tipping: o.tip_fcfa ?? 0,
+    scheduledAt: o.scheduled_for ?? null,
     createdAt: o.created_at,
     orderDate: o.created_at,
     expectedTime: null,
@@ -156,17 +166,40 @@ export async function activeOrders(limit?: number, page?: number) {
 
 export async function pastOrders(limit?: number, page?: number) {
   const menu = await loadMenu();
-  return (await orderRows(PAST, limit ?? 20, page ?? 1)).map((o) => ({
-    _id: o.id,
-    orderId: o.order_number,
-    restaurant: { name: menu.restaurant.name, image: menu.restaurant.logo },
-    orderAmount: o.total_fcfa,
-    orderStatus: STATUS_MAP[o.status] ?? "DELIVERED",
-    createdAt: o.created_at,
-    completionTime: o.delivered_at,
-    orderDate: o.created_at,
-    deliveredAt: o.delivered_at,
-  }));
+  const rows = await orderRows(PAST, limit ?? 20, page ?? 1);
+  const reviews = await reviewsByOrderIds(rows.map((o) => o.id));
+  return rows.map((o) => {
+    const review = reviews.get(o.id) ?? null;
+    return {
+      _id: o.id,
+      orderId: o.order_number,
+      restaurant: { name: menu.restaurant.name, image: menu.restaurant.logo },
+      orderAmount: o.total_fcfa,
+      orderStatus: STATUS_MAP[o.status] ?? "DELIVERED",
+      tipping: o.tip_fcfa ?? 0,
+      scheduledAt: o.scheduled_for ?? null,
+      createdAt: o.created_at,
+      completionTime: o.delivered_at,
+      orderDate: o.created_at,
+      deliveredAt: o.delivered_at,
+      review,
+    };
+  });
+}
+
+// Récupère les avis déjà déposés pour un lot de commandes (client connecté uniquement).
+async function reviewsByOrderIds(orderIds: string[]) {
+  const map = new Map<string, { _id: string; rating: number; description: string | null }>();
+  if (!orderIds.length) return map;
+  const db = bouffDb();
+  const { data } = await db
+    .from("order_reviews")
+    .select("id, order_id, rating, comment")
+    .in("order_id", orderIds);
+  for (const r of data ?? []) {
+    map.set(r.order_id, { _id: r.id, rating: r.rating, description: r.comment ?? null });
+  }
+  return map;
 }
 
 // Suivi sans compte : la commande n'est pas lisible directement (verrou base),
@@ -218,7 +251,7 @@ async function guestOrderDetails(orderNumber: string, menu: any) {
     paidAmount: 0,
     orderAmount: t.total_fcfa,
     paymentStatus: "PENDING",
-    tipping: 0,
+    tipping: t.tip_fcfa ?? 0,
     taxationAmount: 0,
     createdAt: t.created_at,
     completionTime: t.delivered_at,
@@ -232,7 +265,9 @@ async function guestOrderDetails(orderNumber: string, menu: any) {
     pickedAt: t.picked_up_at,
     deliveredAt: t.delivered_at,
     cancelledAt: t.cancelled_at,
-    scheduledAt: null,
+    scheduledAt: t.scheduled_for ?? null,
+    reviewRating: t.review_rating ?? null,
+    review: t.review_rating ? { _id: orderNumber, rating: t.review_rating, description: null } : null,
     assignedAt: t.accepted_at,
     instructions: t.cancel_reason,
     restaurant: {
@@ -307,6 +342,11 @@ export async function orderDetails(orderId: string) {
         .eq("id", order.rider_id)
         .maybeSingle()
     : { data: null };
+  const { data: review } = await db
+    .from("order_reviews")
+    .select("id, rating, comment")
+    .eq("order_id", order.id)
+    .maybeSingle();
 
   const mappedItems = (items ?? []).map((i) => ({
     _id: i.id,
@@ -344,7 +384,7 @@ export async function orderDetails(orderId: string) {
     paidAmount: 0,
     orderAmount: order.total_fcfa,
     paymentStatus: "PENDING",
-    tipping: 0,
+    tipping: order.tip_fcfa ?? 0,
     taxationAmount: 0,
     createdAt: order.created_at,
     completionTime: order.delivered_at,
@@ -358,7 +398,9 @@ export async function orderDetails(orderId: string) {
     pickedAt: order.picked_up_at,
     deliveredAt: order.delivered_at,
     cancelledAt: order.cancelled_at,
-    scheduledAt: null,
+    scheduledAt: order.scheduled_for ?? null,
+    reviewRating: review?.rating ?? null,
+    review: review ? { _id: review.id, rating: review.rating, description: review.comment ?? null } : null,
     assignedAt: order.accepted_at,
     instructions: order.note,
     restaurant: {
@@ -570,4 +612,51 @@ export async function cancelOrder(idOrNumber: string) {
     reason: "Annulée par le client",
     eta: null,
   };
+}
+
+
+// Avis client : notation d'une commande livrée (une seule fois).
+export async function submitReview(
+  orderIdOrNumber: string,
+  rating: number,
+  description?: string | null,
+  comments?: string | null,
+) {
+  const db = bouffDb();
+  let orderNumber = orderIdOrNumber;
+  let phone: string | null = getGuest()?.phone ?? null;
+  if (orderIdOrNumber.includes("-") && orderIdOrNumber.length > 20) {
+    const { data: order } = await db
+      .from("orders")
+      .select("order_number, customer_phone")
+      .eq("id", orderIdOrNumber)
+      .maybeSingle();
+    if (order) {
+      orderNumber = order.order_number;
+      phone = order.customer_phone;
+    }
+  }
+  const comment = [description, comments].filter(Boolean).join(" — ") || null;
+  const { error } = await db.rpc("submit_order_review", {
+    p_order_number: orderNumber,
+    p_phone: phone,
+    p_rating: rating,
+    p_comment: comment,
+  });
+  if (error) throw new Error(error.message);
+
+  const details = await orderDetails(orderIdOrNumber);
+  const review = { _id: orderIdOrNumber, rating, description: description ?? null };
+  return details?.rawOrder ? { ...details.rawOrder, review, reviewRating: rating } : { _id: orderIdOrNumber, review, reviewRating: rating };
+}
+
+// Note moyenne du restaurant (avis clients).
+export async function restaurantRating() {
+  const menu = await loadMenu();
+  const { data, error } = await bouffDb().rpc("restaurant_rating", {
+    p_restaurant_id: menu.restaurant.id,
+  });
+  if (error || !data) return { average: 0, count: 0 };
+  const r = data as { average: number; count: number };
+  return { average: r.average ?? 0, count: r.count ?? 0 };
 }

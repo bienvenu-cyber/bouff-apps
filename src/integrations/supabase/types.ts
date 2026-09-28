@@ -693,6 +693,54 @@ export type Database = {
           },
         ]
       }
+      order_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          customer_name: string | null
+          id: string
+          order_id: string
+          rating: number
+          restaurant_id: string
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          customer_name?: string | null
+          id?: string
+          order_id: string
+          rating: number
+          restaurant_id: string
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          customer_name?: string | null
+          id?: string
+          order_id?: string
+          rating?: number
+          restaurant_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_reviews_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           accepted_at: string | null
@@ -724,7 +772,9 @@ export type Database = {
           ready_at: string | null
           restaurant_id: string
           rider_id: string | null
+          scheduled_for: string | null
           status: Database["public"]["Enums"]["order_status"]
+          tip_fcfa: number
           total_fcfa: number
           updated_at: string
           wallet_used_fcfa: number
@@ -759,7 +809,9 @@ export type Database = {
           ready_at?: string | null
           restaurant_id: string
           rider_id?: string | null
+          scheduled_for?: string | null
           status?: Database["public"]["Enums"]["order_status"]
+          tip_fcfa?: number
           total_fcfa?: number
           updated_at?: string
           wallet_used_fcfa?: number
@@ -794,7 +846,9 @@ export type Database = {
           ready_at?: string | null
           restaurant_id?: string
           rider_id?: string | null
+          scheduled_for?: string | null
           status?: Database["public"]["Enums"]["order_status"]
+          tip_fcfa?: number
           total_fcfa?: number
           updated_at?: string
           wallet_used_fcfa?: number
@@ -1395,7 +1449,9 @@ export type Database = {
           ready_at: string | null
           restaurant_id: string
           rider_id: string | null
+          scheduled_for: string | null
           status: Database["public"]["Enums"]["order_status"]
+          tip_fcfa: number
           total_fcfa: number
           updated_at: string
           wallet_used_fcfa: number
@@ -1417,6 +1473,11 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_customer_rewards: { Args: { p_user: string }; Returns: Json }
+      admin_dashboard_counts: {
+        Args: { p_from?: string; p_restaurant_id?: string; p_to?: string }
+        Returns: Json
+      }
       admin_find_user: { Args: { p_email: string }; Returns: string }
       admin_grant_reward: {
         Args: {
@@ -1430,6 +1491,10 @@ export type Database = {
       }
       admin_list_customers: {
         Args: { p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: Json
+      }
+      admin_list_reviews: {
+        Args: { p_limit?: number; p_restaurant_id?: string }
         Returns: Json
       }
       admin_list_staff: {
@@ -1495,7 +1560,9 @@ export type Database = {
           ready_at: string | null
           restaurant_id: string
           rider_id: string | null
+          scheduled_for: string | null
           status: Database["public"]["Enums"]["order_status"]
+          tip_fcfa: number
           total_fcfa: number
           updated_at: string
           wallet_used_fcfa: number
@@ -1559,7 +1626,9 @@ export type Database = {
           ready_at: string | null
           restaurant_id: string
           rider_id: string | null
+          scheduled_for: string | null
           status: Database["public"]["Enums"]["order_status"]
+          tip_fcfa: number
           total_fcfa: number
           updated_at: string
           wallet_used_fcfa: number
@@ -1585,6 +1654,10 @@ export type Database = {
       ensure_referral_code: { Args: { p_user: string }; Returns: string }
       is_restaurant_open: {
         Args: { p_restaurant_id: string }
+        Returns: boolean
+      }
+      is_time_in_hours: {
+        Args: { p_at: string; p_restaurant_id: string }
         Returns: boolean
       }
       list_order_messages: {
@@ -1635,6 +1708,8 @@ export type Database = {
           p_order_type: Database["public"]["Enums"]["order_type"]
           p_payment_method?: Database["public"]["Enums"]["payment_method"]
           p_restaurant_id: string
+          p_scheduled_for?: string
+          p_tip_fcfa?: number
           p_use_wallet?: boolean
         }
         Returns: Json
@@ -1688,6 +1763,7 @@ export type Database = {
         Args: { p_platform?: string; p_token: string }
         Returns: Json
       }
+      restaurant_rating: { Args: { p_restaurant_id: string }; Returns: Json }
       restaurant_stats: {
         Args: { p_from?: string; p_restaurant_id: string; p_to?: string }
         Returns: Json
@@ -1740,7 +1816,9 @@ export type Database = {
           ready_at: string | null
           restaurant_id: string
           rider_id: string | null
+          scheduled_for: string | null
           status: Database["public"]["Enums"]["order_status"]
+          tip_fcfa: number
           total_fcfa: number
           updated_at: string
           wallet_used_fcfa: number
@@ -1880,6 +1958,15 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      submit_order_review: {
+        Args: {
+          p_comment?: string
+          p_order_number: string
+          p_phone: string
+          p_rating: number
+        }
+        Returns: Json
       }
       track_order: {
         Args: { p_order_number: string; p_phone: string }
