@@ -67,8 +67,6 @@ export default function EarningTableHeader({
   const paymentTypes = [
     { label: t('All'), value: PaymentMethodEnum.ALL },
     { label: t('COD'), value: PaymentMethodEnum.COD },
-    { label: t('PayPal'), value: PaymentMethodEnum.PAYPAL },
-    { label: t('Stripe'), value: PaymentMethodEnum.STRIPE },
   ];
 
   // Handlers
