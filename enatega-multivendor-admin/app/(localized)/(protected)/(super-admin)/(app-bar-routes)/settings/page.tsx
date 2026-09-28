@@ -210,6 +210,8 @@ export default function SettingsPage() {
                   min={0}
                   showLabel
                   name="min_order_fcfa"
+                  prefix=""
+                  suffix=" F"
                   placeholder="Minimum de commande (FCFA)"
                   value={values.min_order_fcfa}
                   onChange={(name, val) => setFieldValue(name, val)}
@@ -242,6 +244,7 @@ export default function SettingsPage() {
                   min={0}
                   showLabel
                   name="max_active_orders_per_phone"
+                  prefix=""
                   placeholder="Max commandes actives / téléphone"
                   value={values.max_active_orders_per_phone}
                   onChange={(name, val) => setFieldValue(name, val)}
@@ -250,6 +253,7 @@ export default function SettingsPage() {
                   min={0}
                   showLabel
                   name="max_orders_per_phone_hour"
+                  prefix=""
                   placeholder="Max commandes / heure / téléphone"
                   value={values.max_orders_per_phone_hour}
                   onChange={(name, val) => setFieldValue(name, val)}
