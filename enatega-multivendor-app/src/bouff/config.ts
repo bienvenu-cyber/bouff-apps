@@ -23,3 +23,8 @@ export const CART_STORAGE_KEY = "bouff/cart";
 export const ZONE_STORAGE_KEY = "bouff/delivery-zone";
 export const GUEST_STORAGE_KEY = "bouff/guest";
 export const ADDRESSES_STORAGE_KEY = "bouff/addresses";
+
+// Adresse du site client qui sert les photos du menu (chemins « /bouff/... »).
+export const MEDIA_BASE_URL = (
+  process.env.EXPO_PUBLIC_BOUFF_WEB_URL ?? "https://bouff-apps.vercel.app"
+).replace(/\/$/, "");

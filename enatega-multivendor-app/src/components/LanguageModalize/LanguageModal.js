@@ -71,7 +71,7 @@ const LanguageModal = ({ modalVisible, setModalVisible, currentTheme, showCrossB
       const availableLanguageCodes = languageTypes.map((lang) => lang.code)
 
       // Determine which language to use
-      let languageToUse = 'en' // Default to English
+      let languageToUse = i18next.language || 'fr' // BOUFF : français par défaut
 
       if (storedLanguageCode) {
         // Use stored language if it's valid

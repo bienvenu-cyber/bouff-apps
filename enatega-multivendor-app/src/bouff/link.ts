@@ -234,6 +234,20 @@ const resolvers: Record<string, Resolver> = {
     };
   },
   SingleVendorBanners: async () => ({ banners: [] }),
+  GetScheduleUntilNextDayOff: async () => {
+    const menu = await loadMenu();
+    const hm = (t: string | null) => (t ? t.slice(0, 5) : null);
+    const opens = hm(menu.restaurant.opensAt);
+    const closes = hm(menu.restaurant.closesAt);
+    return {
+      getScheduleUntilNextDayOff: {
+        __typename: "Schedule",
+        openDaysString: "MON-SUN",
+        openDaysTimes: opens && closes ? `${opens} – ${closes}` : null,
+        saturdaySlotString: null,
+      },
+    };
+  },
   Banners: async () => ({ banners: [] }),
   SingleVendorDiscovery: async () => {
     const menu = await loadMenu();

@@ -72,6 +72,16 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Photos BOUFF : mises en cache 1 jour (CDN + téléphones), revalidées ensuite.
+        source: "/bouff/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=86400, stale-while-revalidate=604800",
+          },
+        ],
+      },
+      {
         source: "/(.*)",
         headers: [
           {

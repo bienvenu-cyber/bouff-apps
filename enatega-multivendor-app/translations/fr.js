@@ -572,6 +572,7 @@ secureAccountWithPhone: 'Nous n’utiliserons votre numéro que si nous devons v
   OrderHistory: 'Historique des commandes',
   Account: 'Compte',
   openingHours: "Heures d'ouverture",
+  hoursUnavailable: 'Horaires indisponibles',
   deliveryInformation: 'Informations de livraison',
   contact: 'Contact',
   viewWebsite: 'Voir le site web',

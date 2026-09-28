@@ -13,6 +13,7 @@ import {
 import styles from './styles'
 
 const LANGUAGES = [
+  { code: 'fr', name: 'Français', subtitle: 'French' },
   { code: 'en', name: 'English', subtitle: 'English' },
   { code: 'ar', name: 'العربية', subtitle: 'Arabic' },
   { code: 'az', name: 'Azərbaycan', subtitle: 'Azerbaijani' },
@@ -20,7 +21,6 @@ const LANGUAGES = [
   { code: 'de', name: 'Deutsch', subtitle: 'German' },
   { code: 'es', name: 'Español', subtitle: 'Spanish' },
   { code: 'fa', name: 'فارسی', subtitle: 'Persian' },
-  { code: 'fr', name: 'Français', subtitle: 'French' },
   { code: 'gu', name: 'ગુજરાતી', subtitle: 'Gujarati' },
   { code: 'he', name: 'עברית', subtitle: 'Hebrew' },
   { code: 'hi', name: 'हिन्दी', subtitle: 'Hindi' },
@@ -57,7 +57,7 @@ const SecuritySettings = () => {
 
   const getCurrentLanguageName = () => {
     const lang = LANGUAGES.find((l) => l.code === i18n.language)
-    return lang?.name || 'English'
+    return lang?.name || 'Français'
   }
 
   const menuItems = [
