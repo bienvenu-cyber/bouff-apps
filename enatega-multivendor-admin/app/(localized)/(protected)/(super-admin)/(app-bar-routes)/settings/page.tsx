@@ -1,7 +1,8 @@
 'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useState } from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { bouffDb } from '@/lib/bouff-data/supabase';
 import HeaderText from '@/lib/ui/useable-components/header-text';
@@ -12,7 +13,6 @@ import Toggle from '@/lib/ui/useable-components/toggle';
 import CustomButton from '@/lib/ui/useable-components/button';
 import CustomDropdownComponent from '@/lib/ui/useable-components/custom-dropdown';
 import useToast from '@/lib/hooks/useToast';
-import { useTranslations } from 'next-intl';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Le nom est requis'),
@@ -23,7 +23,6 @@ const validationSchema = Yup.object().shape({
 
 export default function SettingsPage() {
   const { showToast } = useToast();
-  const t = useTranslations();
   const [restaurants, setRestaurants] = useState<any[]>([]);
   const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
   const [initialValues, setInitialValues] = useState<any>(null);
