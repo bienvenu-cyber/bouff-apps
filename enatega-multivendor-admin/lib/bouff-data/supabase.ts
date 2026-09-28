@@ -32,24 +32,35 @@ export function bouffDb(): SupabaseClient {
  * Crée (ou retrouve) un compte pour un membre de l'équipe, sans toucher
  * à la session de l'admin connecté.
  */
+const STAFF_API_URL = (
+  process.env.NEXT_PUBLIC_BOUFF_STAFF_API_URL ?? 'https://bouff-web.lovable.app'
+).replace(/\/$/, '');
+
+/**
+ * Crée (ou retrouve) un compte pour un membre de l'équipe, déjà confirmé
+ * (pas d'e-mail à valider), sans toucher à la session de l'admin connecté.
+ */
 export async function createStaffAccount(
   email: string,
   password?: string
 ): Promise<string> {
   const clean = email.trim().toLowerCase();
-  const existing = await bouffDb().rpc('admin_find_user', { p_email: clean });
-  if (existing.data) return existing.data as string;
-  if (!password || password.length < 6) {
-    throw new Error('Mot de passe requis (6 caractères minimum) pour un nouveau compte.');
+  const { data: session } = await bouffDb().auth.getSession();
+  const token = session.session?.access_token;
+  if (!token) throw new Error('Session expirée : reconnectez-vous.');
+  let res: Response;
+  try {
+    res = await fetch(`${STAFF_API_URL}/api/staff/create`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ email: clean, password: password || undefined }),
+    });
+  } catch {
+    throw new Error('Serveur BOUFF injoignable. Vérifiez la connexion.');
   }
-  const temp = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false, storageKey: 'bouff-admin-temp' },
-  });
-  const { data, error } = await temp.auth.signUp({ email: clean, password });
-  if (error) throw new Error(error.message);
-  const id = data.user?.id;
-  if (!id) throw new Error('Création du compte impossible.');
-  return id;
+  const body = (await res.json().catch(() => ({}))) as { id?: string; error?: string };
+  if (!res.ok || !body.id) throw new Error(body.error ?? 'Création du compte impossible.');
+  return body.id;
 }
 
 /** Envoie une image (data URL) dans l'espace photos et renvoie un lien durable. */
