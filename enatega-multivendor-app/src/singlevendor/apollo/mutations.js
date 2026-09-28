@@ -325,3 +325,12 @@ export const GIVE_FEEDBACK = gql`
     }
   }
 `
+
+export const APPLY_REFERRAL_CODE = gql`
+  mutation ApplyReferralCode($code: String!) {
+    applyReferralCode(code: $code) {
+      success
+      message
+    }
+  }
+`

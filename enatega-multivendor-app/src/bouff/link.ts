@@ -517,9 +517,49 @@ const resolvers: Record<string, Resolver> = {
       couponType: c.kind === "percent" ? "percentage" : "flat",
     })),
   }),
-  GetAllUserCredits: async () => ({ getAllUserCredits: { credits: 0 } }),
+  GetAllUserCredits: async () => ({
+    getAllUserCredits: { credits: (await engagement.myRewards()).wallet_fcfa },
+  }),
+  GetUserCreditsHistory: async () => {
+    const r = await engagement.myRewards();
+    const uid = await currentUserId();
+    const labels: Record<string, string> = {
+      loyalty: "Fidélité",
+      refund: "Remboursement",
+      admin: "Cadeau BOUFF",
+      used: "Utilisé sur une commande",
+      reversal: "Commande annulée, rendu",
+      referral: "Parrainage",
+      welcome: "Bienvenue",
+      milestone: "Palier fidélité",
+    };
+    return {
+      getUserCreditsHistory: r.history
+        .filter((h) => h.kind === "wallet")
+        .map((h) => ({
+          _id: h.id,
+          amount: h.amount,
+          orderId: h.order_number,
+          recordType: h.note || labels[h.reason] || "Crédit",
+          createdAt: h.created_at,
+          updatedAt: h.created_at,
+          userId: { _id: uid, name: null, email: null },
+        })),
+    };
+  },
+  GetMyFreeDeliveries: async () => ({
+    getMyFreeDeliveries: (await engagement.myRewards()).free_deliveries,
+  }),
   GetAllSubscriptionPlans: async () => ({ getAllSubscriptionPlans: { plans: [] } }),
-  GetMyReferralCode: async () => ({ getMyReferralCode: null }),
+  GetMyReferralCode: async () => ({
+    getMyReferralCode: (await engagement.myRewards()).referral_code,
+  }),
+  CheckReferralCodeExists: async (v) => ({
+    checkReferralCodeExists: await engagement.checkReferralCode(String(v.referralCode ?? "")),
+  }),
+  ApplyReferralCode: async (v) => ({
+    applyReferralCode: await engagement.applyReferralCode(String(v.code ?? "")),
+  }),
 
   /* ================================================================ */
   /* App mobile client (mode restaurant unique)                        */
