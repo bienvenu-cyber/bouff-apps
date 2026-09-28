@@ -510,7 +510,7 @@ function Account(props) {
                     detail={''}
                     status='null'
                     onPress={() => {
-                      Linking.openURL('https://multivendor.enatega.com/terms')
+                      Linking.openURL('https://bouff-apps.vercel.app/terms')
                     }}
                   />
                   <Divider insetStart={tokens.spacing.lg} insetEnd={tokens.spacing.lg} />
@@ -520,7 +520,7 @@ function Account(props) {
                     detail={''}
                     status='null'
                     onPress={() => {
-                      Linking.openURL('https://multivendor.enatega.com/privacy')
+                      Linking.openURL('https://bouff-apps.vercel.app/privacy')
                     }}
                   />
                 </View>

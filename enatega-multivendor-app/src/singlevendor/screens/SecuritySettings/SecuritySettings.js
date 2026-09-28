@@ -76,12 +76,12 @@ const SecuritySettings = () => {
     {
       id: 'terms',
       title: t('temrConditions'),
-      onPress: () => Linking.openURL('https://multivendor.enatega.com/terms')
+      onPress: () => Linking.openURL('https://bouff-apps.vercel.app/terms')
     },
     {
       id: 'privacy',
       title: t('privacyPolicy'),
-      onPress: () => Linking.openURL('https://multivendor.enatega.com/privacy')
+      onPress: () => Linking.openURL('https://bouff-apps.vercel.app/privacy')
     }
   ]
 

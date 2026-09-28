@@ -88,8 +88,6 @@ export const useLogin = () => {
         emailRef.current === singleVendorDemoCredentials.email
       ) {
         setPassword(singleVendorDemoCredentials.password)
-      } else if (emailRef.current === 'demo-customer@enatega.com') {
-        setPassword('123123')
       } else {
         setPassword('')
       }
