@@ -6,14 +6,12 @@ import { getUserLocale, setUserLocale } from '@/lib/utils/methods/locale';
 import HeaderText from '@/lib/ui/useable-components/header-text';
 import { TLocale } from '@/lib/utils/types/locale';
 import useToast from '@/lib/hooks/useToast';
-import { useTranslations } from 'next-intl';
 
 export default function LanguagePage() {
   const [currentLocale, setCurrentLocale] = useState<string>('');
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const { showToast } = useToast();
-  const t = useTranslations();
 
   useEffect(() => {
     getUserLocale().then((locale) => {
