@@ -6,7 +6,7 @@ import {
   resolveZoneId,
 } from "./cart";
 import { getGuest, setGuest } from "./auth";
-import { checkCoupon, rememberCoupon, rewardsQuote, resetRewards } from "./engagement";
+import { checkCoupon, getUseWallet, rememberCoupon, rewardsQuote, resetRewards } from "./engagement";
 import { loadMenu } from "./catalog";
 import { rememberGuestOrder } from "./notifications";
 
@@ -90,6 +90,7 @@ export async function placeOrder(variables: Record<string, any>) {
     p_payment_method: paymentMethodFor(variables.paymentMethod),
     p_note: variables.instructions ?? variables.specialInstructions ?? null,
     p_coupon_code: String(variables.couponCode ?? "").trim() || null,
+    p_use_wallet: getUseWallet(),
   });
   if (error) throw new Error(error.message);
 
