@@ -13,6 +13,7 @@ import {
   RESET_USER_SESSION,
 } from '@/lib/api/graphql/mutations/user';
 import useToast from '@/lib/hooks/useToast';
+import { CreditCustomerDialog } from './CreditCustomerDialog';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -26,6 +27,7 @@ type ModalType =
   | 'activate'
   | 'reset'
   | 'notes'
+  | 'credit'
   | null;
 
 interface ActionMenuProps {
@@ -213,6 +215,11 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
       label: t('internal_note'),
       icon: 'pi pi-file-edit',
       command: () => setActiveModal('notes'),
+    },
+    {
+      label: 'Créditer',
+      icon: 'pi pi-wallet',
+      command: () => setActiveModal('credit'),
     },
     {
       separator: true,
@@ -508,6 +515,13 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
           />
         </div>
       </CustomDialog>
+
+      <CreditCustomerDialog
+        visible={activeModal === 'credit'}
+        onHide={() => setActiveModal(null)}
+        userId={rowData._id}
+        userName={rowData.name}
+      />
     </div>
   );
 };

@@ -358,9 +358,12 @@ const resolvers: Record<string, Resolver> = {
     };
   },
   GetWeeklyFoodsDeals: async () => ({ getWeeklyFoodsDeals: { items: [] } }),
+  // Programmation : créneaux de 15 minutes pour aujourd'hui / demain / après-demain,
+  // dans les horaires d'ouverture (qui peuvent finir après minuit), entre
+  // maintenant+30 min et maintenant+2 jours (bornes appliquées côté RPC place_order).
   GetScheduleByDay: async () => {
     const menu = await loadMenu();
-    const days = [
+    const dayNames = [
       "Dimanche",
       "Lundi",
       "Mardi",
@@ -369,26 +372,51 @@ const resolvers: Record<string, Resolver> = {
       "Vendredi",
       "Samedi",
     ];
-    return {
-      getScheduleByDay: days.map((day, index) => ({
-        date: null,
-        day,
-        dayId: index,
-        timings: [
-          {
-            id: `${index}`,
-            times: [
-              {
-                id: `${index}-1`,
-                startTime: menu.restaurant.opensAt ?? "10:00",
-                endTime: menu.restaurant.closesAt ?? "23:00",
-                maxOrder: null,
-              },
-            ],
-          },
-        ],
-      })),
-    };
+    const opensAt = (menu.restaurant.opensAt ?? "10:00").slice(0, 5);
+    const closesAt = (menu.restaurant.closesAt ?? "23:00").slice(0, 5);
+    const crossesMidnight = closesAt <= opensAt;
+
+    const now = new Date();
+    const minTime = new Date(now.getTime() + 30 * 60_000);
+    const maxTime = new Date(now.getTime() + 2 * 24 * 60 * 60_000);
+
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const toDateKey = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+    const schedule = [0, 1, 2].map((offset) => {
+      const dayDate = new Date(now);
+      dayDate.setDate(dayDate.getDate() + offset);
+      dayDate.setHours(0, 0, 0, 0);
+      const dateKey = toDateKey(dayDate);
+
+      const slots: { id: string; startTime: string; endTime: string; maxOrder: null }[] = [];
+      const [oh, om] = opensAt.split(":").map(Number);
+      const [ch, cm] = closesAt.split(":").map(Number);
+      let cursor = new Date(dayDate);
+      cursor.setHours(oh, om, 0, 0);
+      const closeBoundary = new Date(dayDate);
+      closeBoundary.setDate(closeBoundary.getDate() + (crossesMidnight ? 1 : 0));
+      closeBoundary.setHours(ch, cm, 0, 0);
+
+      while (cursor < closeBoundary) {
+        if (cursor >= minTime && cursor <= maxTime) {
+          const slotStart = `${pad(cursor.getHours())}:${pad(cursor.getMinutes())}`;
+          const slotEndDate = new Date(cursor.getTime() + 15 * 60_000);
+          const slotEnd = `${pad(slotEndDate.getHours())}:${pad(slotEndDate.getMinutes())}`;
+          slots.push({ id: `${dateKey}-${slotStart}`, startTime: slotStart, endTime: slotEnd, maxOrder: null });
+        }
+        cursor = new Date(cursor.getTime() + 15 * 60_000);
+      }
+
+      return {
+        date: dateKey,
+        day: dayNames[dayDate.getDay()],
+        dayId: offset,
+        timings: slots.length ? [{ id: `${offset}`, times: slots }] : [],
+      };
+    });
+
+    return { getScheduleByDay: schedule };
   },
 
   /* --- panier --- */
@@ -462,6 +490,9 @@ const resolvers: Record<string, Resolver> = {
   SingleVendorOrderTracking: async (v) => ({
     orderTracking: await orders.trackOrder(String(v.id)),
   }),
+
+  /* --- avis client --- */
+  ReviewOrder: async (v) => ({ reviewOrder: await orders.submitReview(v) }),
 
   /* --- chat avec le livreur --- */
   Chat: async (v) => ({ chat: await orders.listMessages(String(v.order)) }),
