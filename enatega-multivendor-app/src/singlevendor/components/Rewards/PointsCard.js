@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { View, TouchableOpacity, Alert, ActivityIndicator, StyleSheet } from 'react-native'
-import * as Clipboard from 'expo-clipboard'
 import TextDefault from '../../../components/Text/TextDefault/TextDefault'
 import { myRewards, redeemPoints } from '../../../bouff/engagement'
 
@@ -26,8 +25,7 @@ const PointsCard = ({ currentTheme, refreshKey }) => {
           setBusy(reward.id)
           try {
             const res = await redeemPoints(reward.id)
-            await Clipboard.setStringAsync(res.code).catch(() => {})
-            Alert.alert('C’est à toi !', `Ton code ${res.code} est copié. Entre-le comme code promo à ta prochaine commande (valable 30 jours).`)
+            Alert.alert('C’est à toi !', `Ton code : ${res.code}. Entre-le comme code promo à ta prochaine commande (valable 30 jours).`)
             await load(true)
           } catch (e) {
             Alert.alert('Points BOUFF', e?.message || 'Échange impossible pour le moment.')
