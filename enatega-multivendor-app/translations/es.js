@@ -12,7 +12,7 @@ export const es = {
   subtitle3: 'Helado',
   description3: 'La edad no disminuye la gran decepción de que se caiga una bola de helado del cono.',
   getStarted: '¡Empezar!',
-  welcome: 'Bienvenido a Yalla, a veces todo lo que necesitas es amor. Pero un poco de comida de vez en cuando no hace daño.',
+  welcome: 'Bienvenido a BOUFF, a veces todo lo que necesitas es amor. Pero un poco de comida de vez en cuando no hace daño.',
   welcomeScreen: 'Bienvenido a BOUFF',
   loginBtn: 'Iniciar sesión',
   registerBtn: 'Registrarse',

@@ -12,7 +12,7 @@ export const pl = {
     subtitle3: 'Lody',
     description3: 'Wiek nie zmniejsza ogromnego rozczarowania, gdy gałka lodów spada z rożka.',
     getStarted: 'Zacznij!',
-    welcome: 'Witaj w Yalla, czasami wszystko, czego potrzebujesz, to miłość. Ale trochę jedzenia od czasu do czasu nie szkodzi.',
+    welcome: 'Witaj w BOUFF, czasami wszystko, czego potrzebujesz, to miłość. Ale trochę jedzenia od czasu do czasu nie szkodzi.',
     welcomeScreen: 'Witaj w BOUFF',
     loginBtn: 'Zaloguj się',
     registerBtn: 'Zarejestruj się',

@@ -17,7 +17,7 @@ export const vi = {
       'Tuổi tác không làm giảm đi nỗi thất vọng mãnh liệt khi một muỗng kem rơi khỏi chiếc ốc quế.',
     getStarted: 'Bắt đầu!',
     welcome:
-      "Chào mừng đến với Yalla, đôi khi bạn chỉ cần tình yêu. Nhưng thỉnh thoảng ăn một chút cũng không hại gì.",
+      "Chào mừng đến với BOUFF, đôi khi bạn chỉ cần tình yêu. Nhưng thỉnh thoảng ăn một chút cũng không hại gì.",
     welcomeScreen: 'Chào mừng đến với BOUFF',
     loginBtn: 'Đăng nhập',
     registerBtn: 'Đăng ký',

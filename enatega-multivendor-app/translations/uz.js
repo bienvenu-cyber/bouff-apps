@@ -17,7 +17,7 @@ export const uz = {
       'Yosh o‘tishi bilan muzqaymoqning konidan tushib ketishidagi o‘ta xafagarchilik kamaymaydi.',
     getStarted: 'Boshlash!',
     welcome:
-      "Yalla-ga xush kelibsiz, ba’zida sizga faqat sevgi kerak. Ammo vaqti-vaqti bilan ozgina ovqat ham yomon emas.",
+      "BOUFF-ga xush kelibsiz, ba’zida sizga faqat sevgi kerak. Ammo vaqti-vaqti bilan ozgina ovqat ham yomon emas.",
     welcomeScreen: 'BOUFF-ga Xush Kelibsiz',
     loginBtn: 'Kirish',
     registerBtn: 'Ro‘yxatdan o‘tish',

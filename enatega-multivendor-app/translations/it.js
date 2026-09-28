@@ -12,7 +12,7 @@ export const it = {
   subtitle3: 'Gelato',
   description3: "L'età non diminuisce l'estrema delusione di vedere una pallina di gelato cadere dal cono.",
   getStarted: 'Inizia!',
-  welcome: "Benvenuto in Yalla, a volte tutto ciò di cui hai bisogno è amore. Ma un po' di cibo ogni tanto non fa male.",
+  welcome: "Benvenuto in BOUFF, a volte tutto ciò di cui hai bisogno è amore. Ma un po' di cibo ogni tanto non fa male.",
   welcomeScreen: 'Benvenuto in BOUFF',
   loginBtn: 'Accedi',
   registerBtn: 'Registrati',

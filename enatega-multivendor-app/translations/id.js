@@ -12,7 +12,7 @@ export const id = {
     subtitle3: 'Es Krim',
     description3: 'Kekecewaan ekstrem karena es krim jatuh dari kerucut tidak berkurang dengan usia.',
     getStarted: 'Mulai!',
-    welcome: 'Selamat datang di Yalla, kadang-kadang semua yang Anda butuhkan adalah cinta. Tapi sedikit makanan sekarang dan ketika tidak akan mencederai.',
+    welcome: 'Selamat datang di BOUFF, kadang-kadang semua yang Anda butuhkan adalah cinta. Tapi sedikit makanan sekarang dan ketika tidak akan mencederai.',
     welcomeScreen: 'Selamat datang di BOUFF',
     loginBtn: 'Masuk',
     registerBtn: 'Daftar',

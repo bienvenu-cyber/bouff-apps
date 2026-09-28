@@ -176,7 +176,7 @@ export const pt = {
     subtitle3: 'Sorvete',
     description3: 'A idade não diminui a extrema decepção de deixar cair uma bola de sorvete do cone',
     getStarted: 'Comece!',
-    welcome: 'Bem-vindo ao Yalla, às vezes tudo o que você precisa é de amor. Mas um pouco de comida de vez em quando não faz mal.',
+    welcome: 'Bem-vindo ao BOUFF, às vezes tudo o que você precisa é de amor. Mas um pouco de comida de vez em quando não faz mal.',
     welcomeScreen: 'Bem-vindo ao BOUFF',
     loginBtn: 'Entrar',
     registerBtn: 'Registrar',

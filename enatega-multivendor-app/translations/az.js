@@ -17,7 +17,7 @@ export const az = {
       'Yaş, dondurma konusundan bir qaşıq dondurmanın düşməsinin aşırı məyusluğunu azaltmır.',
     getStarted: 'Başla!',
     welcome:
-      'Yalla-ya xoş gəlmisiniz, bəzən sizə yalnız sevgi lazımdır. Amma arada bir az yemək də zərər verməz.',
+      'BOUFF-ya xoş gəlmisiniz, bəzən sizə yalnız sevgi lazımdır. Amma arada bir az yemək də zərər verməz.',
     welcomeScreen: 'BOUFF-ya Xoş Gəlmisiniz',
     loginBtn: 'Daxil ol',
     registerBtn: 'Qeydiyyatdan keç',

@@ -17,7 +17,7 @@ export const tr = {
       'Yaş, bir dondurma kaşığının koniden düşmesiyle yaşanan aşırı hayal kırıklığını azaltmaz.',
     getStarted: 'Başla!',
     welcome:
-      "Yalla'ya hoş geldiniz, bazen tek ihtiyacınız olan sevgidir. Ama arada bir yemek de zarar vermez.",
+      "BOUFF'ya hoş geldiniz, bazen tek ihtiyacınız olan sevgidir. Ama arada bir yemek de zarar vermez.",
     welcomeScreen: 'BOUFF’ya Hoş Geldiniz',
     loginBtn: 'Giriş Yap',
     registerBtn: 'Kayıt Ol',

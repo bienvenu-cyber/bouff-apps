@@ -17,7 +17,7 @@ export const ro = {
       'Vârsta nu diminuează dezamăgirea extremă de a vedea o lingură de înghețată căzând din cornet.',
     getStarted: 'Începeți!',
     welcome:
-      'Bine ați venit la Yalla, uneori tot ce ai nevoie este dragoste. Dar puțină mâncare din când în când nu strică.',
+      'Bine ați venit la BOUFF, uneori tot ce ai nevoie este dragoste. Dar puțină mâncare din când în când nu strică.',
     welcomeScreen: 'Bine ați venit la BOUFF',
     loginBtn: 'Conectare',
     registerBtn: 'Înregistrare',

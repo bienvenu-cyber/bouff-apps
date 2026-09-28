@@ -17,7 +17,7 @@ export const nl = {
       'Leeftijd vermindert niet de extreme teleurstelling van het laten vallen van een bolletje ijs van de hoorntje.',
     getStarted: 'Begin nu!',
     welcome:
-      'Welkom bij Yalla, soms heb je alleen liefde nodig. Maar een beetje eten op zijn tijd doet ook geen kwaad.',
+      'Welkom bij BOUFF, soms heb je alleen liefde nodig. Maar een beetje eten op zijn tijd doet ook geen kwaad.',
     welcomeScreen: 'Welkom bij BOUFF',
     loginBtn: 'Inloggen',
     registerBtn: 'Registreren',
