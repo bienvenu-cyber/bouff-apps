@@ -127,7 +127,7 @@ function mapOrder(o: any, muted: Set<string>) {
     reason: o.cancel_reason,
     isActive: true,
     createdAt: o.created_at,
-    orderDate: o.created_at,
+    orderDate: o.scheduled_for || o.created_at,
     pickedAt: o.picked_up_at,
     deliveryCharges: o.delivery_fee_fcfa,
     isPickedUp: takeaway,
