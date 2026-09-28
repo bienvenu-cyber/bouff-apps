@@ -108,7 +108,7 @@ export function clearStoredSessionState(): void {
   if (typeof window === 'undefined') return;
   // BOUFF : ferme aussi la session de la base.
   void import('@/lib/bouff-data/supabase').then(({ bouffDb }) =>
-    bouffDb().auth.signOut().catch(() => undefined)
+    bouffDb().auth.signOut({ scope: 'local' }).catch(() => undefined)
   );
   void import('@/lib/bouff-data/resolvers').then((m) => m.resetAccess());
 
