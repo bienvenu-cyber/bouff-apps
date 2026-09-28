@@ -713,6 +713,7 @@ export type Database = {
           delivery_zone_id: string | null
           discount_fcfa: number
           estimated_ready_at: string | null
+          free_delivery_used: boolean
           id: string
           items_total_fcfa: number
           note: string | null
@@ -726,6 +727,7 @@ export type Database = {
           status: Database["public"]["Enums"]["order_status"]
           total_fcfa: number
           updated_at: string
+          wallet_used_fcfa: number
         }
         Insert: {
           accepted_at?: string | null
@@ -746,6 +748,7 @@ export type Database = {
           delivery_zone_id?: string | null
           discount_fcfa?: number
           estimated_ready_at?: string | null
+          free_delivery_used?: boolean
           id?: string
           items_total_fcfa?: number
           note?: string | null
@@ -759,6 +762,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["order_status"]
           total_fcfa?: number
           updated_at?: string
+          wallet_used_fcfa?: number
         }
         Update: {
           accepted_at?: string | null
@@ -779,6 +783,7 @@ export type Database = {
           delivery_zone_id?: string | null
           discount_fcfa?: number
           estimated_ready_at?: string | null
+          free_delivery_used?: boolean
           id?: string
           items_total_fcfa?: number
           note?: string | null
@@ -792,6 +797,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["order_status"]
           total_fcfa?: number
           updated_at?: string
+          wallet_used_fcfa?: number
         }
         Relationships: [
           {
@@ -936,6 +942,75 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      referral_codes: {
+        Row: {
+          code: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          referee_id: string
+          referrer_id: string
+          restaurant_id: string
+          rewarded_at: string | null
+          rewarded_order_id: string | null
+          status: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          referee_id: string
+          referrer_id: string
+          restaurant_id: string
+          rewarded_at?: string | null
+          rewarded_order_id?: string | null
+          status?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          referee_id?: string
+          referrer_id?: string
+          restaurant_id?: string
+          rewarded_at?: string | null
+          rewarded_order_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_rewarded_order_id_fkey"
+            columns: ["rewarded_order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       restaurant_addons: {
         Row: {
@@ -1112,6 +1187,60 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_ledger: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          note: string | null
+          order_id: string | null
+          reason: string
+          restaurant_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind: string
+          note?: string | null
+          order_id?: string | null
+          reason: string
+          restaurant_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          note?: string | null
+          order_id?: string | null
+          reason?: string
+          restaurant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_ledger_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reward_ledger_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rider_locations: {
         Row: {
           accuracy: number | null
@@ -1255,6 +1384,7 @@ export type Database = {
           delivery_zone_id: string | null
           discount_fcfa: number
           estimated_ready_at: string | null
+          free_delivery_used: boolean
           id: string
           items_total_fcfa: number
           note: string | null
@@ -1268,6 +1398,7 @@ export type Database = {
           status: Database["public"]["Enums"]["order_status"]
           total_fcfa: number
           updated_at: string
+          wallet_used_fcfa: number
         }
         SetofOptions: {
           from: "*"
@@ -1287,6 +1418,16 @@ export type Database = {
         Returns: Json
       }
       admin_find_user: { Args: { p_email: string }; Returns: string }
+      admin_grant_reward: {
+        Args: {
+          p_amount: number
+          p_kind: string
+          p_note?: string
+          p_reason?: string
+          p_user: string
+        }
+        Returns: Json
+      }
       admin_list_customers: {
         Args: { p_limit?: number; p_offset?: number; p_search?: string }
         Returns: Json
@@ -1343,6 +1484,7 @@ export type Database = {
           delivery_zone_id: string | null
           discount_fcfa: number
           estimated_ready_at: string | null
+          free_delivery_used: boolean
           id: string
           items_total_fcfa: number
           note: string | null
@@ -1356,6 +1498,7 @@ export type Database = {
           status: Database["public"]["Enums"]["order_status"]
           total_fcfa: number
           updated_at: string
+          wallet_used_fcfa: number
         }
         SetofOptions: {
           from: "*"
@@ -1364,6 +1507,8 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      apply_referral_code: { Args: { p_code: string }; Returns: Json }
+      bouff_restaurant_id: { Args: never; Returns: string }
       cancel_my_order: {
         Args: { p_order_number: string; p_phone?: string }
         Returns: Json
@@ -1377,6 +1522,7 @@ export type Database = {
         }
         Returns: Json
       }
+      check_referral_code: { Args: { p_code: string }; Returns: boolean }
       claim_notifications: {
         Args: { p_limit?: number; p_token: string }
         Returns: Json
@@ -1402,6 +1548,7 @@ export type Database = {
           delivery_zone_id: string | null
           discount_fcfa: number
           estimated_ready_at: string | null
+          free_delivery_used: boolean
           id: string
           items_total_fcfa: number
           note: string | null
@@ -1415,6 +1562,7 @@ export type Database = {
           status: Database["public"]["Enums"]["order_status"]
           total_fcfa: number
           updated_at: string
+          wallet_used_fcfa: number
         }
         SetofOptions: {
           from: "*"
@@ -1434,6 +1582,7 @@ export type Database = {
         Returns: Json
       }
       email_exists: { Args: { p_email: string }; Returns: boolean }
+      ensure_referral_code: { Args: { p_user: string }; Returns: string }
       is_restaurant_open: {
         Args: { p_restaurant_id: string }
         Returns: boolean
@@ -1464,6 +1613,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      my_rewards: { Args: never; Returns: Json }
       order_rider_location: {
         Args: { p_order: string; p_phone?: string }
         Returns: Json
@@ -1474,6 +1624,21 @@ export type Database = {
         Returns: Json
       }
       place_order: {
+        Args: {
+          p_coupon_code?: string
+          p_customer_name: string
+          p_customer_phone: string
+          p_delivery_address?: string
+          p_delivery_zone_id?: string
+          p_items: Json
+          p_note?: string
+          p_order_type: Database["public"]["Enums"]["order_type"]
+          p_payment_method?: Database["public"]["Enums"]["payment_method"]
+          p_restaurant_id: string
+        }
+        Returns: Json
+      }
+      place_order_base: {
         Args: {
           p_coupon_code?: string
           p_customer_name: string
@@ -1524,6 +1689,18 @@ export type Database = {
         Args: { p_from?: string; p_restaurant_id: string; p_to?: string }
         Returns: Json
       }
+      reward_balance: {
+        Args: { p_kind: string; p_restaurant: string; p_user: string }
+        Returns: number
+      }
+      rewards_quote: {
+        Args: {
+          p_delivery_fee: number
+          p_items_after_discount: number
+          p_restaurant: string
+        }
+        Returns: Json
+      }
       rider_advance_order: {
         Args: {
           p_order_id: string
@@ -1548,6 +1725,7 @@ export type Database = {
           delivery_zone_id: string | null
           discount_fcfa: number
           estimated_ready_at: string | null
+          free_delivery_used: boolean
           id: string
           items_total_fcfa: number
           note: string | null
@@ -1561,6 +1739,7 @@ export type Database = {
           status: Database["public"]["Enums"]["order_status"]
           total_fcfa: number
           updated_at: string
+          wallet_used_fcfa: number
         }
         SetofOptions: {
           from: "*"

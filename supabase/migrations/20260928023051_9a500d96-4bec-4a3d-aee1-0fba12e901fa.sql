@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.bouff_restaurant_id() FROM PUBLIC, anon, authenticated;

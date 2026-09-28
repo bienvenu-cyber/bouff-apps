@@ -163,3 +163,78 @@ export async function unregisterPushToken() {
     /* sans effet bloquant */
   }
 }
+
+/* ------------------ Parrainage, portefeuille, livraisons offertes ------------------ */
+// Tout est valable uniquement chez BOUFF (règles appliquées par la base).
+
+export interface BouffRewards {
+  wallet_fcfa: number;
+  free_deliveries: number;
+  referral_code: string | null;
+  referrals_total: number;
+  referrals_rewarded: number;
+  delivered_orders: number;
+  history: Array<{
+    id: string;
+    kind: "wallet" | "free_delivery";
+    amount: number;
+    reason: string;
+    note: string | null;
+    order_number: string | null;
+    created_at: string;
+  }>;
+}
+
+const EMPTY_REWARDS: BouffRewards = {
+  wallet_fcfa: 0,
+  free_deliveries: 0,
+  referral_code: null,
+  referrals_total: 0,
+  referrals_rewarded: 0,
+  delivered_orders: 0,
+  history: [],
+};
+
+let rewardsCache: { uid: string; at: number; data: BouffRewards } | null = null;
+
+export async function myRewards(force = false): Promise<BouffRewards> {
+  const uid = await currentUserId();
+  if (!uid) return EMPTY_REWARDS;
+  if (!force && rewardsCache && rewardsCache.uid === uid && Date.now() - rewardsCache.at < 30_000) {
+    return rewardsCache.data;
+  }
+  const { data, error } = await bouffDb().rpc("my_rewards");
+  if (error) return rewardsCache?.uid === uid ? rewardsCache.data : EMPTY_REWARDS;
+  rewardsCache = { uid, at: Date.now(), data: data as BouffRewards };
+  return rewardsCache.data;
+}
+
+export function resetRewards() {
+  rewardsCache = null;
+}
+
+export async function rewardsQuote(itemsAfterDiscount: number, deliveryFee: number) {
+  const empty = { wallet_fcfa: 0, free_deliveries: 0, wallet_used_fcfa: 0, free_delivery_used: false, delivery_discount_fcfa: 0 };
+  const uid = await currentUserId();
+  if (!uid) return empty;
+  const menu = await loadMenu();
+  const { data, error } = await bouffDb().rpc("rewards_quote", {
+    p_restaurant: menu.restaurant.id,
+    p_items_after_discount: Math.max(0, Math.round(itemsAfterDiscount)),
+    p_delivery_fee: Math.max(0, Math.round(deliveryFee)),
+  });
+  if (error) return empty;
+  return data as typeof empty;
+}
+
+export async function checkReferralCode(code: string): Promise<boolean> {
+  const { data, error } = await bouffDb().rpc("check_referral_code", { p_code: (code ?? "").trim() });
+  return !error && Boolean(data);
+}
+
+export async function applyReferralCode(code: string): Promise<{ success: boolean; message: string }> {
+  const { data, error } = await bouffDb().rpc("apply_referral_code", { p_code: (code ?? "").trim() });
+  resetRewards();
+  if (error) return { success: false, message: error.message };
+  return data as { success: boolean; message: string };
+}

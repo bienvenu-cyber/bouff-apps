@@ -133,7 +133,7 @@ const WalletScreen = () => {
                       bolder
                       style={styles(currentTheme).historyAmount}
                     >
-                      {currencySymbol} {Number(item?.amount || 0).toFixed(2)}
+                      {Number(item?.amount || 0) > 0 ? '+' : ''}{Number(item?.amount || 0).toLocaleString('fr-FR')} F
                     </TextDefault>
                     <TextDefault
                       textColor={currentTheme.colorTextMuted || currentTheme.fontSecondColor}

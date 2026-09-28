@@ -6,7 +6,7 @@ import {
   resolveZoneId,
 } from "./cart";
 import { getGuest, setGuest } from "./auth";
-import { checkCoupon, rememberCoupon } from "./engagement";
+import { checkCoupon, rememberCoupon, rewardsQuote, resetRewards } from "./engagement";
 import { loadMenu } from "./catalog";
 import { rememberGuestOrder } from "./notifications";
 
@@ -95,6 +95,7 @@ export async function placeOrder(variables: Record<string, any>) {
 
   clearCart();
   rememberCoupon(null);
+  resetRewards();
   const result = data as Record<string, any>;
   if (result?.order_number) rememberGuestOrder(result.order_number, result.order_id);
   const loc = variables.location;
@@ -437,6 +438,10 @@ export async function checkout(variables: Record<string, any>) {
   } else {
     rememberCoupon(null);
   }
+  const itemsAfterDiscount = Math.max(cart.subtotal - couponDiscount, 0);
+  const perks = await rewardsQuote(itemsAfterDiscount, deliveryCharges);
+  const deliveryDiscount = perks.delivery_discount_fcfa ?? 0;
+  const creditsUsed = perks.wallet_used_fcfa ?? 0;
 
   return {
     success: true,
@@ -445,23 +450,23 @@ export async function checkout(variables: Record<string, any>) {
     subtotal: cart.subtotal,
     deliveryCharges,
     originalDeliveryCharges: deliveryCharges,
-    deliveryDiscount: 0,
+    deliveryDiscount,
     serviceFee: 0,
     minimumOrderFee: 0,
     taxAmount: 0,
     taxPercentage: 0,
-    grandTotal: Math.max(cart.subtotal - couponDiscount, 0) + deliveryCharges,
+    grandTotal: itemsAfterDiscount - creditsUsed + deliveryCharges - deliveryDiscount,
     totalDiscount: couponDiscount,
     discountDetails: { dealDiscount: 0 },
     hasActiveSubscription: false,
-    freeDeliveriesRemaining: 0,
+    freeDeliveriesRemaining: perks.free_deliveries ?? 0,
     minimumOrderAmount: 0,
     isBelowMinimumOrder: false,
     isBelowMaximumOrder: false,
     couponDiscountAmount: couponDiscount,
     couponApplied: couponDiscount > 0,
     priorityDeliveryFees: 0,
-    creditsUsed: 0,
+    creditsUsed,
     maximumOrderAmount: 0,
     checkoutQuoteId: "bouff-quote",
     checkoutQuoteExpiresAt: null,
