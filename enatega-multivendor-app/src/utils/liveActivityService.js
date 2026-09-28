@@ -48,7 +48,7 @@ const RETRY_DELAYS_MS = [750, 2000, 5000]
 const defaultConfiguration = {
   appGroupId: 'group.bj.bouff.app.shared',
   appScheme: 'enategamultivendor',
-  brandName: 'Enatega',
+  brandName: 'BOUFF',
   primaryColor: '#FF7A1A',
   accentColor: '#FFA921',
   logoResourceName: 'enatega_logo',
