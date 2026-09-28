@@ -70,6 +70,12 @@ export async function placeOrder(variables: Record<string, any>) {
   });
   setGuest(who);
 
+  const rawTip = Number(variables.tipping ?? variables.tipAmount ?? 0);
+  const tip = !isPickedUp && Number.isFinite(rawTip)
+    ? Math.min(Math.max(Math.round(rawTip), 0), 10000)
+    : 0;
+  const scheduledFor = computeScheduledFor(variables.scheduleData);
+
 
   const items = cart.lines.map((line) => ({
     menu_item_id: line.line.foodId,
@@ -91,6 +97,8 @@ export async function placeOrder(variables: Record<string, any>) {
     p_note: variables.instructions ?? variables.specialInstructions ?? null,
     p_coupon_code: String(variables.couponCode ?? "").trim() || null,
     p_use_wallet: getUseWallet(),
+    p_tip_fcfa: tip,
+    p_scheduled_for: scheduledFor,
   });
   if (error) throw new Error(error.message);
 
@@ -118,12 +126,53 @@ export async function placeOrder(variables: Record<string, any>) {
     paymentStatus: "PENDING",
     orderStatus: "PENDING",
     deliveryCharges: result.delivery_fee_fcfa,
-    tipping: 0,
+    tipping: result.tip_fcfa ?? tip,
     taxationAmount: 0,
     createdAt: new Date().toISOString(),
     orderDate: new Date().toISOString(),
     expectedTime: null,
+    scheduledAt: result.scheduled_for ?? scheduledFor ?? null,
     isPickedUp,
+  };
+}
+
+// Un créneau programmé (date + heure de début, ex. "2024-06-01" / "12:30") est
+// converti en horodatage ISO pour la RPC. Sans créneau choisi -> commande immédiate.
+function computeScheduledFor(scheduleData?: {
+  isScheduled?: boolean;
+  date?: string | null;
+  startTime?: string | null;
+} | null): string | null {
+  if (!scheduleData?.isScheduled || !scheduleData.date || !scheduleData.startTime) return null;
+  const time = scheduleData.startTime.length === 5 ? `${scheduleData.startTime}:00` : scheduleData.startTime;
+  const local = new Date(`${scheduleData.date}T${time}`);
+  if (Number.isNaN(local.getTime())) return null;
+  return local.toISOString();
+}
+
+// Envoie la note et le commentaire du client via submit_order_review, en
+// s'appuyant sur le numéro de commande + le téléphone déjà connu du client.
+export async function submitReview(variables: Record<string, any>) {
+  const input = variables.reviewInput ?? variables;
+  const orderNumber = String(input.order ?? input.orderId ?? "").trim();
+  if (!orderNumber) throw new Error("Commande introuvable pour cet avis.");
+  const rating = Number(input.rating);
+  if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+    throw new Error("Merci de choisir une note entre 1 et 5 étoiles.");
+  }
+  const who = await identity();
+  const db = bouffDb();
+  const { data, error } = await db.rpc("submit_order_review", {
+    p_order_number: orderNumber,
+    p_phone: who.phone,
+    p_rating: rating,
+    p_comment: (input.description ?? input.comment ?? null) || null,
+  });
+  if (error) throw new Error(error.message);
+  const result = data as Record<string, any>;
+  if (result?.error) throw new Error(result.error);
+  return {
+    user: { _id: null, name: who.name, email: null, phone: who.phone },
   };
 }
 
