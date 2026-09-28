@@ -1,7 +1,8 @@
 'use client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useEffect, useState } from 'react';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { bouffDb } from '@/lib/bouff-data/supabase';
 import HeaderText from '@/lib/ui/useable-components/header-text';
@@ -12,7 +13,6 @@ import Toggle from '@/lib/ui/useable-components/toggle';
 import CustomButton from '@/lib/ui/useable-components/button';
 import CustomDropdownComponent from '@/lib/ui/useable-components/custom-dropdown';
 import useToast from '@/lib/hooks/useToast';
-import { useTranslations } from 'next-intl';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Le nom est requis'),
@@ -23,7 +23,6 @@ const validationSchema = Yup.object().shape({
 
 export default function SettingsPage() {
   const { showToast } = useToast();
-  const t = useTranslations();
   const [restaurants, setRestaurants] = useState<any[]>([]);
   const [selectedRestaurantId, setSelectedRestaurantId] = useState<string | null>(null);
   const [initialValues, setInitialValues] = useState<any>(null);
@@ -70,7 +69,21 @@ export default function SettingsPage() {
     if (!selectedRestaurantId) return;
     const { error } = await bouffDb()
       .from('restaurants')
-      .update(values)
+      .update({
+        name: values.name,
+        tagline: values.tagline || null,
+        phone: values.phone || null,
+        whatsapp_number: values.whatsapp_number || null,
+        address: values.address || null,
+        opens_at: values.opens_at,
+        closes_at: values.closes_at,
+        min_order_fcfa: values.min_order_fcfa ?? 0,
+        accepts_delivery: values.accepts_delivery,
+        accepts_takeaway: values.accepts_takeaway,
+        is_temporarily_closed: values.is_temporarily_closed,
+        max_active_orders_per_phone: values.max_active_orders_per_phone,
+        max_orders_per_phone_hour: values.max_orders_per_phone_hour,
+      })
       .eq('id', selectedRestaurantId);
 
     if (error) {
@@ -92,11 +105,16 @@ export default function SettingsPage() {
           <CustomDropdownComponent
             name="restaurant-selector"
             placeholder="Choisir un restaurant"
-            options={restaurants.map(r => ({ label: r.name, value: r.id }))}
-            selectedItem={selectedRestaurantId}
-            setSelectedItem={(_, val) => {
-              setSelectedRestaurantId(val);
-              fetchRestaurantDetails(val);
+            options={restaurants.map((r) => ({ label: r.name, code: r.id }))}
+            selectedItem={
+              restaurants
+                .filter((r) => r.id === selectedRestaurantId)
+                .map((r) => ({ label: r.name, code: r.id }))[0] ?? null
+            }
+            setSelectedItem={(_: string, val: { code?: string }) => {
+              if (!val?.code) return;
+              setSelectedRestaurantId(val.code);
+              fetchRestaurantDetails(val.code);
             }}
             showLabel
           />
@@ -131,6 +149,7 @@ export default function SettingsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white dark:bg-dark-900 p-6 rounded-lg shadow-sm border dark:border-dark-700">
                 <CustomTextField
+                  type="text"
                   name="name"
                   placeholder="Nom du restaurant"
                   showLabel
@@ -139,6 +158,7 @@ export default function SettingsPage() {
                   error={touched.name && errors.name ? (errors.name as string) : ''}
                 />
                 <CustomTextField
+                  type="text"
                   name="tagline"
                   placeholder="Slogan / Description courte"
                   showLabel
@@ -146,6 +166,7 @@ export default function SettingsPage() {
                   onChange={(e: any) => setFieldValue('tagline', e.target.value)}
                 />
                 <CustomTextField
+                  type="text"
                   name="phone"
                   placeholder="Téléphone"
                   showLabel
@@ -153,6 +174,7 @@ export default function SettingsPage() {
                   onChange={(e: any) => setFieldValue('phone', e.target.value)}
                 />
                 <CustomTextField
+                  type="text"
                   name="whatsapp_number"
                   placeholder="Numéro WhatsApp"
                   showLabel
@@ -161,6 +183,7 @@ export default function SettingsPage() {
                 />
                 <div className="md:col-span-2">
                   <CustomTextField
+                  type="text"
                     name="address"
                     placeholder="Adresse complète"
                     showLabel
@@ -184,6 +207,8 @@ export default function SettingsPage() {
                   onChange={(val) => setFieldValue('closes_at', val)}
                 />
                 <CustomNumberTextField
+                  min={0}
+                  showLabel
                   name="min_order_fcfa"
                   placeholder="Minimum de commande (FCFA)"
                   value={values.min_order_fcfa}
@@ -214,12 +239,16 @@ export default function SettingsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white dark:bg-dark-900 p-6 rounded-lg shadow-sm border dark:border-dark-700">
                 <CustomNumberTextField
+                  min={0}
+                  showLabel
                   name="max_active_orders_per_phone"
                   placeholder="Max commandes actives / téléphone"
                   value={values.max_active_orders_per_phone}
                   onChange={(name, val) => setFieldValue(name, val)}
                 />
                 <CustomNumberTextField
+                  min={0}
+                  showLabel
                   name="max_orders_per_phone_hour"
                   placeholder="Max commandes / heure / téléphone"
                   value={values.max_orders_per_phone_hour}
@@ -229,7 +258,7 @@ export default function SettingsPage() {
 
               <div className="flex justify-end">
                 <CustomButton
-                  title="Enregistrer les réglages"
+                  label="Enregistrer les réglages"
                   type="submit"
                   loading={isSubmitting}
                   className="w-full md:w-auto px-8"
