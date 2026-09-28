@@ -89,6 +89,30 @@ const OrderDetailModal: React.FC<IOrderDetailModalProps> = ({
           )}
         </div>
 
+        {(restaurantData.tipping ?? 0) > 0 || restaurantData.scheduledAt ? (
+          <div className="order-section dark:bg-dark-600">
+            <h3 className="section-header dark:text-primary-dark">
+              Informations complémentaires
+            </h3>
+            <div className="information-grid">
+              {(restaurantData.tipping ?? 0) > 0 && (
+                <div className="information-item">
+                  <span className="information-label">Pourboire livreur</span>
+                  <span>{`Pourboire livreur : ${restaurantData.tipping} F`}</span>
+                </div>
+              )}
+              {restaurantData.scheduledAt && (
+                <div className="information-item">
+                  <span className="information-label">Commande programmée</span>
+                  <span>
+                    {`Programmée pour ${new Date(restaurantData.scheduledAt).toLocaleDateString('fr-FR')} ${new Date(restaurantData.scheduledAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : null}
+
         {restaurantData.eta?.windowStartAt && restaurantData.eta?.windowEndAt && (
           <div className="order-section dark:bg-dark-600">
             <h3 className="section-header dark:text-primary-dark">

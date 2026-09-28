@@ -195,12 +195,28 @@ const Order = ({
           </View>
           <View
             accessibilityLabel={`${t("Status")}: ${t(order?.orderStatus ?? "")}`}
+            </Text>
+          </View>
+          {!!order?.scheduledAt && (
+            <View style={[styles.statusBadge, { backgroundColor: "#FEF3C7", marginStart: 8 }]}>
+              <Text style={{ color: "#92400E", fontSize: 10, fontWeight: "700" }}>
+                {`Programmée : ${new Date(order.scheduledAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
+              </Text>
+            </View>
+          )}
             style={[
               styles.statusBadge,
               { backgroundColor: statusPalette.backgroundColor },
             ]}
           >
             <Text
+          {!!order?.scheduledAt && (
+            <View style={[styles.statusBadge, { backgroundColor: "#FEF3C7", marginStart: 8 }]}>
+              <Text style={{ color: "#92400E", fontSize: 10, fontWeight: "700" }}>
+                {`Programmée : ${new Date(order.scheduledAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
+              </Text>
+            </View>
+          )}
               style={{
                 color: statusPalette.color,
                 fontSize: 12,
@@ -208,6 +224,15 @@ const Order = ({
               }}
             >
               {t(order?.orderStatus ?? "")}
+            </Text>
+          </View>
+          {!!order?.scheduledAt && (
+            <View style={[styles.statusBadge, { backgroundColor: "#FEF3C7", marginStart: 8 }]}>
+              <Text style={{ color: "#92400E", fontSize: 10, fontWeight: "700" }}>
+                {`Programmée : ${new Date(order.scheduledAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
+              </Text>
+            </View>
+          )}
             </Text>
           </View>
         </View>
