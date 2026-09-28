@@ -60,10 +60,10 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 - [ ] Suppression des fichiers générés commités, des traces de débogage, alignement des versions
 
 ## Fonctions à compléter (28/09)
-- [ ] Pourboire livreur (base faite ; apps en cours)
-- [ ] Commande programmée (base faite ; apps en cours)
-- [ ] Avis et notes (base faite ; apps en cours)
-- [ ] Admin : pages Paramètres et Langue
-- [ ] Admin : bouton Créditer un client (portefeuille, livraisons, points)
-- [ ] Admin : vrais compteurs annulées / en retard / notes
+- [x] Pourboire livreur
+- [x] Commande programmée
+- [x] Avis et notes
+- [x] Admin : pages Paramètres et Langue
+- [x] Admin : bouton Créditer un client (portefeuille, livraisons, points)
+- [x] Admin : vrais compteurs annulées / en retard / notes
 - [ ] URGENT avant prod : numéro WhatsApp BOUFF
