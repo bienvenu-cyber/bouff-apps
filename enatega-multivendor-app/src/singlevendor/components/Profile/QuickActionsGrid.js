@@ -33,9 +33,9 @@ const QuickActionsGrid = () => {
     },
     {
       id: 3,
-      icon: 'gift-outline',
-      label: t('Refer a friend'),
-      onPress: () => navigation.navigate('ReferAFriend')
+      icon: 'pricetag-outline',
+      label: t('Vouchers'),
+      onPress: () => navigation.navigate('Vouchers')
     }
   ]
 

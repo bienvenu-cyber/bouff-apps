@@ -47,12 +47,6 @@ const AccountSection = () => {
       onPress: () => navigation.navigate('NotificationScreen')
     },
     {
-      id: 5,
-      icon: 'wallet-outline',
-      title: t('Wallet'),
-      onPress: () => navigation.navigate('WalletScreen')
-    },
-    {
       id: 6,
       icon: 'settings-outline',
       title: t('securityAndSettings', { defaultValue: 'Security & settings' }),

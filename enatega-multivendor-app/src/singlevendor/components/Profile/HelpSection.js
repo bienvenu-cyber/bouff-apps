@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Linking, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
@@ -17,12 +17,23 @@ const HelpSection = () => {
     ...theme[themeContext.ThemeValue]
   }
 
+  // Support et avis passent par WhatsApp BOUFF (pas de système de tickets).
+  const supportNumber = String(process.env.EXPO_PUBLIC_BOUFF_SUPPORT_WHATSAPP || '').replace(/\D/g, '')
+  const openWhatsApp = async (message) => {
+    if (!supportNumber) {
+      Alert.alert('BOUFF', 'Le contact WhatsApp arrive bientôt. En attendant, écris-nous depuis le suivi de ta commande.')
+      return
+    }
+    const url = `https://wa.me/${supportNumber}?text=${encodeURIComponent(message)}`
+    try { await Linking.openURL(url) } catch { Alert.alert('BOUFF', 'Impossible d’ouvrir WhatsApp.') }
+  }
+
   const helpItems = [
     {
       id: 1,
       icon: 'help-circle-outline',
       title: t('CustomerSupport'),
-      onPress: () => navigation.navigate('CustomerSupport')
+      onPress: () => openWhatsApp('Bonjour BOUFF, j’ai besoin d’aide : ')
     },
     {
       id: 2,
@@ -34,7 +45,7 @@ const HelpSection = () => {
       id: 3,
       icon: 'star-outline',
       title: t('Give feedback'),
-      onPress: () => navigation.navigate('FeedBack', { fromProfileHelpFeedback: true })
+      onPress: () => openWhatsApp('Bonjour BOUFF, voici mon avis sur l’app : ')
     }
   ]
 
