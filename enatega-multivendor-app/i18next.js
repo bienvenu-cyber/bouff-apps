@@ -91,6 +91,14 @@ i18next.use(initReactI18next).init({
 // Async function to detect and set language
 const detectAndSetLanguage = async() => {
   try {
+    // Ancienne valeur « en » imposée par l'app d'origine : on l'ignore une fois
+    // pour laisser la langue du téléphone (ou le français) reprendre la main.
+    const migrated = await AsyncStorage.getItem('bouff-language-v1')
+    if (!migrated) {
+      await AsyncStorage.removeItem('enatega-language')
+      await AsyncStorage.removeItem('enatega-language-name')
+      await AsyncStorage.setItem('bouff-language-v1', '1')
+    }
     const storedLanguage = await AsyncStorage.getItem('enatega-language')
     const locale = Localization.getLocales?.()?.[0]
     const rawSystem = (locale?.languageCode || Localization?.locale?.split('-')[0] || '').toLowerCase()
