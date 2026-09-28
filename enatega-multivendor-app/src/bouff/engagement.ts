@@ -169,6 +169,8 @@ export async function unregisterPushToken() {
 
 export interface BouffRewards {
   wallet_fcfa: number;
+  points: number;
+  points_catalog: Array<{ id: string; title: string; points: number; value_fcfa: number }>;
   free_deliveries: number;
   referral_code: string | null;
   referrals_total: number;
@@ -176,7 +178,7 @@ export interface BouffRewards {
   delivered_orders: number;
   history: Array<{
     id: string;
-    kind: "wallet" | "free_delivery";
+    kind: "wallet" | "free_delivery" | "points";
     amount: number;
     reason: string;
     note: string | null;
@@ -187,6 +189,8 @@ export interface BouffRewards {
 
 const EMPTY_REWARDS: BouffRewards = {
   wallet_fcfa: 0,
+  points: 0,
+  points_catalog: [],
   free_deliveries: 0,
   referral_code: null,
   referrals_total: 0,
@@ -213,8 +217,17 @@ export function resetRewards() {
   rewardsCache = null;
 }
 
+// Choix du client au paiement : payer avec le portefeuille (points doublés) ou non.
+let useWalletChoice = true;
+export function getUseWallet() {
+  return useWalletChoice;
+}
+export function setUseWallet(value: boolean) {
+  useWalletChoice = Boolean(value);
+}
+
 export async function rewardsQuote(itemsAfterDiscount: number, deliveryFee: number) {
-  const empty = { wallet_fcfa: 0, free_deliveries: 0, wallet_used_fcfa: 0, free_delivery_used: false, delivery_discount_fcfa: 0 };
+  const empty = { wallet_fcfa: 0, free_deliveries: 0, wallet_used_fcfa: 0, free_delivery_used: false, delivery_discount_fcfa: 0, points: 0 };
   const uid = await currentUserId();
   if (!uid) return empty;
   const menu = await loadMenu();
@@ -222,9 +235,17 @@ export async function rewardsQuote(itemsAfterDiscount: number, deliveryFee: numb
     p_restaurant: menu.restaurant.id,
     p_items_after_discount: Math.max(0, Math.round(itemsAfterDiscount)),
     p_delivery_fee: Math.max(0, Math.round(deliveryFee)),
+    p_use_wallet: useWalletChoice,
   });
   if (error) return empty;
   return data as typeof empty;
+}
+
+export async function redeemPoints(rewardId: string): Promise<{ code: string; title: string; value_fcfa: number; points_left: number }> {
+  const { data, error } = await bouffDb().rpc("redeem_points", { p_reward: rewardId });
+  resetRewards();
+  if (error) throw new Error(error.message);
+  return data as any;
 }
 
 export async function checkReferralCode(code: string): Promise<boolean> {
