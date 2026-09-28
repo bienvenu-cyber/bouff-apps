@@ -15,6 +15,7 @@ import ConfigurationContext from '../../../context/Configuration'
 import { formatDateTime } from '../../../utils/formatDateTime'
 import FreeDeliveriesCountCard from '../../components/FreeDeliveries/FreeDeliveriesCountCard'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
+import PointsCard from '../../components/Rewards/PointsCard'
 
 const WalletScreen = () => {
   const navigation = useNavigation()
@@ -63,9 +64,11 @@ const WalletScreen = () => {
             textColor={currentTheme.colorTextMuted || currentTheme.fontSecondColor}
             style={styles(currentTheme).walletDescription}
           >
-           {t('Your credit is applied automatically on your next order. No cash withdrawals.')}
+           Ton portefeuille contient ton argent BOUFF : remboursements et cadeaux. Tu peux l’utiliser au paiement, et tes points sont doublés.
           </TextDefault>
         </View>
+
+        <PointsCard currentTheme={currentTheme} refreshKey={refreshing} />
 
         <FreeDeliveriesCountCard currentTheme={currentTheme} style={styles(currentTheme).walletFreeDeliveriesCard} />
 
@@ -84,7 +87,7 @@ const WalletScreen = () => {
               style={styles(currentTheme).balanceAmount}
               bolder
             >
-              {currencySymbol} {Number(creditBalance).toFixed(2)}
+              {Number(creditBalance).toLocaleString('fr-FR')} F
             </TextDefault>
 
             <View style={styles(currentTheme).buttonContainer}>

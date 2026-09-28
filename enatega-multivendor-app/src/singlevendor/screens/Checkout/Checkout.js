@@ -40,6 +40,7 @@ import { APP_MODES } from '../../../mode/constants'
 import { getModeItem, removeModeItem, setModeItem } from '../../../mode/storage'
 import OrderSummarySkeleton from './OrderSummarySkeleton'
 import SmallOrderFeeTip from '../../components/Checkout/SmallOrderFeeTip'
+import WalletPayToggle from '../../components/Rewards/WalletPayToggle'
 
 const Checkout = (props) => {
   const { location, setLocation } = useContext(LocationContext)
@@ -402,6 +403,7 @@ const Checkout = (props) => {
           onOpenVouchers={() => navigation.navigate('Vouchers', { returnTo: 'Checkout' })}
           voucherBottomSheetRef={voucherBottomSheetRef}
         />
+        <WalletPayToggle currentTheme={currentTheme} onChange={() => recalculateSummary()} />
         {fulfillmentMode === 'delivery' && <TipSection selectedTip={tipAmount} onSelectTip={handleTipSelection} currencySymbol={currencySymbol} />}
         <View style={{ height: scale(24) }} />
       </ScrollView>
