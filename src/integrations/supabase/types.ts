@@ -1635,6 +1635,7 @@ export type Database = {
           p_order_type: Database["public"]["Enums"]["order_type"]
           p_payment_method?: Database["public"]["Enums"]["payment_method"]
           p_restaurant_id: string
+          p_use_wallet?: boolean
         }
         Returns: Json
       }
@@ -1657,6 +1658,7 @@ export type Database = {
         Args: { p_from?: string; p_to?: string }
         Returns: Json
       }
+      points_catalog: { Args: never; Returns: Json }
       public_coupons: {
         Args: { p_restaurant: string }
         Returns: {
@@ -1681,6 +1683,7 @@ export type Database = {
         }
         Returns: string
       }
+      redeem_points: { Args: { p_reward: string }; Returns: Json }
       register_push_token: {
         Args: { p_platform?: string; p_token: string }
         Returns: Json
@@ -1698,6 +1701,7 @@ export type Database = {
           p_delivery_fee: number
           p_items_after_discount: number
           p_restaurant: string
+          p_use_wallet?: boolean
         }
         Returns: Json
       }
