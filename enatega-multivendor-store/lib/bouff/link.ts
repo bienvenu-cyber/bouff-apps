@@ -20,7 +20,7 @@ export const STATUS_MAP: Record<string, string> = {
 };
 
 const ORDER_SELECT =
-  "*, order_items(*, order_item_options(id, name, price_delta_fcfa)), riders(id, full_name, phone, status), restaurants(id, name, logo_url, address)";
+  "*, tip_fcfa, scheduled_for, order_items(*, order_item_options(id, name, price_delta_fcfa)), riders(id, full_name, phone, status), restaurants(id, name, logo_url, address)";
 
 async function restaurantId(): Promise<string> {
   const id = await AsyncStorage.getItem(RESTAURANT_KEY);
@@ -119,7 +119,8 @@ function mapOrder(o: any, muted: Set<string>) {
     paidAmount: 0,
     orderAmount: o.total_fcfa,
     orderStatus: STATUS_MAP[o.status] ?? "PENDING",
-    tipping: 0,
+    tipping: o.tip_fcfa || 0,
+    scheduledAt: o.scheduled_for,
     taxationAmount: 0,
     status: true,
     paymentStatus: "PENDING",

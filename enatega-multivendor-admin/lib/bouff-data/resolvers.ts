@@ -748,8 +748,21 @@ export const resolvers: Record<string, Resolver> = {
     const rows = await resolvers.getStoreDetailsByVendorId({ id: vendorId });
     return { totalRestaurants: rows.length, totalOrders: rows.reduce((s: number, r: any) => s + r.totalOrders, 0), totalSales: rows.reduce((s: number, r: any) => s + r.totalSales, 0), totalDeliveries: rows.reduce((s: number, r: any) => s + r.deliveryCount, 0) };
   },
-  async getLiveMonitorData() {
-    return { online_stores: 1, cancelled_orders: 0, delayed_orders: 0, ratings: 0 };
+  async getLiveMonitorData(a) {
+    const { from, to } = dateRange(a);
+    const access0 = await access();
+    const restId = a?.id && a.id !== 'all' ? a.id : (access0.is_super_admin ? null : access0.restaurants?.[0]?.id ?? null);
+    const r = await must(db().rpc('admin_dashboard_counts', {
+      p_restaurant_id: restId,
+      p_from: from,
+      p_to: to,
+    })) as any;
+    return {
+      online_stores: r?.online_stores ?? 0,
+      cancelled_orders: r?.cancelled_orders ?? 0,
+      delayed_orders: r?.delayed_orders ?? 0,
+      ratings: r?.average_rating ?? r?.ratings ?? 0,
+    };
   },
   async getVendorDashboardGrowthDetailsByYear() {
     return { totalRestaurants: Array(12).fill(0), totalOrders: Array(12).fill(0), totalSales: Array(12).fill(0) };
