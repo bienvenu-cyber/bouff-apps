@@ -43,12 +43,12 @@ const DeliveryTimeOptions = ({ selectedTime, onSelectTime, priorityDeliveryFee, 
     },
     {
       id: 'standard',
-      title: mode === 'collection' ? (t('Immediate') || 'Immediate') : (t('Standard') || 'Standard'),
+      title: mode === 'collection' ? (t('Immediate') || 'Immediate') : (t('Now') || 'Maintenant'),
       subtitle: mode === 'collection' ? (t('2-5 Min abholbereit') || '2-5 Min abholbereit') : (t('under 35 minutes') || 'under 35 minutes')
     },
     {
       id: 'schedule',
-      title: t('Schedule') || 'Schedule',
+      title: t('Schedule') || 'Programmer',
       subtitle: getScheduleSubtitle()
     }
   ]

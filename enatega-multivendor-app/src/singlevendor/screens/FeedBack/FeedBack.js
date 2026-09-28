@@ -42,27 +42,27 @@ const FeedBack = () => {
   
 
   const [submitReview, { loading: submittingReview }] = useMutation(REVIEWORDER, {
-    onCompleted: (data) => {
-      FlashMessage({ message: t('Feedback submitted successfully') || 'Feedback submitted successfully' })
+    onCompleted: () => {
+      FlashMessage({ message: 'Merci pour votre avis !' })
       navigation.goBack()
     },
     onError: (error) => {
       console.log('Review error:', JSON.stringify(error))
       FlashMessage({
-        message: error?.networkError?.result?.errors?.[0]?.message || error?.message || t('Something went wrong, please try again!') || 'Something went wrong, please try again!'
+        message: error?.networkError?.result?.errors?.[0]?.message || error?.message || 'Impossible d\'envoyer votre avis, merci de réessayer.'
       })
     }
   })
 
   const [submitFeedback, { loading: submittingFeedback }] = useMutation(GIVEFEEDBACK, {
     onCompleted: () => {
-      FlashMessage({ message: t('Feedback submitted successfully') || 'Feedback submitted successfully' })
+      FlashMessage({ message: 'Merci pour votre retour !' })
       navigation.goBack()
     },
     onError: (error) => {
       console.log('Give feedback error:', JSON.stringify(error))
       FlashMessage({
-        message: error?.networkError?.result?.errors?.[0]?.message || error?.message || t('Something went wrong, please try again!') || 'Something went wrong, please try again!'
+        message: error?.networkError?.result?.errors?.[0]?.message || error?.message || 'Impossible d\'envoyer votre avis, merci de réessayer.'
       })
     }
   })
@@ -73,12 +73,12 @@ const FeedBack = () => {
 
   const handleSubmit = () => {
     if (rating === 0) {
-      FlashMessage({ message: t('Please add star rating first') || 'Please add star rating first' })
+      FlashMessage({ message: 'Merci de choisir une note en étoiles.' })
       return
     }
 
     if (feedbackText.trim().length === 0) {
-      FlashMessage({ message: t('Please write your feedback') || 'Please write your feedback' })
+      FlashMessage({ message: 'Merci d\'écrire votre avis.' })
       return
     }
 
@@ -105,7 +105,7 @@ const FeedBack = () => {
         }
       })
     } else {
-      FlashMessage({ message: t('Order ID is missing') || 'Order ID is missing' })
+      FlashMessage({ message: 'Commande introuvable pour cet avis.' })
     }
   }
 

@@ -94,7 +94,9 @@ const useOrderConfirmation = ({ orderId, isHome = false } = {}) => {
     orderItems: confirmation?.items ?? [],
     initialOrder,
     orderNo: confirmation?.orderId ?? initialOrder?.orderId,
-    creditsUsed: confirmation?.creditsApplied ?? 0
+    creditsUsed: confirmation?.creditsApplied ?? 0,
+    scheduledAt: confirmation?.scheduledAt ?? initialOrder?.scheduledAt ?? null,
+    reviewRating: confirmation?.reviewRating ?? initialOrder?.reviewRating ?? null
     // riderPhone: confirmation?.rider?.phone
     // deliveryDiscount: confirmation?.deliveryDiscount ?? 0,
   }
