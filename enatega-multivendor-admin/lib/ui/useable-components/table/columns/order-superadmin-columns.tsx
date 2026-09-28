@@ -24,9 +24,9 @@ export const ORDER_SUPER_ADMIN_COLUMNS = () => {
       propertyName: 'items',
       body: (rowData: IExtendedOrder) => {
         if (rowData.items && rowData.items.length > 0) {
-          return <span>{rowData.items.length} items</span>;
+          return <span>{rowData.items.length} article(s)</span>;
         }
-        return <span>No items</span>;
+        return <span>Aucun article</span>;
       },
     },
     {
@@ -36,6 +36,20 @@ export const ORDER_SUPER_ADMIN_COLUMNS = () => {
     {
       headerName: t('Order Status'),
       propertyName: 'orderStatus',
+      body: (rowData: IExtendedOrder) => {
+        const labels: Record<string, string> = {
+          PENDING: 'Reçue',
+          ACCEPTED: 'En cuisine',
+          ASSIGNED: 'Livreur assigné',
+          PICKED: 'En route',
+          DELIVERED: 'Livrée',
+          COMPLETED: 'Terminée',
+          CANCELLED: 'Annulée',
+          CANCELLEDBYREST: 'Refusée',
+        };
+        const status = String(rowData.orderStatus ?? '');
+        return <span>{labels[status] ?? status}</span>;
+      },
     },
     {
       headerName: t('Created At'),
