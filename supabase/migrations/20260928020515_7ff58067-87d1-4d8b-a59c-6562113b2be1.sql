@@ -1,0 +1,2 @@
+update public.menu_items set is_available = true where restaurant_id = (select id from public.restaurants where slug='bouff') and is_available = false;
+update public.item_variants set is_available = true where is_available = false and menu_item_id in (select m.id from public.menu_items m join public.restaurants r on r.id=m.restaurant_id where r.slug='bouff');
