@@ -1,5 +1,13 @@
 import { bouffDb } from "./supabase";
-import { RESTAURANT_SLUG } from "./config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RESTAURANT_SLUG, MEDIA_BASE_URL } from "./config";
+
+/** Les photos stockées en chemin relatif (« /bouff/menu/x.jpg ») sont servies par le site client. */
+export function mediaUrl(u?: string | null): string | null {
+  if (!u) return null;
+  if (/^https?:\/\//i.test(u)) return u;
+  return `${MEDIA_BASE_URL}${u.startsWith("/") ? u : `/${u}`}`;
+}
 
 export interface BouffOption {
   id: string;
@@ -88,17 +96,60 @@ export interface BouffMenu {
   cities: BouffCity[];
 }
 
+/*
+ * Cache du menu (scalabilité) :
+ * - en mémoire : tous les écrans partagent UNE seule lecture, pendant 2 min ;
+ * - sur le téléphone : la dernière carte s'affiche tout de suite au démarrage,
+ *   puis elle est rafraîchie en arrière-plan (jusqu'à 24 h hors ligne).
+ */
 let cache: { at: number; menu: BouffMenu } | null = null;
 let inflight: Promise<BouffMenu> | null = null;
-const TTL_MS = 30_000;
+const TTL_MS = 2 * 60_000;
+const PERSIST_KEY = "bouff/menu-cache-v2";
+const PERSIST_MAX_AGE_MS = 24 * 60 * 60_000;
+let persistedLoaded = false;
 
 export function invalidateMenu() {
   cache = null;
 }
 
+async function readPersisted(): Promise<{ at: number; menu: BouffMenu } | null> {
+  if (persistedLoaded) return null;
+  persistedLoaded = true;
+  try {
+    const raw = await AsyncStorage.getItem(PERSIST_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed?.menu || Date.now() - parsed.at > PERSIST_MAX_AGE_MS) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
 export async function loadMenu(force = false): Promise<BouffMenu> {
   if (!force && cache && Date.now() - cache.at < TTL_MS) return cache.menu;
   if (!force && inflight) return inflight;
+
+  if (!force && !cache) {
+    const persisted = await readPersisted();
+    if (persisted) {
+      // Affichage immédiat de la carte connue, rafraîchie en arrière-plan.
+      cache = { at: 0, menu: persisted.menu };
+      void fetchMenu().catch(() => {});
+      return persisted.menu;
+    }
+  }
+  if (!force && cache && !inflight) {
+    // Cache expiré : on sert l'ancienne carte et on rafraîchit sans bloquer l'écran.
+    void fetchMenu().catch(() => {});
+    return cache.menu;
+  }
+  return fetchMenu();
+}
+
+async function fetchMenu(): Promise<BouffMenu> {
+  if (inflight) return inflight;
 
   inflight = (async () => {
     const db = bouffDb();
@@ -110,7 +161,7 @@ export async function loadMenu(force = false): Promise<BouffMenu> {
     if (restError) throw restError;
     if (!restaurant) throw new Error("Restaurant BOUFF introuvable.");
 
-    const [categories, items, variants, zones, cities] = await Promise.all([
+    const [categories, items, zones, cities] = await Promise.all([
       db
         .from("categories")
         .select("*")
@@ -122,7 +173,6 @@ export async function loadMenu(force = false): Promise<BouffMenu> {
         .select("*")
         .eq("restaurant_id", restaurant.id)
         .order("sort_order"),
-      db.from("item_variants").select("*").order("sort_order"),
       db
         .from("delivery_zones")
         .select("*")
@@ -132,7 +182,14 @@ export async function loadMenu(force = false): Promise<BouffMenu> {
       db.from("cities").select("*").order("sort_order"),
     ]);
 
+    if (items.error) throw items.error;
     const itemIds = (items.data ?? []).map((i) => i.id);
+    const safeIds = itemIds.length ? itemIds : ["00000000-0000-0000-0000-000000000000"];
+    const variants = await db
+      .from("item_variants")
+      .select("*")
+      .in("menu_item_id", safeIds)
+      .order("sort_order");
     const { data: groups } = await db
       .from("option_groups")
       .select("*")
@@ -150,7 +207,7 @@ export async function loadMenu(force = false): Promise<BouffMenu> {
       categoryId: item.category_id,
       title: item.name,
       description: item.description,
-      image: item.image_url,
+      image: mediaUrl(item.image_url),
       isOutOfStock: !item.is_available,
       isFeatured: item.is_featured,
       availableWeekday: item.available_weekday,
@@ -192,8 +249,8 @@ export async function loadMenu(force = false): Promise<BouffMenu> {
         name: restaurant.name,
         tagline: restaurant.tagline,
         description: restaurant.description,
-        logo: restaurant.logo_url,
-        cover: restaurant.cover_url,
+        logo: mediaUrl(restaurant.logo_url),
+        cover: mediaUrl(restaurant.cover_url),
         brandColor: restaurant.brand_color,
         phone: restaurant.phone,
         whatsapp: restaurant.whatsapp_number,
@@ -208,7 +265,7 @@ export async function loadMenu(force = false): Promise<BouffMenu> {
         id: c.id,
         name: c.name,
         description: c.description,
-        image: c.image_url,
+        image: mediaUrl(c.image_url),
         items: mapped.filter((i) => i.categoryId === c.id && isVisible(i)),
       })),
       items: mapped.filter(isVisible),
@@ -228,6 +285,7 @@ export async function loadMenu(force = false): Promise<BouffMenu> {
 
     cache = { at: Date.now(), menu };
     inflight = null;
+    AsyncStorage.setItem(PERSIST_KEY, JSON.stringify(cache)).catch(() => {});
     return menu;
   })();
 
