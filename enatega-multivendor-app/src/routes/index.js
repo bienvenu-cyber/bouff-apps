@@ -81,8 +81,9 @@ const linking = {
   prefixes: [
     Linking.createURL('/'),
     'enategamultivendor://',
-    'https://multivendor.enatega.com',
-    'https://www.multivendor.enatega.com'
+    'https://bouff-apps.vercel.app',
+    'https://bouff.bj',
+    'https://www.bouff.bj'
   ],
   config: {
     screens: {

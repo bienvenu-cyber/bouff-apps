@@ -26,7 +26,7 @@ const ReferAFriend = () => {
 
   const referralCode = profile?.referralCode || ''
   const appDownloadUrl =
-    process.env.EXPO_PUBLIC_APP_DOWNLOAD_URL || 'https://enatega.com'
+    process.env.EXPO_PUBLIC_APP_DOWNLOAD_URL || 'https://bouff-apps.vercel.app'
   const hasOrders = orders && orders.length > 0
 
   const handleCopyCode = async (code) => {
