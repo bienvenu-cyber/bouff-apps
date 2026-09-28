@@ -13,7 +13,6 @@ import QuickActionsGrid from '../../components/Profile/QuickActionsGrid'
 import AccountSection from '../../components/Profile/AccountSection'
 import HelpSection from '../../components/Profile/HelpSection'
 import AccountManagement from '../../components/Profile/AccountManagement'
-import FreeDeliveriesCountCard from '../../components/FreeDeliveries/FreeDeliveriesCountCard'
 
 import styles from './styles'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
@@ -53,7 +52,6 @@ const Profile = () => {
         <QuickActionsGrid />
         {/* Promo Banner */}
         {/* <PromoBanner /> */}
-        <FreeDeliveriesCountCard currentTheme={currentTheme} />
 
         {/* Account Section */}
         <AccountSection />

@@ -47,7 +47,7 @@ export const fetchPublicAccessToken = async(graphqlUrl) => {
         link: createHttpLink({
           uri: graphqlUrl,
           headers: {
-            'user-agent': `EnategaApp/${Platform.OS}`,
+            'user-agent': `BouffApp/${Platform.OS}`,
             'accept-language': 'en-US',
             'x-platform': Platform.OS,
             nonce

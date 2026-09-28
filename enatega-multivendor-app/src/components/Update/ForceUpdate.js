@@ -77,7 +77,7 @@ const ForceUpdate = () => {
     try {
       let storeUrl =
         Platform.OS === 'ios'
-          ? 'https://apps.apple.com/pk/app/enatega-multivendor/id1526488093'
+          ? 'https://bouff-apps.vercel.app'
           : 'https://play.google.com/store/apps/details?id=bj.bouff.app&pli=1'
 
       await Linking.openURL(storeUrl)

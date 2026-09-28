@@ -17,8 +17,8 @@ export const de = {
     'Das Alter mindert nicht die extreme Enttäuschung, wenn ein Kugel Eis vom Hörnchen fällt.',
   getStarted: "Los geht's!",
   welcome:
-    'Willkommen bei Yalla, manchmal braucht man nur Liebe. Aber ab und zu schadet etwas Essen nicht.',
-  welcomeScreen: 'Willkommen bei Yalla',
+    'Willkommen bei BOUFF, manchmal braucht man nur Liebe. Aber ab und zu schadet etwas Essen nicht.',
+  welcomeScreen: 'Willkommen bei BOUFF',
   loginBtn: 'Anmelden',
   registerBtn: 'Registrieren',
   name: 'Name',
@@ -182,7 +182,7 @@ export const de = {
   passErr2:
     'Ungültiges Passwort. Das Passwort muss mindestens 8 Zeichen lang sein und 1 Großbuchstaben, 1 Kleinbuchstaben und 1 Zahl enthalten.',
   letsGetStarted: 'Lass uns anfangen!',
-  createAccountFirst: 'Erstellen Sie Ihr Yalla-Konto',
+  createAccountFirst: 'Erstellen Sie Ihr BOUFF-Konto',
   firstnameErr1: 'Vorname ist erforderlich!',
   firstnameErr2: 'Ungültiger Vorname!',
   lastnameErr1: 'Nachname ist erforderlich!',
@@ -289,7 +289,7 @@ secureAccountWithPhone: 'Wir verwenden Ihre Nummer nur, wenn wir Sie bezüglich 
   locationPermissionMessage:
     'Tippen Sie auf diese Nachricht, um die Einstellungen zu öffnen und der App die Verwendung des Standorts zu erlauben.',
   enategaUseYourLocationMessage:
-    'Yalla verwendet Ihren Standort, um die Restaurants in Ihrer Nähe anzuzeigen!',
+    'BOUFF verwendet Ihren Standort, um die Restaurants in Ihrer Nähe anzuzeigen!',
   selectAnotherLocation: 'Wählen Sie einen anderen Ort aus',
   setLocation: 'Standort festlegen',
   cartIsEmpty: 'Der Warenkorb ist leer',
@@ -589,8 +589,8 @@ secureAccountWithPhone: 'Wir verwenden Ihre Nummer nur, wenn wir Sie bezüglich 
     'Melden Sie sich einfach an, indem Sie Ihre E-Mail-Adresse eingeben!',
   yourEmailPassword:
     'Bitte geben Sie jetzt Ihr Passwort ein, um Zugriff zu erhalten!',
-    brandName: 'Enatega',
-    welcomeText: 'Willkommen bei Enatega',
+    brandName: 'BOUFF',
+    welcomeText: 'Willkommen bei BOUFF',
   createAccountDesc:
     'Genießen Sie die besten Restaurants oder erhalten Sie, was Sie von nahegelegenen Geschäften benötigen, geliefert!',
     phoneNumber: 'Telefonnummer',
@@ -652,7 +652,7 @@ loginRequired: 'Anmeldung erforderlich',
   "Done": "Fertig",
   "addMessage": "Nachricht hinzufügen",
   "kindlyBeAdvisedText": "Bitte beachten Sie, dass Ihre Nachricht auch für den Kurierpartner sichtbar sein könnte, der für die Lieferung Ihrer Bestellung an den Ort verantwortlich ist.",
-  exploreYallaCities: 'Entdecke Yalla Städte',
+  exploreYallaCities: 'Entdecke BOUFF Städte',
   Card: 'Karte',
   OrderPriceValidation:"Ihr Bestellbetrag liegt unter dem Mindestbestellwert des Restaurants. Bitte fügen Sie weitere Artikel zu Ihrem Warenkorb hinzu.",
   "Sorry! we can't deliver to your address.": "Entschuldigung! Wir können nicht an Ihre Adresse liefern.",

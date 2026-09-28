@@ -1,5 +1,5 @@
 import React, { useState, useContext, useLayoutEffect, useRef, useCallback } from 'react'
-import { View, ScrollView, TouchableOpacity, StatusBar, Platform, StyleSheet } from 'react-native'
+import { View, ScrollView, TouchableOpacity, StatusBar, Platform, StyleSheet, Alert } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { HeaderBackButton } from '@react-navigation/elements'
@@ -120,6 +120,7 @@ const Checkout = (props) => {
   const [applyCoupon, { loading: applyingCoupon }] = useMutation(COUPON, {
     onCompleted: (data) => {
       if (!data?.coupon?.success) {
+        Alert.alert('Code promo', data?.coupon?.message || 'Ce code promo n’est pas valable.')
         return
       }
       const coupon = data?.coupon?.coupon
@@ -129,7 +130,7 @@ const Checkout = (props) => {
       }
     },
     onError: (err) => {
-      console.log('Error applying coupon', err)
+      Alert.alert('Code promo', err?.message || 'Impossible de vérifier ce code. Réessaie.')
     }
   })
 
