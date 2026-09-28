@@ -17,6 +17,8 @@ const HelpSection = () => {
     ...theme[themeContext.ThemeValue]
   }
 
+  // TODO URGENT AVANT PROD : définir EXPO_PUBLIC_BOUFF_SUPPORT_WHATSAPP (numéro WhatsApp BOUFF)
+  // et renseigner restaurants.whatsapp_number. Sans ça, Support + Avis affichent « bientôt ».
   // Support et avis passent par WhatsApp BOUFF (pas de système de tickets).
   const supportNumber = String(process.env.EXPO_PUBLIC_BOUFF_SUPPORT_WHATSAPP || '').replace(/\D/g, '')
   const openWhatsApp = async (message) => {
