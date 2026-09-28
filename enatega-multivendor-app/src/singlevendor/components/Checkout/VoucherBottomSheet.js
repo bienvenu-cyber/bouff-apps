@@ -13,19 +13,16 @@ import { COUPON } from '../../apollo/mutations'
 const VoucherBottomSheet = React.forwardRef(({ onApplyVoucher }, ref) => {
   const [applyCoupon, { loading: applyingCoupon }] = useMutation(COUPON, {
     onCompleted: (data) => {
-      console.log('coupon applied successfully', data)
       if (!data?.coupon?.success) {
-        Alert.alert('Coupon Error', data?.coupon?.message || 'Failed to apply coupon')
+        Alert.alert('Code promo', data?.coupon?.message || 'Ce code promo n’est pas valable.')
       } else {
-        console.log('Applied Coupon:', data?.coupon?.title)
-
         onApplyVoucher(data?.coupon?.coupon)
         setVoucherCode('')
         ref?.current?.close()
       }
     },
     onError: (err) => {
-      console.log('Error applying coupon', err)
+      Alert.alert('Code promo', err?.message || 'Impossible de vérifier ce code. Réessaie.')
     }
   })
 

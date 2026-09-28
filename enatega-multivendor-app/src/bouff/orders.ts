@@ -272,9 +272,9 @@ async function guestOrderDetails(orderNumber: string, menu: any) {
     data: {
       ...common,
       deliveryDiscount: 0,
-      couponDiscount: 0,
+      couponDiscount: t.discount_fcfa ?? 0,
       isPriority: false,
-      itemsSubTotal: (t.total_fcfa ?? 0) - (t.delivery_fee_fcfa ?? 0),
+      itemsSubTotal: t.items_total_fcfa ?? (t.total_fcfa ?? 0) - (t.delivery_fee_fcfa ?? 0) + (t.discount_fcfa ?? 0),
       minimumOrderFee: 0,
       minimumOrderAmount: 0,
       isBelowMinimumOrder: false,
@@ -282,7 +282,7 @@ async function guestOrderDetails(orderNumber: string, menu: any) {
       freeDeliveriesRemaining: 0,
       priorityDeliveryFees: 0,
       deliverChargesAmount: t.delivery_fee_fcfa,
-      couponDiscountApplied: false,
+      couponDiscountApplied: (t.discount_fcfa ?? 0) > 0,
       creditsApplied: 0,
     },
   };
