@@ -211,7 +211,6 @@ export default function SettingsPage() {
                   showLabel
                   name="min_order_fcfa"
                   prefix=""
-                  suffix=" F"
                   placeholder="Minimum de commande (FCFA)"
                   value={values.min_order_fcfa}
                   onChange={(name, val) => setFieldValue(name, val)}
