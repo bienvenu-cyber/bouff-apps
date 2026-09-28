@@ -952,4 +952,53 @@ export const resolvers: Record<string, Resolver> = {
   async fetchShopTypes() {
     return { data: [], totalCount: 0, currentPage: 1, totalPages: 1 };
   },
+
+  // Notes et Avis
+  async restaurantReviewsPaginated({ restaurantId, page, limit, search, minRating, maxRating }) {
+    const res = await db().rpc('admin_list_reviews', { 
+      p_restaurant_id: restaurantId || null, 
+      p_limit: 200 
+    });
+    let rows = (res.data ?? []) as any[];
+    
+    if (search) {
+        const s = search.toLowerCase();
+        rows = rows.filter(r => 
+            String(r.customer_name ?? '').toLowerCase().includes(s) || 
+            String(r.comment ?? '').toLowerCase().includes(s) ||
+            String(r.order_number ?? '').toLowerCase().includes(s)
+        );
+    }
+    if (minRating !== undefined) rows = rows.filter(r => Number(r.rating) >= minRating);
+    if (maxRating !== undefined) rows = rows.filter(r => Number(r.rating) <= maxRating);
+
+    const data = rows.map(r => ({
+        __typename: 'Review',
+        _id: String(r.id),
+        order: {
+            __typename: 'Order',
+            _id: String(r.id),
+            orderId: String(r.order_number),
+            items: [],
+            user: {
+                __typename: 'User',
+                _id: String(r.customer_name),
+                name: String(r.customer_name),
+                email: ''
+            }
+        },
+        restaurant: {
+            __typename: 'Restaurant',
+            _id: String(r.restaurant_id || r.restaurant || ''),
+            name: String(r.restaurant || ''),
+            image: ''
+        },
+        rating: Number(r.rating),
+        comments: String(r.comment || ''),
+        description: String(r.comment || ''),
+        createdAt: r.created_at
+    }));
+
+    return slice(data, page, limit);
+  },
 };

@@ -13,6 +13,7 @@ export const PLACE_ORDER = gql`
     $isPickedUp: Boolean!
     $deliveryCharges: Float!
     $instructions: String
+    $scheduledFor: String
   ) {
     placeOrder(
       restaurant: $restaurant
@@ -26,6 +27,7 @@ export const PLACE_ORDER = gql`
       isPickedUp: $isPickedUp
       deliveryCharges: $deliveryCharges
       instructions: $instructions
+      scheduledFor: $scheduledFor
     ) {
       _id
       orderId
@@ -96,6 +98,7 @@ export const PLACE_ORDER = gql`
       createdAt
       completionTime
       preparationTime
+      scheduledAt
       eta {
         phase source readyAt baseArrivalAt estimatedArrivalAt
         windowStartAt windowEndAt durationSeconds distanceMeters

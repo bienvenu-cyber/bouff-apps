@@ -1,4 +1,4 @@
-export interface IUserReponse {
+export interface IUserResponse {
   _id: string;
   name: string;
   email: string;
@@ -15,5 +15,5 @@ export interface IUserReponse {
 }
 
 export interface IUsersResponseGraphQL {
-  users: IUserReponse[];
+  users: IUserResponse[];
 }
