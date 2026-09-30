@@ -13,7 +13,7 @@
 - [ ] Prix Pop's Chicken, prix du Repas du Monde, frais réels par zone (en attente)
 - [ ] Numéro WhatsApp Business + accès à la Cloud API Meta
 - [ ] Créer les comptes Google Maps BOUFF (cartes)
-- [ ] Retirer les adresses de serveurs Enatega écrites en dur (app livreur)
+- [x] Retirer les adresses de serveurs Enatega écrites en dur (app livreur)
 
 
 ## Étape 2 — Brancher les applications existantes sur la base BOUFF
@@ -28,9 +28,9 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 - [ ] Mise en ligne du site client sur un hébergement Node
 - [x] App mobile client branchée (carte, panier, commande, suivi, chat, adresses) — à tester sur téléphone, branding à faire
 - [x] App cuisine branchée : connexion e-mail, commandes en direct, accepter (temps de préparation), prête, remise (emporter), refus, fermeture d'urgence, français par défaut
-- [ ] App cuisine : ruptures de stock depuis l'app (écran carte absent de l'app d'origine → back-office)
-- [ ] App livreur : disponibilité, courses libres, prise en charge, en route, remise
-- [ ] Back-office : restaurants, carte, comptes de l'équipe, livreurs, commissions, statistiques
+- [x] App cuisine : onglet « Carte » pour les ruptures (plats et formules), règles testées
+- [x] App livreur : disponibilité, courses libres, prise en charge, en route, remise (course test complète OK) — à tester sur téléphone
+- [x] Back-office : restaurants, carte, comptes de l'équipe, livreurs, commissions, statistiques branchés — à tester en ligne
 - [ ] Retirer les adresses de serveurs Enatega écrites en dur
 
 ## Déjà disponible côté base (rien à refaire)
