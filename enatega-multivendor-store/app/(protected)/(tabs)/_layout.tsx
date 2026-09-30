@@ -7,6 +7,7 @@ import {
   WalletIcon,
 } from "@/lib/ui/useable-components/svg";
 import { Tabs, usePathname } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Platform, StyleSheet } from "react-native";
@@ -69,6 +70,15 @@ const RootLayout = () => {
           title: t("Home"),
           tabBarIcon: ({ color }) => (
             <HomeIcon color={color} width={25} height={25} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="stock"
+        options={{
+          title: "Carte",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="fast-food-outline" size={25} color={color} />
           ),
         }}
       />
