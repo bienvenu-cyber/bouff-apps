@@ -3,6 +3,7 @@ import { Modal, Pressable, StyleSheet, TouchableOpacity, View } from 'react-nati
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import TextDefault from '../Text/TextDefault/TextDefault'
+import { tr } from '../../utils/tr'
 
 const OutOfStockModal = ({ visible, onClose }) => {
   const themeContext = useContext(ThemeContext)
@@ -24,14 +25,14 @@ const OutOfStockModal = ({ visible, onClose }) => {
           ]}
         >
           <TextDefault H4 bolder center textColor={currentTheme.fontMainColor}>
-            Currently Unavailable
+            {tr('Indisponible pour le moment', 'Currently Unavailable')}
           </TextDefault>
           <TextDefault
             center
             textColor={currentTheme.fontSecondColor}
             style={styles.message}
           >
-            Item Out of Stock
+            {tr('Article en rupture', 'Item Out of Stock')}
           </TextDefault>
           <TouchableOpacity
             accessibilityRole='button'

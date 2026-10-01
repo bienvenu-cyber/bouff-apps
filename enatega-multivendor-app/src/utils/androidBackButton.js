@@ -1,3 +1,4 @@
+import { tr } from './tr'
 // packages
 import { BackHandler, Alert } from 'react-native'
 /**
@@ -19,7 +20,7 @@ const removeAndroidBackButtonHandler = () => {
   BackHandler.removeEventListener('hardwareBackPress')
 }
 const exitAlert = () => {
-  Alert.alert('Confirm exit', 'Do you want to quit the app?', [
+  Alert.alert(tr('Quitter', 'Confirm exit'), tr('Voulez-vous quitter l’application ?', 'Do you want to quit the app?'), [
     { text: 'CANCEL', style: 'cancel' },
     {
       text: 'OK',

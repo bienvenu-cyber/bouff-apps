@@ -9,6 +9,7 @@ import ShimmerImage from '../../ShimmerImage/ShimmerImage'
 import { useTranslation } from 'react-i18next'
 import { isOpen } from '../../../utils/customFunctions'
 import { IMAGE_LINK } from '../../../utils/constants'
+import { tr } from '../../../utils/tr'
 
 const CARD_SPACING = scale(10)
 
@@ -332,7 +333,7 @@ const RestaurantSections = ({
           <View style={styles(currentTheme).section}>
             <View style={styles(currentTheme).sectionHeader}>
               <TextDefault H4 bolder textColor={currentTheme.colors.textPrimary}>
-                Popular
+                {tr('Populaires', 'Popular')}
               </TextDefault>
             </View>
 
@@ -357,7 +358,7 @@ const RestaurantSections = ({
         : (
         <View style={styles(currentTheme).section}>
           <TextDefault H4 bolder textColor={currentTheme.colors.textPrimary} style={{ marginBottom: scale(12) }}>
-            Find what you want
+            {tr('Trouve ce que tu veux', 'Find what you want')}
           </TextDefault>
 
           <View style={styles(currentTheme).categoriesGrid}>

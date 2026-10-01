@@ -11,9 +11,10 @@ import SectionListSkeleton from './SectionListSkeleton'
 import SectionListError from './SectionListError'
 import { scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
+import { tr } from '../../utils/tr'
 
 const SectionList = ({
-  title = 'Limited time deals',
+  title = tr('Offres limitées', 'Limited time deals'),
   data = [],
   loading = false,
   error = null,

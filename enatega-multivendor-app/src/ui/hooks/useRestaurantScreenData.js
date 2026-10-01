@@ -10,6 +10,7 @@ import {
   food,
   popularFoodItems
 } from '../../apollo/queries'
+import { tr } from '../../utils/tr'
 
 const POPULAR_ITEMS = gql`
   ${popularItems}
@@ -107,8 +108,8 @@ export const useRestaurantData = (
 
     // First create the popular section
     const popularSection = {
-      title: 'Popular',
-      parentCategoryTitle: 'Popular',
+      title: tr('Populaires', 'Popular'),
+      parentCategoryTitle: tr('Populaires', 'Popular'),
       subCategoryTitle: null,
       foods: popularFoods
     }

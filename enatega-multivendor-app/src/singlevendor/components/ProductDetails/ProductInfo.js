@@ -12,6 +12,7 @@ import useCartStore from '../../stores/useCartStore'
 import { normalizeSingleVendorMediaUrl } from '../../../utils/mediaUrl'
 import { getDealLabel } from '../../utils/helper'
 import { getFirstAvailableVariation, isProductOutOfStock, isVariationOutOfStock } from '../../utils/stock'
+import { tr } from '../../../utils/tr'
 
 const ProductInfo = ({ t, productInfoData, currentTheme, selectedVariationId, selectedAddons, editMode = false, onSaveEdit, editingCart = false }) => {
   const config = useContext(ConfigurationContext)
@@ -106,7 +107,7 @@ const ProductInfo = ({ t, productInfoData, currentTheme, selectedVariationId, se
             {editMode
               ? (
               <View style={{ alignItems: 'flex-end', minWidth: 130 }}>
-                <ContinueWithPhoneButton containerStyles={{ minWidth: 130 }} textStyle={{ paddingHorizontal: 8 }} isLoading={editingCart} isDisabled={editingCart || isOutOfStock} title='Save changes' onPress={onSaveEdit} />
+                <ContinueWithPhoneButton containerStyles={{ minWidth: 130 }} textStyle={{ paddingHorizontal: 8 }} isLoading={editingCart} isDisabled={editingCart || isOutOfStock} title={tr('Enregistrer', tr('Enregistrer', 'Save changes'))} onPress={onSaveEdit} />
               </View>
                 )
               : isInCart

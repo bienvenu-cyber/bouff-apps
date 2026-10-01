@@ -4,6 +4,7 @@ import { Text, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { NavigationContainer } from '@react-navigation/native'
 import { CardStyleInterpolators, createStackNavigator } from '@react-navigation/stack'
+import { tr } from '../../utils/tr'
 
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
@@ -83,7 +84,7 @@ const SingleVendorMembership = props => {
     return (
       <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center', padding: 24 }}>
         <Text style={{ textAlign: 'center' }}>
-          Membership payments are temporarily unavailable.
+          {tr('Les paiements d’abonnement sont momentanément indisponibles.', 'Membership payments are temporarily unavailable.')}
         </Text>
       </View>
     )

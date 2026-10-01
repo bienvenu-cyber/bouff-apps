@@ -11,6 +11,7 @@ import {
   getResetSession,
   clearResetSession
 } from '../../utils/resetPasswordSession'
+import { tr } from '../../utils/tr'
 
 const RESET_PASSWORD = gql`
   ${resetPassword}
@@ -48,7 +49,7 @@ export const useResetYourPassword = () => {
   useEffect(() => {
     if (!email || !otp) {
       FlashMessage({
-        message: 'This OTP is expired or invalid. Please request a new one.'
+        message: tr('Ce code est expiré ou invalide. Demandez-en un nouveau.', 'This OTP is expired or invalid. Please request a new one.')
       })
       navigation.replace('ForgotPassword', { email })
     }
@@ -98,7 +99,7 @@ export const useResetYourPassword = () => {
       normalizedMessage.includes('reuse')
     ) {
       FlashMessage({
-        message: 'This OTP is expired or invalid. Please request a new one.'
+        message: tr('Ce code est expiré ou invalide. Demandez-en un nouveau.', 'This OTP is expired or invalid. Please request a new one.')
       })
       navigation.replace('ForgotPassword', { email })
     } else if (error.networkError) {
@@ -120,7 +121,7 @@ export const useResetYourPassword = () => {
     const currentOtp = getResetSession()?.otp
     if (!email || !currentOtp) {
       FlashMessage({
-        message: 'This OTP is expired or invalid. Please request a new one.'
+        message: tr('Ce code est expiré ou invalide. Demandez-en un nouveau.', 'This OTP is expired or invalid. Please request a new one.')
       })
       navigation.replace('ForgotPassword', { email })
       return

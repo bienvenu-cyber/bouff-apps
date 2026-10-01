@@ -20,6 +20,7 @@ import { dismissSessionExpiredModal } from '../../utils/session'
 import { gql, useApolloClient } from '@apollo/client'
 import { useAppMode } from '../../mode/AppModeContext'
 import { APP_MODES } from '../../mode/constants'
+import { tr } from '../../utils/tr'
 
 const APPLE_AUTH_NONCE = gql`
   query AppleAuthNonce {
@@ -91,7 +92,7 @@ const CreateAccount = (props) => {
             const idToken = credential?.identityToken
             if (!idToken) {
               FlashMessage({
-                message: 'Your social sign-in did not return a valid token. Please try again.'
+                message: tr('La connexion n’a pas abouti. Réessayez.', 'Your social sign-in did not return a valid token. Please try again.')
               })
               setLoading(false)
               loginButtonSetter(null)

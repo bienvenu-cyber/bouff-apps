@@ -12,6 +12,7 @@ import { alignment } from '../../utils/alignment'
 import TextDefault from '../../components/Text/TextDefault/TextDefault'
 import {useTranslation} from 'react-i18next'
 import { Feather } from '@expo/vector-icons'
+import { tr } from '../../utils/tr'
 
 
 const CHANGE_PASSWORD = gql`
@@ -59,7 +60,7 @@ function ChangePassword(props) {
       })
       props.hideModal()
     } else {
-      Alert.alert('Error', t('invalidPassword'))
+      Alert.alert(tr('Erreur', 'Error'), t('invalidPassword'))
     }
   }
 

@@ -11,6 +11,7 @@ import React from 'react'
 import { Feather, FontAwesome6 } from '@expo/vector-icons'
 import TextDefault from '../../../components/Text/TextDefault/TextDefault'
 import { scale } from '../../../utils/scaling'
+import { tr } from '../../../utils/tr'
 
 const SearchedAddress = ({
   currentTheme,
@@ -60,7 +61,7 @@ const SearchedAddress = ({
       >
         <View style={[styles.locationSection, { borderBottomColor: divider }]}>
           <TextDefault small bold uppercase textColor={mutedText} style={styles.eyebrow}>
-            Selected location
+            {tr('Lieu choisi', 'Selected location')}
           </TextDefault>
           <View style={styles.locationRow}>
             <View style={[styles.locationIcon, { backgroundColor: currentTheme.singleVendorBrandSubtle }]}> 
@@ -98,7 +99,7 @@ const SearchedAddress = ({
             </TextDefault>
           </View>
           <TextDefault textColor={mutedText} style={styles.supportingText}>
-            Add information that helps your courier find the entrance.
+            {tr('Ajoute des indications pour aider le livreur à trouver l’entrée.', 'Add information that helps your courier find the entrance.')}
           </TextDefault>
         </View>
 

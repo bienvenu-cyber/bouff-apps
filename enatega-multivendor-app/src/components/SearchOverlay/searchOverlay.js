@@ -1,3 +1,4 @@
+import { tr } from '../../utils/tr'
 // SearchOverlay.js
 import React, { useState, useEffect } from 'react'
 import {
@@ -8,7 +9,7 @@ import {
   Animated,
   Platform,
   StatusBar,
-  Alert
+  {tr('Attention', 'Alert')}
 } from 'react-native'
 import { MaterialIcons, Entypo, Ionicons } from '@expo/vector-icons'
 import TextDefault from '../Text/TextDefault/TextDefault'

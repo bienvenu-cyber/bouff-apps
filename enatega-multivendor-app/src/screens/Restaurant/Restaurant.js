@@ -28,6 +28,7 @@ import ShimmerImage from '../../components/ShimmerImage/ShimmerImage'
 import { resolveRestaurantImage as resolveResolvedRestaurantImage } from '../../utils/resolveImageUrl'
 import OutOfStockModal from '../../components/OutOfStockModal/OutOfStockModal'
 import { SkeletonBlock, useMultivendorTheme } from '../../ui/designSystem'
+import { tr } from '../../utils/tr'
 
 const { height } = Dimensions.get('screen')
 
@@ -166,7 +167,7 @@ function Restaurant(props) {
     if (dataList.length > 0) {
       return [
         {
-          title: 'Popular',
+          title: tr('Populaires', 'Popular'),
           id: `popular-${restaurantId}`,
           data: dataList.slice(0, POPULAR_ROW_LIMIT),
           index: 0
@@ -277,7 +278,7 @@ function Restaurant(props) {
         categoryIndex: section.index
       })
 
-      if (section.title === 'Popular') {
+      if (section.title === tr('Populaires', 'Popular')) {
         if (section.data?.length) {
           rows.push({
             key: `popular-grid-${section.index}`,

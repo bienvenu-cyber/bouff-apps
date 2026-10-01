@@ -33,6 +33,7 @@ import { useMutation } from '@apollo/client'
 import { FlashMessage } from '../../ui/FlashMessage/FlashMessage'
 import Spinner from '../../components/Spinner/Spinner'
 import CustomApartmentIcon from '../../assets/SVG/imageComponents/CustomApartmentIcon'
+import { tr } from '../../utils/tr'
 // import UserContext from '../../context/User'
 
 const CREATE_ADDRESS = gql`
@@ -134,7 +135,7 @@ function SaveAddress(props) {
 
   const onSelectLocation = () => {
     if (!selectedLabel) {
-      Alert.alert('Alert', t('alertLocation'))
+      Alert.alert(tr('Attention', 'Alert'), t('alertLocation'))
       return
     }
 
