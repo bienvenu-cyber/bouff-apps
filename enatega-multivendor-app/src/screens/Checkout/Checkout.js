@@ -506,7 +506,7 @@ function Checkout(props) {
     }
     if (calculatePrice(deliveryCharges, true) < minimumOrder) {
       FlashMessage({
-        message: `The minimum amount of (${configuration.currencySymbol} ${minimumOrder}) for your order has not been reached.`
+        message: tr(`Le minimum de commande (${minimumOrder} FCFA) n’est pas atteint.`, `The minimum order amount (${minimumOrder} FCFA) has not been reached.`)
         // message: `(${t(minAmount)}) (${configuration.currencySymbol
         //   } ${minimumOrder}) (${t(forYourOrder)})`
       })

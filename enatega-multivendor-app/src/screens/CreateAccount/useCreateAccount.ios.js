@@ -104,7 +104,7 @@ export const useCreateAccount = () => {
     } else if (response?.type === 'error') {
       logError('oauth error', response?.error)
       FlashMessage({
-        message: `Google sign-in failed: ${response.error.message || 'Unknown error'}`
+        message: tr('La connexion Google a échoué.', `Google sign-in failed: ${response.error.message || 'Unknown error'}`)
       })
       setLoading(false)
       loginButtonSetter(null)
