@@ -3,6 +3,7 @@ import { Modal, Pressable, StyleSheet, TouchableOpacity, View } from 'react-nati
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
 import TextDefault from '../Text/TextDefault/TextDefault'
+import { tr } from '../../utils/tr'
 
 const SessionExpiredModal = ({ visible, onLogin }) => {
   const themeContext = useContext(ThemeContext)
@@ -21,7 +22,7 @@ const SessionExpiredModal = ({ visible, onLogin }) => {
           ]}
         >
           <TextDefault H3 bolder textColor={currentTheme.fontMainColor} center>
-            Session Expired
+            {tr('Session expirée', 'Session Expired')}
           </TextDefault>
           <TextDefault
             textColor={currentTheme.fontSecondColor || currentTheme.fontMainColor}

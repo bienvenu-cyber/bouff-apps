@@ -33,6 +33,7 @@ import SearchOverlay from '../SearchOverlay/searchOverlay'
 import CategoryPageHeader from './CategoryHeader/CategoryHeader'
 import FoodItem from './FoodItem/FoodItem'
 import callStyles from './styles'
+import { tr } from '../../utils/tr'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const ITEM_WIDTH = 180
@@ -813,7 +814,7 @@ const CategoryPage = ({ route, navigation }) => {
               fontSize: 20
             }}
           >
-            No Items Available
+            {tr('Aucun article disponible', 'No Items Available')}
           </Text>
         </>
       )}

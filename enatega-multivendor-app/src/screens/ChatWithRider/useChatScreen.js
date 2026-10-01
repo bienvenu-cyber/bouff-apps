@@ -13,6 +13,7 @@ import { useUserContext } from '../../context/User'
 import { useTranslation } from 'react-i18next'
 import { alignment } from '../../utils/alignment'
 import { useFocusEffect } from '@react-navigation/native'
+import { tr } from '../../utils/tr'
 
 export const useChatScreen = ({ navigation, route }) => {
   const { id: orderId, orderNo, total, riderPhone } = route.params
@@ -65,11 +66,11 @@ export const useChatScreen = ({ navigation, route }) => {
 
   function onCompleted({ sendChatMessage: messageResult }) {
     if (!messageResult?.success) {
-      Alert.alert('Error', messageResult.message)
+      Alert.alert(tr('Erreur', 'Error'), messageResult.message)
     }
   }
   function onError(error) {
-    Alert.alert('Error', error.message)
+    Alert.alert(tr('Erreur', 'Error'), error.message)
   }
   const [messages, setMessages] = useState([])
   const [inputMessage, setInputMessage] = useState(null)
@@ -234,7 +235,7 @@ export const useChatScreen = ({ navigation, route }) => {
       if (!imageUrl) throw new Error(t('imageUploadFailed'))
       sendImageMessage(imageUrl, asset.uri)
     } catch (error) {
-      Alert.alert('Error', error.message)
+      Alert.alert(tr('Erreur', 'Error'), error.message)
     } finally {
       setUploading(false)
     }

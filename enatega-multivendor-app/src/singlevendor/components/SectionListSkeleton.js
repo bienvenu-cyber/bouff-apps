@@ -7,8 +7,9 @@ import SectionHeader from './SectionHeader'
 import LoadingSkeleton from './LoadingSkeleton'
 import { scale } from '../../utils/scaling'
 import { alignment } from '../../utils/alignment'
+import { tr } from '../../utils/tr'
 
-const SectionListSkeleton = ({ title = 'Limited time deals' }) => {
+const SectionListSkeleton = ({ title = tr('Offres limitées', 'Limited time deals') }) => {
   const { i18n } = useTranslation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = { isRTL: i18n.dir() === 'rtl', ...theme[themeContext.ThemeValue] }

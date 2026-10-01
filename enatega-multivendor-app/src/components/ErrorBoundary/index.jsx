@@ -1,3 +1,4 @@
+import { tr } from '../../utils/tr'
 // components/ErrorBoundary.js
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
@@ -35,7 +36,7 @@ export class ErrorBoundary extends Component {
           <Text style={styles.message}>We could not load this screen. Please try again.</Text>
 
           <TouchableOpacity onPress={this.handleReset} style={styles.button}>
-            <Text style={styles.buttonText}>Try Again</Text>
+            <Text style={styles.buttonText}>{tr('Réessayer', 'Try Again')}</Text>
           </TouchableOpacity>
         </View>
       );

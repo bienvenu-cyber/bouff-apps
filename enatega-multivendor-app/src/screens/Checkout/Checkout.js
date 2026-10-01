@@ -1,4 +1,5 @@
 import i18next from 'i18next'
+import { tr } from '../../utils/tr'
 /* eslint-disable indent */
 import React, { useState, useEffect, useContext, useRef, useCallback, useMemo } from 'react'
 import { View, ScrollView, TouchableOpacity, StatusBar, Platform, Alert, TextInput, Dimensions } from 'react-native'
@@ -377,7 +378,7 @@ function Checkout(props) {
       `${data?.restaurant.name} closed at the moment`,
       [
         {
-          text: 'Go back to restaurants',
+          text: tr('Retour aux restaurants', 'Go back to restaurants'),
           onPress: () => {
             props?.navigation.navigate({
               name: 'Main',
@@ -464,12 +465,12 @@ function Checkout(props) {
     if (error?.networkError) {
       if (error?.networkError.statusCode === 502) {
         FlashMessage({
-          message: 'Server is currently unavailable. Please try again later.'
+          message: tr('Le serveur est indisponible. Réessayez plus tard.', 'Server is currently unavailable. Please try again later.')
         })
       }
       if (error?.networkError.statusCode === 504) {
         FlashMessage({
-          message: 'Request timed out. Please try again.'
+          message: tr('La connexion a expiré. Réessayez.', 'Request timed out. Please try again.')
         })
       }
     }
@@ -505,7 +506,7 @@ function Checkout(props) {
     }
     if (calculatePrice(deliveryCharges, true) < minimumOrder) {
       FlashMessage({
-        message: `The minimum amount of (${configuration.currencySymbol} ${minimumOrder}) for your order has not been reached.`
+        message: tr(`Le minimum de commande (${minimumOrder} FCFA) n’est pas atteint.`, `The minimum order amount (${minimumOrder} FCFA) has not been reached.`)
         // message: `(${t(minAmount)}) (${configuration.currencySymbol
         //   } ${minimumOrder}) (${t(forYourOrder)})`
       })

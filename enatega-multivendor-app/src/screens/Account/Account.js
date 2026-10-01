@@ -23,6 +23,7 @@ import LanguageModal, { languageTypes } from '../../components/LanguageModalize/
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as Localization from 'expo-localization'
 import Constants from 'expo-constants'
+import { tr } from '../../utils/tr'
 
 import useNetworkStatus from '../../utils/useNetworkStatus'
 import ErrorView from '../../components/ErrorView/ErrorView'
@@ -236,7 +237,7 @@ function Account(props) {
       })
     } else {
       FlashMessage({
-        message: "Couldn't delete account. Please try again later"
+        message: tr('Impossible de supprimer le compte. Réessayez plus tard.', 'Couldn\'t delete account. Please try again later')
       })
     }
   }

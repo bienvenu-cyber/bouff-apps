@@ -3,6 +3,7 @@ import React, { useContext, useMemo } from 'react'
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { Feather, Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import { tr } from '../../../utils/tr'
 
 import ThemeContext from '../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../utils/themeColors'
@@ -180,7 +181,7 @@ const HomeCart = () => {
       <SectionErrorCard
         compact
         title={i18next.t('Active order')}
-        message='Your active order could not be loaded.'
+        message={tr('Votre commande en cours n’a pas pu être chargée.', 'Your active order could not be loaded.')}
         onRetry={refetch}
       />
     )

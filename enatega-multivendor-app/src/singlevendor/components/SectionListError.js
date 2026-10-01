@@ -3,9 +3,10 @@ import React from 'react'
 import SectionHeader from './SectionHeader'
 import { alignment } from '../../utils/alignment'
 import SectionErrorCard from './SectionErrorCard'
+import { tr } from '../../utils/tr'
 
 const SectionListError = ({
-  title = 'Limited time deals',
+  title = tr('Offres limitées', 'Limited time deals'),
   errorMessage = "Oops! We couldn't load the data. Tap 'Retry' to try again.",
   onRetry = null
 }) => {

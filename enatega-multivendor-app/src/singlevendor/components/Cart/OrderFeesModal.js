@@ -6,6 +6,7 @@ import ThemeContext from '../../../ui/ThemeContext/ThemeContext';
 import { theme } from '../../../utils/themeColors';
 import TextDefault from '../../../components/Text/TextDefault/TextDefault';
 import { useTranslation } from 'react-i18next';
+import { tr } from '../../../utils/tr'
 
 const OrderFeesModal = ({ 
   visible, 
@@ -89,7 +90,7 @@ const OrderFeesModal = ({
                 isRTL
                 style={styles().tableCell}
               >
-                Total cart value
+                {tr('Montant du panier', 'Total cart value')}
               </TextDefault>
               <TextDefault
                 textColor={currentTheme.fontMainColor}
@@ -98,7 +99,7 @@ const OrderFeesModal = ({
                 isRTL
                 style={styles().tableCellRight}
               >
-                Service fee
+                {tr('Frais de service', 'Service fee')}
               </TextDefault>
             </View>
 
@@ -138,7 +139,7 @@ const OrderFeesModal = ({
                 isRTL
                 style={styles().tableCellRight}
               >
-                No Fee
+                {tr('Gratuit', 'No Fee')}
               </TextDefault>
             </View>
           </View>

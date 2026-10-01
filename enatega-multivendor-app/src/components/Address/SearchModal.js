@@ -31,6 +31,7 @@ import { scale } from '../../utils/scaling'
 import { theme } from '../../utils/themeColors'
 import TextDefault from '../Text/TextDefault/TextDefault'
 import styles from './styles'
+import { tr } from '../../utils/tr'
 
 import { useTranslation } from 'react-i18next'
 import { AntDesign, Ionicons } from '@expo/vector-icons'
@@ -319,12 +320,12 @@ export default function SearchModal({
         close()
       } else {
         console.error('❌ Failed to get place coordinates')
-        Alert.alert('Error', 'Unable to get coordinates for this location')
+        Alert.alert(tr('Erreur', 'Error'), tr('Impossible de localiser cet endroit', 'Unable to get coordinates for this location'))
         setLoading(false)
       }
     } catch (error) {
       console.error('🚨 Error handling place selection:', error)
-      Alert.alert('Error', 'Unable to select this location')
+      Alert.alert(tr('Erreur', 'Error'), tr('Impossible de choisir cet endroit', 'Unable to select this location'))
       setLoading(false)
     }
   }, [getPlaceDetails, onSubmit])
@@ -375,7 +376,7 @@ export default function SearchModal({
             borderColor: currentTheme.customBorder
           }}>
             <TextDefault textColor={currentTheme.newFontcolor}>
-              Location search is not configured
+              {tr('La recherche d’adresse n’est pas encore disponible', 'Location search is not configured')}
             </TextDefault>
             <TouchableOpacity 
               onPress={close} 
@@ -498,13 +499,13 @@ export default function SearchModal({
                       textColor={currentTheme.fontMainColor}
                       style={{ marginTop: 8, fontSize: 16 }}
                     >
-                      No places found
+                      {tr('Aucun lieu trouvé', 'No places found')}
                     </TextDefault>
                     <TextDefault 
                       textColor={currentTheme.fontMainColor}
                       style={{ marginTop: 4, fontSize: 14 }}
                     >
-                      Try a different search term
+                      {tr('Essayez une autre recherche', 'Try a different search term')}
                     </TextDefault>
                   </View>
                 ) : null}

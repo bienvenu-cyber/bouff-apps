@@ -5,6 +5,7 @@ import { Feather, Ionicons } from '@expo/vector-icons'
 import TextDefault from '../../../components/Text/TextDefault/TextDefault'
 import { scale } from '../../../utils/scaling'
 import Spinner from '../../../components/Spinner/Spinner'
+import { tr } from '../../../utils/tr'
 
 const SearchingAddress = ({
   currentTheme,
@@ -104,7 +105,7 @@ const SearchingAddress = ({
             {t('Choose on Map')}
           </TextDefault>
           <TextDefault textColor={mutedText} style={styles.mapDescription}>
-            Pin your entrance for a more accurate delivery
+            {tr('Place le repère sur ton entrée pour une livraison plus précise', 'Pin your entrance for a more accurate delivery')}
           </TextDefault>
         </View>
         <View style={[styles.arrowButton, { borderColor }]}>
@@ -125,7 +126,7 @@ const SearchingAddress = ({
         ? (
         <View style={styles.resultsSection}>
           <TextDefault small bold uppercase textColor={mutedText} style={styles.sectionLabel}>
-            Search results
+            {tr('Résultats', 'Search results')}
           </TextDefault>
           <FlatList
             data={predictions}
@@ -162,7 +163,7 @@ const SearchingAddress = ({
             <Feather name='navigation' size={24} color={accent} />
           </View>
           <TextDefault H5 bolder center textColor={primaryText}>
-            Find your delivery spot
+            {tr('Trouve ton lieu de livraison', 'Find your delivery spot')}
           </TextDefault>
           <TextDefault center textColor={mutedText} style={styles.idleDescription}>
             Search for an address above, or place the pin exactly where you want your order delivered.

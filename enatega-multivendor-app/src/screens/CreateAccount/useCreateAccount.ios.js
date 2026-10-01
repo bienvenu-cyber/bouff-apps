@@ -1,4 +1,5 @@
 import i18next from 'i18next'
+import { tr } from '../../utils/tr'
 // useCreateAccount.ios.js
 
 import { useEffect, useState, useContext } from 'react'
@@ -103,13 +104,13 @@ export const useCreateAccount = () => {
     } else if (response?.type === 'error') {
       logError('oauth error', response?.error)
       FlashMessage({
-        message: `Google sign-in failed: ${response.error.message || 'Unknown error'}`
+        message: tr('La connexion Google a échoué.', `Google sign-in failed: ${response.error.message || 'Unknown error'}`)
       })
       setLoading(false)
       loginButtonSetter(null)
     } else if (response?.type === 'cancel') {
       logStep('oauth cancelled by user')
-      FlashMessage({ message: 'Google sign-in cancelled.' })
+      FlashMessage({ message: tr('Connexion Google annulée.', 'Google sign-in cancelled.') })
       setLoading(false)
       loginButtonSetter(null)
     }
@@ -155,7 +156,7 @@ export const useCreateAccount = () => {
       await mutateLogin(userData)
     } catch (error) {
       logError('fetchUserInfo: caught error', error)
-      FlashMessage({ message: 'Failed to retrieve Google user info.' })
+      FlashMessage({ message: tr('Impossible de récupérer votre compte Google.', 'Failed to retrieve Google user info.') })
       setLoading(false)
       loginButtonSetter(null)
     }
@@ -179,7 +180,7 @@ export const useCreateAccount = () => {
 
       if (!request) {
         logStep('signIn: aborted — auth request not ready')
-        FlashMessage({ message: 'Google sign-in is not ready. Please try again.' })
+        FlashMessage({ message: tr('La connexion Google n’est pas prête. Réessayez.', 'Google sign-in is not ready. Please try again.') })
         setLoading(false)
         loginButtonSetter(null)
         return
@@ -193,7 +194,7 @@ export const useCreateAccount = () => {
       logStep('signIn: promptAsync resolved (result handled in response effect)')
     } catch (error) {
       logError('signIn: caught error', error)
-      FlashMessage({ message: 'Google sign-in failed unexpectedly.' })
+      FlashMessage({ message: tr('La connexion Google a échoué.', 'Google sign-in failed unexpectedly.') })
       setLoading(false)
       loginButtonSetter(null)
     }

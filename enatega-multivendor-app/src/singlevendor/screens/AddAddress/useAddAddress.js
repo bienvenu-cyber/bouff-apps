@@ -19,6 +19,7 @@ import {
   fetchPlaceAutocomplete,
   fetchPlaceDetails
 } from '../../../api/googleMapsProxy'
+import { tr } from '../../../utils/tr'
 
 const CREATE_ADDRESS = gql`
   ${createAddress}
@@ -341,12 +342,12 @@ const useAddAddress = () => {
           console.log('✅ Successfully got place coordinates:', details.geometry.location)
         } else {
           console.error('❌ Failed to get place coordinates')
-          Alert.alert('Error', 'Unable to get coordinates for this location')
+          Alert.alert(tr('Erreur', 'Error'), tr('Impossible de localiser cet endroit', 'Unable to get coordinates for this location'))
           setLoading(false)
         }
       } catch (error) {
         console.error('🚨 Error handling place selection:', error)
-        Alert.alert('Error', 'Unable to select this location')
+        Alert.alert(tr('Erreur', 'Error'), tr('Impossible de choisir cet endroit', 'Unable to select this location'))
         setLoading(false)
       }
       setLoading(false)
@@ -367,7 +368,7 @@ const useAddAddress = () => {
       return
     }
     if (!selectedType) {
-      Alert.alert('Alert', t('alertLocation'))
+      Alert.alert(tr('Attention', 'Alert'), t('alertLocation'))
       return
     }
 

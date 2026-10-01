@@ -1,11 +1,12 @@
 import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import TextDefault from '../../../components/Text/TextDefault/TextDefault'
+import { tr } from '../../../utils/tr'
 
 const ProductOtherDetails = ({ t, currentTheme, productOtherDetails, title }) => {
   return (
     <View style={{ gap: 5, paddingVertical: 4, paddingHorizontal: 15 }}>
-        <TextDefault bolder={title === 'Product details'} bold={title !== 'Product details '} H4>
+        <TextDefault bolder={title === tr('Détails du produit', 'Product details') || title === 'Product details'} bold={title !== 'Product details '} H4>
           {t(title)}
         </TextDefault>
 
