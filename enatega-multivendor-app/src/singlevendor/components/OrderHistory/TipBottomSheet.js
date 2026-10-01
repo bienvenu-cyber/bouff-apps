@@ -8,7 +8,7 @@ import { theme } from '../../../utils/themeColors';
 import { scale } from '../../../utils/scaling';
 import TextDefault from '../../../components/Text/TextDefault/TextDefault';
 
-const TipBottomSheet = React.forwardRef(({ onTipSelected, currencySymbol = '€', currentTip = 0 }, ref) => {
+const TipBottomSheet = React.forwardRef(({ onTipSelected, currencySymbol = 'FCFA', currentTip = 0 }, ref) => {
   const { t, i18n } = useTranslation();
   const themeContext = useContext(ThemeContext);
   const currentTheme = {
@@ -94,7 +94,7 @@ const TipBottomSheet = React.forwardRef(({ onTipSelected, currencySymbol = '€'
     const amount = parseFloat(tipAmount);
     if (!isNaN(amount)) {
       const clamped = clampTipValue(amount);
-      setTipAmount(clamped.toFixed(2));
+      setTipAmount(clamped.toFixed(0));
     }
   };
 

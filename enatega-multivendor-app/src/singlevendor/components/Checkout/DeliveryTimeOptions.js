@@ -22,7 +22,7 @@ const DeliveryTimeOptions = ({ selectedTime, onSelectTime, priorityDeliveryFee, 
     ...theme[themeContext.ThemeValue]
   }
   const configuration = useContext(ConfigurationContext)
-  const currencySymbol = configuration?.currencySymbol || '€'
+  const currencySymbol = configuration?.currencySymbol || 'FCFA'
 
   // State for Click & Collect modal
   const [isModalVisible, setIsModalVisible] = useState(false)

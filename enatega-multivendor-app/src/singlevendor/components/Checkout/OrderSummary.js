@@ -19,7 +19,7 @@ const OrderSummary = ({
   originalDeliveryCharges,
   tipAmount,
   total,
-  currencySymbol = '€',
+  currencySymbol = 'FCFA',
   expanded,
   onToggleExpanded,
   freeDeliveriesRemaining,
@@ -51,7 +51,7 @@ const OrderSummary = ({
           <Feather name={expanded ? 'chevron-up' : 'chevron-down'} size={20} color={currentTheme.fontMainColor} style={styles().chevron} />
         </View>
         <TextDefault textColor={currentTheme.fontMainColor} bolder H5 isRTL>
-          {totalPlusTip.toFixed(2)}&nbsp;{currencySymbol}
+          {totalPlusTip.toFixed(0)}&nbsp;{currencySymbol}
         </TextDefault>
       </TouchableOpacity>
 
@@ -74,7 +74,7 @@ const OrderSummary = ({
               {t('Item subtotal') || 'Item subtotal'}
             </TextDefault>
             <TextDefault textColor={currentTheme.fontMainColor} isRTL>
-              {(subtotal + dealDiscount).toFixed(2)}&nbsp;{currencySymbol}
+              {(subtotal + dealDiscount).toFixed(0)}&nbsp;{currencySymbol}
             </TextDefault>
           </View>
 
@@ -84,7 +84,7 @@ const OrderSummary = ({
                 {t('Service fee') || 'Service fee'}
               </TextDefault>
               <TextDefault textColor={currentTheme.fontMainColor} isRTL>
-                {serviceFee.toFixed(2)}&nbsp;{currencySymbol}
+                {serviceFee.toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
           )}
@@ -95,7 +95,7 @@ const OrderSummary = ({
                 {t('Low order fee') || 'Low order fee'}
               </TextDefault>
               <TextDefault textColor={currentTheme.fontMainColor} isRTL>
-                {minimumOrderFee.toFixed(2)}&nbsp;{currencySymbol}
+                {minimumOrderFee.toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
           )}
@@ -106,7 +106,7 @@ const OrderSummary = ({
                 {t('Priority order fee') || 'Priority order fee'}
               </TextDefault>
               <TextDefault textColor={currentTheme.fontMainColor} isRTL>
-                {priorityDeliveryFee.toFixed(2)}&nbsp;{currencySymbol}
+                {priorityDeliveryFee.toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
           )}
@@ -117,7 +117,7 @@ const OrderSummary = ({
                 {t('Delivery fee') || 'Delivery fee'}
               </TextDefault>
               <TextDefault textColor={currentTheme.fontMainColor} isRTL>
-                {currencySymbol} {deliveryFee.toFixed(2)}
+                {currencySymbol} {deliveryFee.toFixed(0)}
               </TextDefault>
             </View>
           )} */}
@@ -128,7 +128,7 @@ const OrderSummary = ({
                 {t('deliveryFee') || 'Delivery fee'}
               </TextDefault>
               <TextDefault textColor={currentTheme.fontMainColor} isRTL>
-                {originalDeliveryCharges.toFixed(2)}&nbsp;{currencySymbol}
+                {originalDeliveryCharges.toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
           )}
@@ -139,7 +139,7 @@ const OrderSummary = ({
                 {t('deliveryDiscount') || 'Delivery discount'}
               </TextDefault>
               <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
-                -{deliveryDiscount.toFixed(2)}&nbsp;{currencySymbol}
+                -{deliveryDiscount.toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
           )}
@@ -150,7 +150,7 @@ const OrderSummary = ({
                 {t('Coupon Amount') || 'Coupon Amount'}
               </TextDefault>
               <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
-                -{couponDiscountAmount.toFixed(2)}&nbsp;{currencySymbol}
+                -{couponDiscountAmount.toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
           )}
@@ -161,7 +161,7 @@ const OrderSummary = ({
                 {t('Deals savings', { defaultValue: 'Deals savings' })}
               </TextDefault>
               <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
-                -{dealDiscount.toFixed(2)}&nbsp;{currencySymbol}
+                -{dealDiscount.toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
           )}
@@ -172,7 +172,7 @@ const OrderSummary = ({
                 {t('Credits Used') || 'Credits Used'}
               </TextDefault>
               <TextDefault textColor={currentTheme.success || '#E5650A'} isRTL>
-                -{creditsUsed.toFixed(2)}&nbsp;{currencySymbol}
+                -{creditsUsed.toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
           )}
@@ -183,7 +183,7 @@ const OrderSummary = ({
                 {t('Tip') || 'Tip'}
               </TextDefault>
               <TextDefault textColor={currentTheme.fontMainColor} isRTL>
-                {tipAmount.toFixed(2)}&nbsp;{currencySymbol}
+                {tipAmount.toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
             </View>
           )}
@@ -195,7 +195,7 @@ const OrderSummary = ({
               {t('total') || 'Total'}
             </TextDefault>
             <TextDefault textColor={currentTheme.fontMainColor} bolder H5 isRTL>
-              {totalPlusTip.toFixed(2)}&nbsp;{currencySymbol}
+              {totalPlusTip.toFixed(0)}&nbsp;{currencySymbol}
             </TextDefault>
           </View>
         </View>

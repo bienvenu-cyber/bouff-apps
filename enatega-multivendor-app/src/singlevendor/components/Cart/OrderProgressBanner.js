@@ -14,7 +14,7 @@ const OrderProgressBanner = ({
   minimumOrder = 1,
   lowOrderFeeThreshold = 10,
   lowOrderFee = 2,
-  currencySymbol = '€'
+  currencySymbol = 'FCFA'
 }) => {
   const { t, i18n } = useTranslation();
   const themeContext = useContext(ThemeContext);
@@ -63,7 +63,7 @@ const OrderProgressBanner = ({
     }
     // State 4: Close to avoiding fee
     else if (currentTotal >= lowOrderFeeThreshold - 2 && currentTotal < lowOrderFeeThreshold) {
-      const remaining = (lowOrderFeeThreshold - currentTotal).toFixed(2);
+      const remaining = (lowOrderFeeThreshold - currentTotal).toFixed(0);
       const progress = ((currentTotal - minimumOrder) / (lowOrderFeeThreshold - minimumOrder)) * 33.33;
       return {
         text: `Add `,

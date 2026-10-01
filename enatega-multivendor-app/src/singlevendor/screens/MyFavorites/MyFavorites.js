@@ -58,7 +58,7 @@ const MyFavorites = () => {
 
         // Calculate total price based on first available variation
         const availableVariation = getFirstAvailableVariation(transformedVariations) || transformedVariations[0]
-        const foodTotal = availableVariation ? (availableVariation.price * availableVariation.quantity).toFixed(2) : '0.00'
+        const foodTotal = availableVariation ? (availableVariation.price * availableVariation.quantity).toFixed(0) : '0.00'
 
         return {
           key: `${food._id}-${page}-${index}`, // Unique key combining id, page, and index
@@ -89,7 +89,7 @@ const MyFavorites = () => {
     }
   }, [favoriteFoodsData, page])
 
-  const currencySymbol = configuration?.currencySymbol || '€'
+  const currencySymbol = configuration?.currencySymbol || 'FCFA'
 
   const handleLoadMore = async() => {
     if (isLoadingMore || favoriteFoodsLoading) return

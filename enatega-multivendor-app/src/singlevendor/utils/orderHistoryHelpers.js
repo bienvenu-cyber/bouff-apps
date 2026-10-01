@@ -50,7 +50,7 @@ export const buildOrderHistoryList = ({ orders, currencySymbol, t }) => {
       name: order.orderId || order.restaurant?.name,
       date: formatOrderDate(dateSource),
       status: statusLabel,
-      price: `${currencySymbol} ${amount.toFixed(2)}`,
+      price: `${currencySymbol} ${amount.toFixed(0)}`,
       image: order.restaurant?.image ? { uri: order.restaurant.image } : null,
       section
     }
@@ -105,7 +105,7 @@ export const buildScheduledOrderList = ({ orders, currencySymbol, t }) => {
       name: order.orderId || order.restaurant?.name,
       date: formatOrderDate(dateSource),
       status: 'Scheduled',
-      price: `${currencySymbol} ${amount.toFixed(2)}`,
+      price: `${currencySymbol} ${amount.toFixed(0)}`,
       image: order.restaurant?.image ? { uri: order.restaurant.image } : null,
       section: 'scheduled'
     }
@@ -156,7 +156,7 @@ export const buildActiveOrderList = ({ orders, currencySymbol, t }) => {
       name: order.orderId || order.restaurant?.name,
       date: formatOrderDate(dateSource),
       status: statusLabel,
-      price: `${currencySymbol} ${amount.toFixed(2)}`,
+      price: `${currencySymbol} ${amount.toFixed(0)}`,
       image: order.restaurant?.image ? { uri: order.restaurant.image } : null,
       section: 'active'
     }
@@ -201,7 +201,7 @@ export const buildPastOrderList = ({ orders, currencySymbol, t }) => {
       name: order.orderId || order.restaurant?.name,
       date: formatOrderDate(dateSource),
       status: statusLabel,
-      price: `${currencySymbol} ${amount.toFixed(2)}`,
+      price: `${currencySymbol} ${amount.toFixed(0)}`,
       image: order.restaurant?.image ? { uri: order.restaurant.image } : null,
       section: 'past'
     }

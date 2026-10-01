@@ -39,7 +39,7 @@ const OrderHistoryDetails = () => {
     ...theme[themeContext.ThemeValue]
   }
   const tipBottomSheetRef = useRef(null)
-  const currencySymbol = configuration?.currencySymbol || '€'
+  const currencySymbol = configuration?.currencySymbol || 'FCFA'
   const [summaryExpanded, setSummaryExpanded] = useState(false)
   const {
     loading,
@@ -251,7 +251,7 @@ const OrderHistoryDetails = () => {
                 style={themedStyles.paymentAmount}
                 bolder
               >
-                {currencySymbol} {(initialOrder.paidAmount || total || 0).toFixed(2)}
+                {currencySymbol} {(initialOrder.paidAmount || total || 0).toFixed(0)}
               </TextDefault>
             </View>
           </View>

@@ -70,7 +70,7 @@ const Checkout = (props) => {
     ...theme[themeContext.ThemeValue]
   }
 
-  // const currencySymbol = configuration?.currencySymbol || '€'
+  // const currencySymbol = configuration?.currencySymbol || 'FCFA'
 
   // State management
   const [fulfillmentMode, setFulfillmentMode] = useState('delivery') // 'delivery' or 'collection'

@@ -65,8 +65,8 @@ export const getDealPricing = (price, deal) => {
   const finalPrice = safePrice - appliedDiscount
 
   return {
-    finalPrice: Number(finalPrice.toFixed(2)),
-    discountAmount: Number(appliedDiscount.toFixed(2))
+    finalPrice: Number(finalPrice.toFixed(0)),
+    discountAmount: Number(appliedDiscount.toFixed(0))
   }
 }
 

@@ -78,7 +78,7 @@ const defaultLanguage = "fr";
 
 i18next.use(initReactI18next).init({
   lng: defaultLanguage,
-  fallbackLng: "en",
+  fallbackLng: "fr",
   resources: languageResources,
   interpolation: {
     escapeValue: false,

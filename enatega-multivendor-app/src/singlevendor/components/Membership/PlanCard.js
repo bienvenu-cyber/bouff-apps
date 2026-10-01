@@ -51,14 +51,14 @@ const PlanCard = ({ plan, isSelected, onSelect, currentTheme, configurations, on
             {plan.productName}
           </TextDefault>
           <TextDefault textColor={isSelected ? currentTheme.colorTextPrimary : currentTheme.colorTextMuted} style={styles(currentTheme).planBilling}>
-            {(plan?.amount)?.toFixed(2)}&nbsp;
+            {(plan?.amount)?.toFixed(0)}&nbsp;
              {configurations?.currencySymbol} {t('billed')} <TextDefault bold style={{fontWeight: 'bold'}}>{periodLabel}</TextDefault>
           </TextDefault>
         </View>
 
         <View style={styles(currentTheme).planPriceContainer}>
           <TextDefault textColor={isSelected ? currentTheme.colorTextPrimary : currentTheme.fontMainColor} style={styles(currentTheme).planPrice} bold>
-            {(plan?.amount)?.toFixed(2)}&nbsp;
+            {(plan?.amount)?.toFixed(0)}&nbsp;
             {configurations?.currencySymbol}
           </TextDefault>
           <TextDefault textColor={isSelected ? currentTheme.colorTextPrimary : currentTheme.colorTextMuted} style={styles(currentTheme).planPeriod} bold>
