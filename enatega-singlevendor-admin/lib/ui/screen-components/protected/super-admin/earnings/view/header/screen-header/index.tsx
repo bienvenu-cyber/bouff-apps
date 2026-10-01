@@ -25,7 +25,7 @@ const EarningsSuperAdminHeader = ({
           label={t('Total Platform Earning')}
           total={formatNumber(earnings?.platformTotal || 0)}
           icon={faDollarSign}
-          currencySymbol={CURRENT_SYMBOL || '$'}
+          currencySymbol={CURRENT_SYMBOL || 'FCFA'}
           route=""
           isClickable={false}
         // loading= {loading}
@@ -34,7 +34,7 @@ const EarningsSuperAdminHeader = ({
           label={t('Total Stores Earning')}
           total={formatNumber(earnings?.storeTotal || 0)}
           icon={faDollarSign}
-          currencySymbol={CURRENT_SYMBOL || '$'}
+          currencySymbol={CURRENT_SYMBOL || 'FCFA'}
           isClickable={false}
           route="" // loading={loading}
         />
@@ -42,7 +42,7 @@ const EarningsSuperAdminHeader = ({
           label={t('Total Riders Earnings')}
           total={formatNumber(earnings?.riderTotal || 0)}
           icon={faDollarSign}
-          currencySymbol={CURRENT_SYMBOL || '$'}
+          currencySymbol={CURRENT_SYMBOL || 'FCFA'}
           isClickable={false}
           route="" // loading = {loading}
         />
