@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({
     setToken("");
 
     try {
-      await Promise.allSettled([removeSecureItem(tokenKey), removeSecureItem(riderIdKey), clearBouffSession()]);
+      await Promise.all([removeSecureItem(tokenKey), removeSecureItem(riderIdKey), clearBouffSession()]);
 
       try {
         await client.clearStore();
