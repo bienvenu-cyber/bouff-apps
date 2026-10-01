@@ -46,7 +46,7 @@ export const EARNING_COLUMNS = ({
       body: (earning: IEarning) =>
         isSuperAdmin ? (
           <div>
-            {CURRENT_SYMBOL || '$'}{' '}
+            {CURRENT_SYMBOL || 'FCFA'}{' '}
             {earning?.platformEarnings?.totalEarnings?.toFixed(2)}
           </div>
         ) : (
@@ -66,7 +66,7 @@ export const EARNING_COLUMNS = ({
 
       body: (earning: IEarning) => (
         <div>
-          {CURRENT_SYMBOL || '$'}{' '}
+          {CURRENT_SYMBOL || 'FCFA'}{' '}
           {earning?.storeEarnings?.totalEarnings?.toFixed(2)}
         </div>
       ),
@@ -85,7 +85,7 @@ export const EARNING_COLUMNS = ({
       hidden: !isSuperAdmin,
       body: (earning: IEarning) => (
         <div>
-          {CURRENT_SYMBOL || '$'}{' '}
+          {CURRENT_SYMBOL || 'FCFA'}{' '}
           {earning?.riderEarnings?.totalEarnings?.toFixed(2)}
         </div>
       ),

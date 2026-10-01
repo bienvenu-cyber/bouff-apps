@@ -161,7 +161,7 @@ const OrderDetailModal: React.FC<IOrderDetailModalProps> = ({
                       {index + 1}. {item.title}
                     </span>
                     <span className="item-price dark:text-white">
-                      {item.quantity} &#215; {CURRENT_SYMBOL || '$'}
+                      {item.quantity} &#215; {CURRENT_SYMBOL || 'FCFA'}
                       {(item.variation?.price ?? 0).toFixed(2)}
                     </span>
                   </div>
@@ -174,7 +174,7 @@ const OrderDetailModal: React.FC<IOrderDetailModalProps> = ({
                       <div key={index} className="item-row text-sm">
                         <span>{option.title}</span>
                         <span className="item-price dark:text-white">
-                          {CURRENT_SYMBOL || '$'}
+                          {CURRENT_SYMBOL || 'FCFA'}
                           {(option.price ?? 0).toFixed(2)}
                         </span>
                       </div>
@@ -195,35 +195,35 @@ const OrderDetailModal: React.FC<IOrderDetailModalProps> = ({
             <div className="charges-row">
               <span>Subtotal</span>
               <span>
-                {CURRENT_SYMBOL || '$'}
+                {CURRENT_SYMBOL || 'FCFA'}
                 {calculateSubtotal(restaurantData?.items || [])}
               </span>
             </div>
             <div className="charges-row">
               <span>Delivery Fee</span>
               <span>
-                {CURRENT_SYMBOL || '$'}
+                {CURRENT_SYMBOL || 'FCFA'}
                 {(restaurantData.deliveryCharges ?? 0)?.toFixed(2)}
               </span>
             </div>
             <div className="charges-row">
               <span>Tax Charges</span>
               <span>
-                {CURRENT_SYMBOL || '$'}
+                {CURRENT_SYMBOL || 'FCFA'}
                 {(restaurantData.taxationAmount ?? 0)?.toFixed(2)}
               </span>
             </div>
             <div className="charges-row">
               <span>Tip</span>
               <span>
-                {CURRENT_SYMBOL || '$'}
+                {CURRENT_SYMBOL || 'FCFA'}
                 {(restaurantData.tipping ?? 0)?.toFixed(2)}
               </span>
             </div>
             <div className="charges-row total-row">
               <strong>Total</strong>
               <strong>
-                {CURRENT_SYMBOL || '$'}
+                {CURRENT_SYMBOL || 'FCFA'}
                 {restaurantData.orderAmount}
               </strong>
             </div>
@@ -241,7 +241,7 @@ const OrderDetailModal: React.FC<IOrderDetailModalProps> = ({
           <div className="paid-amount">
             <span className="paid-label">Paid Amount</span>
             <span className="paid-value">
-              {CURRENT_SYMBOL || '$'}
+              {CURRENT_SYMBOL || 'FCFA'}
               {(restaurantData.paidAmount ?? 0)?.toFixed(2)}
             </span>
           </div>

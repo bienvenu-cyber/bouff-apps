@@ -81,7 +81,7 @@ const ActiveOrdersList = ({ onOrderPress, currentTheme: passedTheme, sortOrder =
   }, [isLoadingMore, loading, hasMore, page, refetch, allOrders])
 
   const transformedOrders = useMemo(() => {
-    const currencySymbol = configuration?.currencySymbol || ''
+    const currencySymbol = configuration?.currencySymbol || 'FCFA'
     return buildActiveOrderList({
       orders: allOrders,
       currencySymbol,

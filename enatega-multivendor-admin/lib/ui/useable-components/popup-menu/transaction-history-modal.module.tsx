@@ -138,7 +138,7 @@ const TransactionDetailModal: React.FC<ITransactionDetailModalProps> = ({
                   {t('Current Wallet Amount')}
                 </p>
                 <p className="font-medium">
-                  {CURRENT_SYMBOL || '$'}
+                  {CURRENT_SYMBOL || 'FCFA'}
                   {(transaction?.rider?.currentWalletAmount ?? 0).toFixed(2)}
                 </p>
               </div>
@@ -147,7 +147,7 @@ const TransactionDetailModal: React.FC<ITransactionDetailModalProps> = ({
                   {t('Total Earnings')}
                 </p>
                 <p className="font-medium">
-                  {CURRENT_SYMBOL || '$'}
+                  {CURRENT_SYMBOL || 'FCFA'}
                   {(transaction?.rider?.totalWalletAmount ?? 0).toFixed(2)}
                 </p>
               </div>

@@ -84,7 +84,7 @@ export default function UserStats({
         icon={faShoppingCart}
         route="/admin/store/orders"
         loading={loading}
-        amountConfig={{ format: 'number', currency: 'USD' }}
+        amountConfig={{ format: 'number', currency: 'XOF' }}
       />
 
       <StatsCard
@@ -93,7 +93,7 @@ export default function UserStats({
         icon={faShoppingCart}
         route="/admin/store/orders"
         loading={loading}
-        amountConfig={{ format: 'number', currency: 'USD' }}
+        amountConfig={{ format: 'number', currency: 'XOF' }}
       />
 
       <StatsCard
@@ -102,7 +102,7 @@ export default function UserStats({
         icon={faTruck}
         route="/admin/store/orders"
         loading={loading}
-        amountConfig={{ format: 'number', currency: 'USD' }}
+        amountConfig={{ format: 'number', currency: 'XOF' }}
       />
 
       <StatsCard
@@ -111,7 +111,7 @@ export default function UserStats({
         icon={faCashRegister}
         route="/admin/store/orders"
         loading={loading}
-        amountConfig={{ format: 'currency', currency: CURRENCY_CODE ?? 'USD' }}
+        amountConfig={{ format: 'currency', currency: CURRENCY_CODE ?? 'XOF' }}
       />
     </div>
   );

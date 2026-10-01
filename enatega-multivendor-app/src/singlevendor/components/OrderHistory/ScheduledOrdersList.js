@@ -46,7 +46,7 @@ const ScheduledOrdersList = ({ onOrderPress, currentTheme: passedTheme, sortOrde
   // Transform and update scheduled orders
   useEffect(() => {
     if (orders && orders.length > 0) {
-      const currencySymbol = configuration?.currencySymbol || ''
+      const currencySymbol = configuration?.currencySymbol || 'FCFA'
       const transformedItems = buildScheduledOrderList({
         orders: orders,
         currencySymbol,

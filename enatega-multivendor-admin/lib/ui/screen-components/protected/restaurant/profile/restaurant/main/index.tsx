@@ -27,7 +27,7 @@ const RestaurantMain: React.FC = () => {
     if (label === t('Delivery Time')) {
       icon = <FontAwesomeIcon icon={faClock} className="mr-1" />;
     } else if (label === t('Service Charges') || label === t('Min Order')) {
-      icon = CURRENT_SYMBOL || '$';
+      icon = CURRENT_SYMBOL || 'FCFA';
     }
     return (
       <div>

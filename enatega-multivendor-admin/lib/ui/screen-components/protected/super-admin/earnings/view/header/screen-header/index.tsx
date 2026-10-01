@@ -23,7 +23,7 @@ const EarningsSuperAdminHeader = ({
         <StatsCard
           label={t('Total Platform Earning')}
           total={formatNumber(earnings?.platformTotal || 0)}
-          currencySymbol={CURRENT_SYMBOL || '$'}
+          currencySymbol={CURRENT_SYMBOL || 'FCFA'}
           route=""
           isClickable={false}
           // loading= {loading}
@@ -31,14 +31,14 @@ const EarningsSuperAdminHeader = ({
         <StatsCard
           label={t('Total Stores Earning')}
           total={formatNumber(earnings?.storeTotal || 0)}
-          currencySymbol={CURRENT_SYMBOL || '$'}
+          currencySymbol={CURRENT_SYMBOL || 'FCFA'}
           isClickable={false}
           route="" // loading={loading}
         />
         <StatsCard
           label={t('Total Riders Earnings')}
           total={formatNumber(earnings?.riderTotal || 0)}
-          currencySymbol={CURRENT_SYMBOL || '$'}
+          currencySymbol={CURRENT_SYMBOL || 'FCFA'}
           isClickable={false}
           route="" // loading = {loading}
         />

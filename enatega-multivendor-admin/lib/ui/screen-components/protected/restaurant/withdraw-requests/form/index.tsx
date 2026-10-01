@@ -122,7 +122,7 @@ export default function WithdrawRequestAddForm({
                   )}
 
                   <div className="text-sm text-gray-500 dark:text-white">
-                    {t('available_balance')}: {CURRENT_SYMBOL || '$'}
+                    {t('available_balance')}: {CURRENT_SYMBOL || 'FCFA'}
                     {currentWalletAmount?.toLocaleString('en-US')}
                   </div>
 

@@ -126,7 +126,7 @@ export default function EarningStack({
             maxWidth: 120,
           }}
         >
-          {configuration?.currencySymbol || "$"}
+          {configuration?.currencySymbol || "FCFA"}
           {formatAmount(earning)}
         </Text>
         <RightArrowIcon color={earningsTheme.mutedText} />
