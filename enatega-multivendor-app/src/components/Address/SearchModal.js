@@ -9,7 +9,7 @@ import {
   TextInput,
   FlatList,
   ActivityIndicator,
-  {tr('Attention', 'Alert')}
+  Alert
 } from 'react-native'
 import Animated, {
   Easing as EasingNode,

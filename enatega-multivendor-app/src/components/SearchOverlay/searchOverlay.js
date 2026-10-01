@@ -9,7 +9,7 @@ import {
   Animated,
   Platform,
   StatusBar,
-  {tr('Attention', 'Alert')}
+  Alert
 } from 'react-native'
 import { MaterialIcons, Entypo, Ionicons } from '@expo/vector-icons'
 import TextDefault from '../Text/TextDefault/TextDefault'

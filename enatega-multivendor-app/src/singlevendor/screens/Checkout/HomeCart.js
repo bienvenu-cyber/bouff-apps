@@ -181,7 +181,7 @@ const HomeCart = () => {
       <SectionErrorCard
         compact
         title={i18next.t('Active order')}
-        message={tr('Votre commande en cours n’a pas pu être chargée.', tr('Votre commande en cours n’a pas pu être chargée.', 'Your active order could not be loaded.'))}
+        message={tr('Votre commande en cours n’a pas pu être chargée.', 'Your active order could not be loaded.')}
         onRetry={refetch}
       />
     )
