@@ -60,7 +60,7 @@ const AppFooter = () => {
               ))}
             </nav>
             <p className="text-xs text-white/45">
-              © {new Date().getFullYear()} BOUFF — Parakou, Bénin.
+              © {new Date().getFullYear()} SILKORP — Parakou, Bénin.
             </p>
           </div>
         </div>
@@ -87,7 +87,7 @@ const AppFooter = () => {
           </div>
         </div>
         <p className="mt-6 px-2 text-xs text-white/45">
-          © {new Date().getFullYear()} BOUFF — Parakou, Bénin.
+          © {new Date().getFullYear()} SILKORP — Parakou, Bénin.
         </p>
       </div>
     </div>
