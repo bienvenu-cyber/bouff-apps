@@ -524,7 +524,8 @@ function rootFields(doc: DocumentNode): string[] {
 }
 
 export async function clearBouffSession() {
-  await bouffDb().auth.signOut().catch(() => {});
+  // Déconnexion locale : fonctionne même sans réseau.
+  await bouffDb().auth.signOut({ scope: "local" }).catch(() => {});
 }
 
 export function createBouffLink(): ApolloLink {

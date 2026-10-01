@@ -1,6 +1,7 @@
 // Core
-import { useState } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, SafeAreaView } from "react-native";
+import { useContext, useState } from "react";
+import { Alert, FlatList, KeyboardAvoidingView, Platform, SafeAreaView, Text, TouchableOpacity } from "react-native";
+import { AuthContext } from "@/lib/context/global/auth.context";
 
 // Components
 import ProfileHeader from "../../screen-components/profile/header";
@@ -20,6 +21,12 @@ export default function ComponentName() {
 
   // Hooks
   const { appTheme } = useApptheme();
+  const { logout } = useContext(AuthContext);
+  const confirmLogout = () =>
+    Alert.alert("Se déconnecter", "Voulez-vous vraiment vous déconnecter ?", [
+      { text: "Annuler", style: "cancel" },
+      { text: "Se déconnecter", style: "destructive", onPress: () => void logout() },
+    ]);
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: appTheme.screenBackground }}
@@ -33,6 +40,13 @@ export default function ComponentName() {
             isFormOpened={isFormOpened}
             setIsFormOpened={setIsFormOpened}
           />,
+          <TouchableOpacity
+            key="logout"
+            onPress={confirmLogout}
+            style={{ margin: 16, marginBottom: 120, padding: 14, borderRadius: 12, borderWidth: 1, borderColor: "#ef4444", alignItems: "center" }}
+          >
+            <Text style={{ color: "#ef4444", fontWeight: "700", fontSize: 16 }}>Se déconnecter</Text>
+          </TouchableOpacity>,
         ]}
         renderItem={(item) => {
           return item.item;
