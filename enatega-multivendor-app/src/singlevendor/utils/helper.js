@@ -77,6 +77,6 @@ export const getDealLabel = (deal, currencySymbol = '') => {
 
   const type = String(deal.discountType || '').toUpperCase()
   if (type === 'PERCENTAGE') return `${value}% OFF`
-  if (type === 'FIXED') return `${currencySymbol}${value} OFF`
+  if (type === 'FIXED') return `-${value} ${currencySymbol}`
   return null
 }

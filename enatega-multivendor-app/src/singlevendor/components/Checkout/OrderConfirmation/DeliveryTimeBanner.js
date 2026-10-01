@@ -40,44 +40,47 @@ const DeliveryTimeBanner = ({ eta, orderStatus, riderLocation, isPickUpOrder = f
   }
   const windowStart = formatTime(eta?.windowStartAt)
   const windowEnd = formatTime(eta?.windowEndAt)
+  const isWaiting = orderStatus === 'PENDING'
   const windowLabel = windowStart && windowEnd
-    ? `${windowStart}–${windowEnd}`
-    : (t('calculating', { defaultValue: 'Calculating…' }))
+    ? (windowStart === windowEnd ? windowStart : `${windowStart}–${windowEnd}`)
+    : isWaiting ? 'En attente' : (t('calculating', { defaultValue: 'Calcul en cours…' }))
   const isInTransit = ['PICKED', 'ON_ROUTE'].includes(orderStatus)
   const locationTimestamp = parseDate(riderLocation?.recordedAt || eta?.lastLocationAt)
   const stale = isInTransit && locationTimestamp && Date.now() - locationTimestamp.getTime() > 90000
   const readyAt = parseDate(eta?.readyAt)
   const preparingLate = ['ACCEPTED', 'ASSIGNED'].includes(orderStatus) && readyAt && Date.now() > readyAt.getTime()
   const expectedReadyText = readyAt
-    ? ` — ${t('expected ready by', { defaultValue: 'expected ready by' })} ${formatTime(readyAt)}`
+    ? ` — ${t('expected ready by', { defaultValue: 'prête vers' })} ${formatTime(readyAt)}`
     : ''
-  const statusText = stale
-    ? `${t('Rider location temporarily unavailable', { defaultValue: 'Rider location temporarily unavailable' })} — ${t('last updated', { defaultValue: 'last updated' })} ${formatTime(locationTimestamp)}`
+  const statusText = isWaiting
+    ? "En attente de confirmation du restaurant. L'heure s'affichera dès que la cuisine accepte ta commande."
+    : stale
+    ? `${t('Rider location temporarily unavailable', { defaultValue: 'Position du livreur momentanément indisponible' })} — ${t('last updated', { defaultValue: 'mise à jour' })} ${formatTime(locationTimestamp)}`
     : preparingLate
       ? orderStatus === 'ASSIGNED'
-        ? t('Your rider is collecting the order. Preparation is taking a little longer.', { defaultValue: 'Your rider is collecting the order. Preparation is taking a little longer.' })
-        : t('Preparation is taking a little longer.', { defaultValue: 'Preparation is taking a little longer.' })
+        ? t('Your rider is collecting the order. Preparation is taking a little longer.', { defaultValue: 'Ton livreur récupère la commande. La préparation prend un peu plus de temps.' })
+        : t('Preparation is taking a little longer.', { defaultValue: 'La préparation prend un peu plus de temps.' })
       : isInTransit
-        ? t('Your order is on the way.', { defaultValue: 'Your order is on the way.' })
+        ? t('Your order is on the way.', { defaultValue: 'Ta commande est en route.' })
         : orderStatus === 'ASSIGNED'
-          ? t('Your order is being prepared and a rider has been assigned.', { defaultValue: 'Your order is being prepared and a rider has been assigned.' })
+          ? t('Your order is being prepared and a rider has been assigned.', { defaultValue: 'Ta commande est en préparation et un livreur est assigné.' })
           : orderStatus === 'ACCEPTED'
             ? isPickUpOrder
-              ? `${t('Your order is being prepared for collection', { defaultValue: 'Your order is being prepared for collection' })}${expectedReadyText}`
-              : `${t('Your order is being prepared', { defaultValue: 'Your order is being prepared' })}${expectedReadyText}`
+              ? `${t('Your order is being prepared for collection', { defaultValue: 'Ta commande est en préparation pour le retrait' })}${expectedReadyText}`
+              : `${t('Your order is being prepared', { defaultValue: 'Ta commande est en préparation' })}${expectedReadyText}`
             : ['DELIVERED', 'COMPLETED'].includes(orderStatus)
                 ? isPickUpOrder
-                  ? t('Your order has been collected.', { defaultValue: 'Your order has been collected.' })
-                  : t('Your order has been delivered.', { defaultValue: 'Your order has been delivered.' })
+                  ? t('Your order has been collected.', { defaultValue: 'Ta commande a été récupérée.' })
+                  : t('Your order has been delivered.', { defaultValue: 'Ta commande a été livrée.' })
                 : ['CANCELLED', 'CANCELLEDBYREST'].includes(orderStatus)
-                    ? t('This order has been cancelled.', { defaultValue: 'This order has been cancelled.' })
-                    : t('We’re updating your order status.', { defaultValue: 'We’re updating your order status.' })
+                    ? t('This order has been cancelled.', { defaultValue: 'Cette commande a été annulée.' })
+                    : t('We’re updating your order status.', { defaultValue: 'Mise à jour du statut de ta commande.' })
 
   const title = isPickUpOrder
-    ? t('Estimated collection time', { defaultValue: 'Estimated collection time' })
+    ? t('Estimated collection time', { defaultValue: 'Heure de retrait estimée' })
     : isInTransit
-      ? t('Estimated arrival', { defaultValue: 'Estimated arrival' })
-      : t('Estimated delivery time', { defaultValue: 'Estimated delivery time' })
+      ? t('Estimated arrival', { defaultValue: 'Arrivée estimée' })
+      : t('Estimated delivery time', { defaultValue: 'Heure de livraison estimée' })
 
   return (
     <View style={styles(currentTheme).container}>

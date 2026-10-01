@@ -52,7 +52,7 @@ export default function EarningStack({
         className="flex flex-row gap-2 items-center flex-2"
         onPress={handleForwardPress}
       >
-        <Text className="font-bold text-[#3B82F6]">${earning}</Text>
+        <Text className="font-bold text-[#3B82F6]">{earning} FCFA</Text>
         <RightChevron color="#3B82F6" />
       </TouchableOpacity>
     </View>

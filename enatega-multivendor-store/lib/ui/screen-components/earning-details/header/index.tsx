@@ -46,7 +46,7 @@ export default function EarningDetailsHeader() {
     {
       icon: "wallet-outline" as const,
       label: t("Total Earnings"),
-      value: `${configuration?.currencySymbol || "$"}${formatAmount(
+      value: `${configuration?.currencySymbol || "FCFA"}${formatAmount(
         totals.earnings,
       )}`,
     },

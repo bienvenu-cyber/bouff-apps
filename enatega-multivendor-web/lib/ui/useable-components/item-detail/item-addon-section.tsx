@@ -68,7 +68,7 @@ export const ItemDetailAddonSection = <
             {/* Label & Price */}
             <div className="flex justify-between items-center w-full">
               <span className="text-sm text-gray-900">{option.title}</span>
-              <span className="text-sm text-gray-700">${option.price}</span>
+              <span className="text-sm text-gray-700">{option.price} FCFA</span>
             </div>
           </label>
         ))}

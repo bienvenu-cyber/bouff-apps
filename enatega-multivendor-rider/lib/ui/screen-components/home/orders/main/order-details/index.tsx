@@ -864,7 +864,7 @@ export default function OrderDetailScreen() {
                   onPress={() => {
                     const isUnpaid = order?.paymentStatus !== "PAID";
                     const amountNote = isUnpaid
-                      ? `\n\n${t("Confirm you have collected")} ${configuration?.currencySymbol ?? ""}${order?.orderAmount}.`
+                      ? `\n\n${t("Confirm you have collected")} ${configuration?.currencySymbol ?? "FCFA"} ${order?.orderAmount}.`
                       : "";
                     Alert.alert(
                       t("Mark as Delivered?"),

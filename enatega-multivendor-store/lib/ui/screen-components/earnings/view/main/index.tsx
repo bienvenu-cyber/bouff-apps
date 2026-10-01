@@ -80,7 +80,7 @@ export default function EarningsMain() {
   const { width: windowWidth } = useWindowDimensions();
   const [rangeDays, setRangeDays] = useState<(typeof RANGE_OPTIONS)[number]>(7);
   const [isRangeMenuVisible, setIsRangeMenuVisible] = useState(false);
-  const currencySymbol = configuration?.currencySymbol || "$";
+  const currencySymbol = configuration?.currencySymbol || "FCFA";
 
   // Queries
   const [

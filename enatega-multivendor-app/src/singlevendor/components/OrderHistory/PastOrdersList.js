@@ -40,7 +40,7 @@ const PastOrdersList = ({ onOrderPress, currentTheme: passedTheme, sortOrder = '
   // Transform and update past orders
   useEffect(() => {
     if (orders && orders.length > 0) {
-      const currencySymbol = configuration?.currencySymbol || ''
+      const currencySymbol = configuration?.currencySymbol || 'FCFA'
       const transformedItems = buildPastOrderList({
         orders: orders,
         currencySymbol,

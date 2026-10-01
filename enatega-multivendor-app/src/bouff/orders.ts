@@ -278,7 +278,7 @@ async function guestOrderDetails(orderNumber: string, menu: any) {
     completionTime: t.delivered_at,
     preparationTime: t.ready_at,
     orderDate: t.created_at,
-    expectedTime: null,
+    expectedTime: deliveryEta(t)?.windowEndAt ?? null,
     isPickedUp: t.order_type === "takeaway",
     deliveryType: t.order_type,
     deliveryCharges: t.delivery_fee_fcfa,
@@ -314,7 +314,7 @@ async function guestOrderDetails(orderNumber: string, menu: any) {
         }
       : null,
     items,
-    eta: null,
+    eta: deliveryEta(t),
   };
 
   return {
@@ -337,6 +337,32 @@ async function guestOrderDetails(orderNumber: string, menu: any) {
       couponDiscountApplied: (t.discount_fcfa ?? 0) > 0,
       creditsApplied: 0,
     },
+  };
+}
+
+// Fenêtre de livraison affichée au client. Avant que la cuisine accepte,
+// aucune heure n'est promise (null) : l'écran affiche « en attente ».
+const MIN = 60_000;
+const DELIVERY_MIN = 10; // trajet le plus court après la sortie cuisine
+const DELIVERY_MAX = 25; // trajet le plus long dans Parakou
+export function deliveryEta(o: any) {
+  if (!o || !o.accepted_at || ["received", "cancelled"].includes(o.status)) return null;
+  const at = (v: any) => (v ? new Date(v).getTime() : NaN);
+  const iso = (n: number) => new Date(n).toISOString();
+  const takeaway = o.order_type === "takeaway";
+  if (o.status === "delivered") {
+    const d = at(o.delivered_at);
+    return Number.isFinite(d) ? { windowStartAt: iso(d), windowEndAt: iso(d), readyAt: o.ready_at ?? null } : null;
+  }
+  const ready = at(o.ready_at) || at(o.estimated_ready_at) || at(o.accepted_at) + 15 * MIN;
+  if (!Number.isFinite(ready)) return null;
+  if (takeaway) return { windowStartAt: iso(ready), windowEndAt: iso(ready), readyAt: iso(ready) };
+  const picked = at(o.picked_up_at);
+  const base = Number.isFinite(picked) ? picked : Math.max(ready, Date.now());
+  return {
+    windowStartAt: iso(base + DELIVERY_MIN * MIN),
+    windowEndAt: iso(base + DELIVERY_MAX * MIN),
+    readyAt: iso(ready),
   };
 }
 
@@ -405,7 +431,7 @@ export async function orderDetails(orderId: string) {
     completionTime: order.delivered_at,
     preparationTime: order.ready_at,
     orderDate: order.created_at,
-    expectedTime: null,
+    expectedTime: deliveryEta(order)?.windowEndAt ?? null,
     isPickedUp: order.order_type === "takeaway",
     deliveryType: order.order_type,
     deliveryCharges: order.delivery_fee_fcfa,
@@ -441,7 +467,7 @@ export async function orderDetails(orderId: string) {
         }
       : null,
     items: mappedItems,
-    eta: null,
+    eta: deliveryEta(order),
   };
 
   return {
@@ -549,7 +575,7 @@ export async function trackOrder(orderId: string) {
     orderId: details.rawOrder.orderId,
     status: details.rawOrder.orderStatus,
     riderLocation: rider,
-    eta: route,
+    eta: details.rawOrder.eta || route ? { ...(route ?? {}), ...(details.rawOrder.eta ?? {}) } : null,
   };
 }
 

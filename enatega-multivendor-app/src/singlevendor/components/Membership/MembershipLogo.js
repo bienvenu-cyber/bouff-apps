@@ -19,7 +19,7 @@ const MembershipLogo = ({ currentTheme }) => {
         style={styles(currentTheme).subtitle}
         bold
       >
-        {t('Unlimited €1 Deliveries')}
+        {'Livraisons illimitées'}
       </TextDefault>
     </View>
   )

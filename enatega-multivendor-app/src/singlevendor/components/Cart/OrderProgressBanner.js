@@ -33,7 +33,7 @@ const OrderProgressBanner = ({
       const progress = (currentTotal / minimumOrder) * 33.33;
       return {
         text: t("You can't place order below ") || "You can't place order below ",
-        boldText: `${minimumOrder}${currencySymbol}`,
+        boldText: `${minimumOrder} ${currencySymbol}`,
         progress1: Math.min(progress, 33.33),
         progress2: 0,
         progress3: 0
@@ -54,7 +54,7 @@ const OrderProgressBanner = ({
       const progress = ((currentTotal - minimumOrder) / (lowOrderFeeThreshold - minimumOrder)) * 33.33;
       return {
         text: `A `,
-        boldText: `${lowOrderFee}${currencySymbol}`,
+        boldText: `${lowOrderFee} ${currencySymbol}`,
         text2: ` ${t('low-order fee applies') || 'low-order fee applies'}`,
         progress1: 33.33,
         progress2: Math.min(progress, 33.33),
@@ -67,9 +67,9 @@ const OrderProgressBanner = ({
       const progress = ((currentTotal - minimumOrder) / (lowOrderFeeThreshold - minimumOrder)) * 33.33;
       return {
         text: `Add `,
-        boldText: `${remaining}${currencySymbol}`,
+        boldText: `${remaining} ${currencySymbol}`,
         text2: ` more to avoid the `,
-        boldText2: `${lowOrderFee}${currencySymbol}`,
+        boldText2: `${lowOrderFee} ${currencySymbol}`,
         text3: ` low-order fee`,
         progress1: 33.33,
         progress2: Math.min(progress, 33.33),

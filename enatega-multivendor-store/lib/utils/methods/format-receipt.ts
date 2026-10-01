@@ -148,9 +148,7 @@ export const formatReceiptOld = (order) => {
           )
           .reduce((sum, val) => sum + val, 0); */
 
-      return `${item.quantity}x ${String(item.title)}${variationText}   ${currencySymbol}${itemPrice.toFixed(
-        2
-      )}${addonsSection}`;
+      return `${item.quantity}x ${String(item.title)}${variationText}   ${itemPrice.toFixed(0)} ${currencySymbol}${addonsSection}`;
     })
     .join("\n");
 
@@ -175,12 +173,12 @@ export const formatReceiptOld = (order) => {
     ${itemsText}
 
     --- Surcharge ------------------------------
-    Tax:           ${currencySymbol}${tax.toFixed(2)}
-    Tip:           ${currencySymbol}${tip.toFixed(2)}
-    Delivery ch.:  ${currencySymbol}${deliveryCharges.toFixed(2)}
+    Tax:           ${tax.toFixed(0)} ${currencySymbol}
+    Tip:           ${tip.toFixed(0)} ${currencySymbol}
+    Delivery ch.:  ${deliveryCharges.toFixed(0)} ${currencySymbol}
 
     --------------------------------------------
-    Total:         ${currencySymbol}${orderAmount.toFixed(2)}
+    Total:         ${orderAmount.toFixed(0)} ${currencySymbol}
 
     --------------------------------------------
     Thank you for your business!
@@ -214,7 +212,7 @@ export const formatReceipt = (order) => {
       const addonsText = item.addons
         .map(
           (addon) =>
-            `${addon.title}: ${addon.options.map((option) => `${option.title} [R]${currencySymbol}${option.price}`).join(", ")}`
+            `${addon.title}: ${addon.options.map((option) => `${option.title} [R]${option.price} ${currencySymbol}`).join(", ")}`
         )
         .join("\n - ");
 
@@ -231,9 +229,7 @@ export const formatReceipt = (order) => {
           )
           .reduce((sum, val) => sum + val, 0); */
 
-      return `${item.quantity}x ${String(item.title)}${variationText}   [R]${currencySymbol}${itemPrice.toFixed(
-        2
-      )}${addonsSection}`;
+      return `${item.quantity}x ${String(item.title)}${variationText}   [R]${itemPrice.toFixed(0)} ${currencySymbol}${addonsSection}`;
     })
     .join("\n");
 
@@ -258,15 +254,15 @@ ${addressLines.map((line) => `[L]${line}`).join("\n")}
 ${itemsText}
 
 [L]--- Surcharge ------------------------------
-[L]Tax:           ${currencySymbol}${tax.toFixed(2)}
-[L]Tip:           ${currencySymbol}${tip.toFixed(2)}
-[L]Delivery ch.:  ${currencySymbol}${deliveryCharges.toFixed(2)}
+[L]Tax:           ${tax.toFixed(0)} ${currencySymbol}
+[L]Tip:           ${tip.toFixed(0)} ${currencySymbol}
+[L]Delivery ch.:  ${deliveryCharges.toFixed(0)} ${currencySymbol}
 
 ${instructions ? "[L]--- Instructions ------------------------------" : ""}
 ${instructions ? `[L]${instructions}` : ""}
 
 [R]--------------------------------------------
-[R]<b>Total: ${currencySymbol}${orderAmount.toFixed(2)}</b>
+[R]<b>Total: ${orderAmount.toFixed(0)} ${currencySymbol}</b>
 [R]--------------------------------------------
 
 [C]Thank you for your business!
