@@ -928,7 +928,7 @@ function subscribe(operationName: string, observer: any) {
                 orderId: details.rawOrder.orderId,
                 status: details.rawOrder.orderStatus,
                 riderLocation: null,
-                eta: null,
+                eta: details.rawOrder.eta ?? null,
               },
             },
           });
@@ -958,7 +958,7 @@ function subscribe(operationName: string, observer: any) {
           orderId: details.rawOrder.orderId,
           status: details.rawOrder.orderStatus,
           riderLocation: null,
-          eta: null,
+          eta: details.rawOrder.eta ?? null,
         },
       },
     });
