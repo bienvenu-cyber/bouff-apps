@@ -4,7 +4,21 @@
 // les fonctions contrôlées de la base (claim_order, rider_advance_order).
 import { ApolloLink, Observable, type Operation } from "@apollo/client";
 import type { DocumentNode, OperationDefinitionNode } from "graphql";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { bouffDb } from "./supabase";
+
+// Hors ligne : les dernières courses et le profil sont gardés sur le téléphone
+// pour rester consultables (adresse, téléphone client, articles). Les actions
+// (prendre, en route, livrée) exigent le réseau : la base doit les valider
+// pour éviter qu'une course soit prise deux fois.
+const CACHE_PREFIX = "bouff/rider-cache/";
+const READ_ONLY = new Set(["RiderOrders", "SingleVendorRiderOrders", "Order", "rider", "Rider", "Configuration", "RiderEarningsGraph"]);
+const OFFLINE_MSG = "Pas de connexion internet. Réessaie dès que le réseau revient.";
+
+function isNetworkError(e: any) {
+  const m = String(e?.message ?? e ?? "").toLowerCase();
+  return m.includes("network request failed") || m.includes("failed to fetch") || m.includes("network") || m.includes("timeout") || m.includes("fetch");
+}
 
 const ORDER_SELECT =
   "*, tip_fcfa, scheduled_for, order_items(*, order_item_options(id, name, price_delta_fcfa)), riders(id, full_name, phone), restaurants(id, name, logo_url, address, latitude, longitude), delivery_zones(name)";
@@ -525,6 +539,8 @@ function rootFields(doc: DocumentNode): string[] {
 
 export async function clearBouffSession() {
   await bouffDb().auth.signOut().catch(() => {});
+  const keys = await AsyncStorage.getAllKeys().catch(() => [] as readonly string[]);
+  await AsyncStorage.multiRemove(keys.filter((k) => k.startsWith(CACHE_PREFIX))).catch(() => {});
 }
 
 export function createBouffLink(): ApolloLink {
@@ -543,14 +559,28 @@ export function createBouffLink(): ApolloLink {
           return;
         }
         let cancelled = false;
+        const cacheKey = CACHE_PREFIX + operation.operationName + ":" + JSON.stringify(operation.variables ?? {});
+        const cacheable = READ_ONLY.has(operation.operationName);
         resolver(operation.variables ?? {})
           .then((data) => {
             if (cancelled) return;
+            if (cacheable) void AsyncStorage.setItem(cacheKey, JSON.stringify(data)).catch(() => {});
             observer.next({ data });
             observer.complete();
           })
-          .catch((error) => {
+          .catch(async (error) => {
             if (cancelled) return;
+            if (isNetworkError(error)) {
+              const cached = cacheable ? await AsyncStorage.getItem(cacheKey).catch(() => null) : null;
+              if (cancelled) return;
+              if (cached) {
+                observer.next({ data: JSON.parse(cached) });
+              } else {
+                observer.next({ errors: [{ message: OFFLINE_MSG }] });
+              }
+              observer.complete();
+              return;
+            }
             // Même forme qu'une erreur GraphQL, pour que les écrans affichent le message.
             observer.next({ errors: [{ message: String(error?.message ?? error) }] });
             observer.complete();
