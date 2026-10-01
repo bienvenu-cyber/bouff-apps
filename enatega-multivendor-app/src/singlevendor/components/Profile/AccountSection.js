@@ -59,6 +59,12 @@ const AccountSection = () => {
       onPress: () => navigation.navigate('SecuritySettings')
     },
     {
+      id: 8,
+      icon: 'language-outline',
+      title: i18n.language === 'en' ? 'Language' : 'Langue',
+      onPress: () => navigation.navigate('LanguageSelection')
+    },
+    {
       id: 7,
       icon: isDarkTheme ? 'moon' : 'moon-outline',
       title: t('darkTheme', { defaultValue: 'Dark theme' }),

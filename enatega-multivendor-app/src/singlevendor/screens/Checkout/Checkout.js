@@ -444,6 +444,19 @@ const Checkout = (props) => {
             onSubscribe={() => navigation.navigate('Membership')}
           />
         )} */}
+        {!isOrderValid() && !loading && (
+          <TextDefault textColor={currentTheme.fontSecondColor} small center style={{ marginTop: 8 }}>
+            {error
+              ? (error?.message || 'Le calcul de la commande a échoué. Tire vers le bas pour réessayer.')
+              : isBelowMinimumOrder
+                ? `Commande minimum : ${minimumOrderAmount ?? ''} ${currencySymbol}`
+                : fulfillmentMode === 'delivery' && !location
+                  ? 'Choisis ton adresse de livraison pour commander.'
+                  : fulfillmentMode === 'collection' && !deliveryTime
+                    ? 'Choisis une heure de retrait pour commander.'
+                    : ''}
+          </TextDefault>
+        )}
         <TouchableOpacity style={[styles(currentTheme).placeOrderButton, !isOrderValid() && styles(currentTheme).placeOrderButtonDisabled]} onPress={handlePlaceOrder} disabled={!isOrderValid()} activeOpacity={0.7}>
           {placingOrder
             ? (
