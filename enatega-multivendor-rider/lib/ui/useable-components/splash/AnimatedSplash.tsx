@@ -35,14 +35,14 @@ const THEMES = {
   dark: {
     bg: ["#1C1B1E", "#0B0B0C", "#050505"] as const,
     wordmark: WM_WHITE,
-    ring: "rgba(110,224,122,0.85)",
+    ring: "transparent",
     underline: "#FF7A1A",
     orbOpacity: 1,
   },
   light: {
     bg: ["#1C1B1E", "#0B0B0C", "#050505"] as const,
     wordmark: WM_WHITE,
-    ring: "rgba(47,164,87,0.75)",
+    ring: "transparent",
     underline: '#FF7A1A',
     orbOpacity: 0.8,
   },
