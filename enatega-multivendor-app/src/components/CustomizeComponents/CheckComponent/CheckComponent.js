@@ -55,7 +55,7 @@ function CheckComponent(props) {
             <TextDefault
               textColor={currentTheme.colors.textSecondary}
               H6
-              bolder>{`${configuration.currencySymbol}${option.price}`}</TextDefault>
+              bolder>{`${option.price} ${configuration.currencySymbol}`}</TextDefault>
           </View>
         </TouchableOpacity>
       ))}

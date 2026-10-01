@@ -47,7 +47,7 @@ export default function Row({ id, restaurant }) {
 
       <View mainContainer style={{ flex: 3, alignSelf: 'center', alignContent: 'center', paddingHorizontal: scale(10) }}>
         <TextDefault bolder small textColor={currentTheme.newFontcolor} style={{ marginBottom: scale(10), }} isRTL>{food?.title}</TextDefault>
-        <TextDefault bolder small textColor={currentTheme.newFontcolor} isRTL>{`${configuration.currencySymbol}${food?.variations[0].price}`}</TextDefault>
+        <TextDefault bolder small textColor={currentTheme.newFontcolor} isRTL>{`${food?.variations[0].price} ${configuration.currencySymbol}`}</TextDefault>
       </View>
       <View rightContainer style={{ flex: 1, justifyContent: 'center', alignItems: currentTheme?.isRTL ? 'flex-start' : 'flex-end' }}>
         <View

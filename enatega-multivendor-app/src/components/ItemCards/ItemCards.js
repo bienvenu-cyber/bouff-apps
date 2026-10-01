@@ -58,7 +58,7 @@ const ItemCard = ({ item, onPressItem, restaurant, tagCart }) => {
             defaultSource={require('../../assets/images/food_placeholder.png')}
           />
           <View style={styles().popularMenuPrice}>
-            <Text style={styles(currentTheme).priceText}>{`${configuration.currencySymbol}${formatNumber(item?.variations[0].price)}`}</Text>
+            <Text style={styles(currentTheme).priceText}>{`${formatNumber(item?.variations[0].price)} ${configuration.currencySymbol}`}</Text>
             {item?.variations[0]?.discounted > 0 && (
               <Text
                 style={{

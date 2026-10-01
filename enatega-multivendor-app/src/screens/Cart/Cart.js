@@ -316,7 +316,7 @@ function Cart(props) {
                   <AntDesign name='exclamationcircleo' size={scale(12)} color={currentTheme.red600} />
                   <TextDefault textColor={currentTheme.red600} style={styles().minOrderMessageText} bold Small isRTL numberOfLines={2}>
                     {t('minOrderNotReached', {
-                      minOrder: `${configuration.currencySymbol}${minimumOrder}`
+                      minOrder: `${minimumOrder} ${configuration.currencySymbol}`
                     })}
                   </TextDefault>
                 </View>
