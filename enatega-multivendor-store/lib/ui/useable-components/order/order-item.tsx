@@ -85,7 +85,7 @@ const OrderItem = ({
               marginStart: 12,
             }}
           >
-            {`${currencySymbol}${formatAmount(itemTotal)}`}
+            {`${formatAmount(itemTotal)} ${currencySymbol}`}
           </Text>
         </View>
 
@@ -147,7 +147,7 @@ const OrderItem = ({
                     fontWeight: "600",
                   }}
                 >
-                  {`${currencySymbol}${formatAmount(variation.price)}`}
+                  {`${formatAmount(variation.price)} ${currencySymbol}`}
                 </Text>
               </View>
             )}
@@ -165,7 +165,7 @@ const OrderItem = ({
                     {option.title}
                   </Text>
                   <Text style={{ color: appTheme.fontMainColor, fontSize: 12 }}>
-                    {`+${currencySymbol}${formatAmount(option.price)}`}
+                    {`+${formatAmount(option.price)} ${currencySymbol}`}
                   </Text>
                 </View>
               )),

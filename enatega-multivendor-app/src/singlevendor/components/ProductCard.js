@@ -80,7 +80,7 @@ const ProductCard = ({ product, onCardPress, containerStyles, layout = 'horizont
         {/* Todo: can show variations specific price and product size. */}
         {/* <View style={styles(currentTheme).volumeContainer}>
                 <Text style={styles(currentTheme).volume}>{product?.volume}</Text>
-                <Text style={styles(currentTheme).pricePerLiter}>€ {product?.pricePerLiter?.toFixed(1)}/l</Text>
+                <Text style={styles(currentTheme).pricePerLiter}>{product?.pricePerLiter?.toFixed(0)} FCFA/l</Text>
             </View> */}
       </View>
     </Pressable>
