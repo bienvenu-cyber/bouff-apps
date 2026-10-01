@@ -376,7 +376,7 @@ export default function SearchModal({
             borderColor: currentTheme.customBorder
           }}>
             <TextDefault textColor={currentTheme.newFontcolor}>
-              Location search is not configured
+              {tr('La recherche d’adresse n’est pas encore disponible', 'Location search is not configured')}
             </TextDefault>
             <TouchableOpacity 
               onPress={close} 
