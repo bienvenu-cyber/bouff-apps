@@ -107,7 +107,7 @@ const ProductInfo = ({ t, productInfoData, currentTheme, selectedVariationId, se
             {editMode
               ? (
               <View style={{ alignItems: 'flex-end', minWidth: 130 }}>
-                <ContinueWithPhoneButton containerStyles={{ minWidth: 130 }} textStyle={{ paddingHorizontal: 8 }} isLoading={editingCart} isDisabled={editingCart || isOutOfStock} title={tr('Enregistrer', tr('Enregistrer', 'Save changes'))} onPress={onSaveEdit} />
+                <ContinueWithPhoneButton containerStyles={{ minWidth: 130 }} textStyle={{ paddingHorizontal: 8 }} isLoading={editingCart} isDisabled={editingCart || isOutOfStock} title={tr('Enregistrer', 'Save changes')} onPress={onSaveEdit} />
               </View>
                 )
               : isInCart
