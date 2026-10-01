@@ -61,7 +61,7 @@ export default function CurrentLocation() {
     } else if (status === 'blocked') {
       Alert.alert('Location Permission Blocked', 'Please enable location services in your device settings.', [
         { text: i18next.t('Cancel'), style: 'cancel' },
-        { text: 'Open Settings', onPress: () => Linking.openSettings() }
+        { text: i18next.t('Open Settings'), onPress: () => Linking.openSettings() }
       ])
       setLoading(false)
     } else {

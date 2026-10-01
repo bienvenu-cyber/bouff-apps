@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React from 'react'
 import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
@@ -97,7 +98,7 @@ const OrderHistoryItem = ({ ordersData, currentTheme, onOrderPress }) => {
                 style={themedStyles.statusText}
                 bold
               >
-                {orders.status}
+                {i18next.t(orders.status)}
               </TextDefault>
             </View>
           </View>
