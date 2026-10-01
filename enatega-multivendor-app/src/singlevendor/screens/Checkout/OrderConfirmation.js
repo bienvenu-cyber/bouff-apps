@@ -44,7 +44,7 @@ const OrderConfirmationScreen = (props) => {
     ...theme[themeContext.ThemeValue]
   }
 
-  const currencySymbol = configuration?.currencySymbol || '€'
+  const currencySymbol = configuration?.currencySymbol || 'FCFA'
 
   // Add to cart hook – navigate to cart once when reorder succeeds (callback avoids navigation during render)
   const { addItemToCart, updateUserCartLoading } = useAddToCart({

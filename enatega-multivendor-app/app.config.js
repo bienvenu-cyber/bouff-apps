@@ -22,7 +22,7 @@ module.exports = () => {
     : fallbackUrlTypes
   const urlTypes = [
     ...googleUrlTypes,
-    { CFBundleURLSchemes: ['enategamultivendor'] }
+    { CFBundleURLSchemes: ['bouff'] }
   ]
 
   return {
@@ -92,7 +92,7 @@ module.exports = () => {
       color: '#FF7A1A',
       icon: './assets/not-icon.png',
       androidMode: 'default',
-      androidCollapsedTitle: 'Enatega Multivendor'
+      androidCollapsedTitle: 'BOUFF'
     },
     android: {
       versionCode: 144,
@@ -218,7 +218,7 @@ module.exports = () => {
         '',
       liveActivity: {
         appGroupId: 'group.bj.bouff.app.shared',
-        appScheme: 'enategamultivendor',
+        appScheme: 'bouff',
         brandName: 'Enatega',
         primaryColor: '#FF7A1A',
         accentColor: '#FFA921',

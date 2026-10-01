@@ -32,7 +32,7 @@ const OrderItemRow = ({ item, currencySymbol, currentTheme, isExpanded }) => {
       </View>
       <View style={styles().itemRight}>
         <TextDefault textColor={currentTheme.fontMainColor} isRTL>
-          {currencySymbol} {(item?.variation?.price * item?.foodQuantity).toFixed(2)}
+          {currencySymbol} {(item?.variation?.price * item?.foodQuantity).toFixed(0)}
         </TextDefault>
         {/* <Feather name={showDetails ? 'chevron-up' : 'chevron-down'} size={16} color={currentTheme.gray400} /> */}
       </View>
@@ -40,7 +40,7 @@ const OrderItemRow = ({ item, currencySymbol, currentTheme, isExpanded }) => {
   )
 }
 
-const OrderItemsSection = ({ items = [], currencySymbol = '€', initialExpanded = false }) => {
+const OrderItemsSection = ({ items = [], currencySymbol = 'FCFA', initialExpanded = false }) => {
   const { t, i18n } = useTranslation()
   const themeContext = useContext(ThemeContext)
   const currentTheme = {

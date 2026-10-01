@@ -93,11 +93,11 @@ const detectAndSetLanguage = async() => {
   try {
     // Ancienne valeur « en » imposée par l'app d'origine : on l'ignore une fois
     // pour laisser la langue du téléphone (ou le français) reprendre la main.
-    const migrated = await AsyncStorage.getItem('bouff-language-v1')
+    const migrated = await AsyncStorage.getItem('bouff-language-v2')
     if (!migrated) {
       await AsyncStorage.removeItem('enatega-language')
       await AsyncStorage.removeItem('enatega-language-name')
-      await AsyncStorage.setItem('bouff-language-v1', '1')
+      await AsyncStorage.setItem('bouff-language-v2', '1')
     }
     const storedLanguage = await AsyncStorage.getItem('enatega-language')
     const locale = Localization.getLocales?.()?.[0]
@@ -109,9 +109,8 @@ const detectAndSetLanguage = async() => {
     let languageToUse = 'fr'
     if (storedLanguage && availableLanguages.includes(storedLanguage)) {
       languageToUse = storedLanguage
-    } else if (systemLanguage && availableLanguages.includes(systemLanguage)) {
-      languageToUse = systemLanguage
     }
+    void systemLanguage // BOUFF : français par défaut, quelle que soit la langue du téléphone
 
     if (i18next.language !== languageToUse) {
       await i18next.changeLanguage(languageToUse)

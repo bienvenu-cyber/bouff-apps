@@ -14,7 +14,7 @@ import { normalizeSingleVendorMediaUrl } from '../../../utils/mediaUrl'
 import { getDealLabel, getDealPricing } from '../../utils/helper'
 import { isProductOutOfStock } from '../../utils/stock'
 
-const CartItem = ({ item, onAddQuantity, onRemoveQuantity, currencySymbol = '€', onEdit, isLastItem = false, isFavourite = false, onAddToCart, isOrderHistory = false }) => {
+const CartItem = ({ item, onAddQuantity, onRemoveQuantity, currencySymbol = 'FCFA', onEdit, isLastItem = false, isFavourite = false, onAddToCart, isOrderHistory = false }) => {
   const { t, i18n } = useTranslation()
   const navigation = useNavigation()
   const themeContext = useContext(ThemeContext)
@@ -142,11 +142,11 @@ const CartItem = ({ item, onAddQuantity, onRemoveQuantity, currencySymbol = '€
               </TextDefault>
             )}
             <TextDefault textColor={hasDeal ? currentTheme.singleVendorBrandForeground : currentTheme.gray} bold isRTL>
-              {discountedItemTotal.toFixed(2)}&nbsp;{currencySymbol}
+              {discountedItemTotal.toFixed(0)}&nbsp;{currencySymbol}
             </TextDefault>
             {hasDeal && (
               <TextDefault style={styles().originalPrice} textColor={currentTheme.fontSecondColor} small isRTL>
-                {actualItemTotal.toFixed(2)}&nbsp;{currencySymbol}
+                {actualItemTotal.toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
             )}
           </View>

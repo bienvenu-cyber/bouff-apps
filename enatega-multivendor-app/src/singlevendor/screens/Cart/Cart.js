@@ -52,7 +52,7 @@ const Cart = (props) => {
     ...theme[themeContext.ThemeValue]
   }
 
-  const currencySymbol = configuration?.currencySymbol || '€'
+  const currencySymbol = configuration?.currencySymbol || 'FCFA'
 
   const initialRecommendedItemIdRef = useRef(
     visibleItems?.length > 0 ? visibleItems[0]?.foodId : null
@@ -120,10 +120,10 @@ const Cart = (props) => {
     const number = Number(value)
 
     if (!Number.isFinite(number)) {
-      return '0.00'
+      return '0'
     }
 
-    return number.toFixed(2)
+    return number.toFixed(0)
   }
 
   // Cart Skeleton loading

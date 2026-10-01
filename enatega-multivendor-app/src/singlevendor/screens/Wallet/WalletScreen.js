@@ -29,7 +29,7 @@ const WalletScreen = () => {
   const { data: creditsData, loading: creditsLoading, refetch: refetchCreditsData } = useQuery(GET_ALL_USER_CREDITS)
   const { data: creditsHistoryData, loading: creditsHistoryLoading, refetch: refetchCreditsHistoryData } = useQuery(GET_USER_CREDITS_HISTORY)
   const { refreshing, handleRefresh, spinnerColor } = usePullToRefresh([refetchCreditsData, refetchCreditsHistoryData])
-  const currencySymbol = configuration?.currencySymbol || '€'
+  const currencySymbol = configuration?.currencySymbol || 'FCFA'
   const creditBalance = creditsData?.getAllUserCredits?.credits ?? 0
   const creditsHistory = creditsHistoryData?.getUserCreditsHistory ?? []
 

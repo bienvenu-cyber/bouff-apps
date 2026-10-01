@@ -13,7 +13,7 @@ const OrderFeesModal = ({
   minimumOrder = 10,
   lowOrderFeeThreshold = 15,
   lowOrderFee = 2,
-  currencySymbol = '€'
+  currencySymbol = 'FCFA'
 }) => {
   const { t, i18n } = useTranslation();
   const themeContext = useContext(ThemeContext);
@@ -110,7 +110,7 @@ const OrderFeesModal = ({
                 isRTL
                 style={styles().tableCell}
               >
-                {minimumOrder}&nbsp;{currencySymbol}:00 - {(lowOrderFeeThreshold - 0.01).toFixed(2)}&nbsp;{currencySymbol}
+                {minimumOrder}&nbsp;{currencySymbol}:00 - {(lowOrderFeeThreshold - 0.01).toFixed(0)}&nbsp;{currencySymbol}
               </TextDefault>
               <TextDefault
                 textColor={currentTheme.fontMainColor}

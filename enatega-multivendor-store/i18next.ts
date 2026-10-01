@@ -36,7 +36,8 @@ const getInitialLanguage = async (): Promise<string> => {
     return legacyLang;
   }
 
-  return Localization.getLocales()[0]?.languageCode || "en";
+  void Localization;
+  return DEFAULT_LANGUAGE;
 };
 
 const getLanguageResources = async (language: SupportedLanguage) => {

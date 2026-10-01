@@ -14,7 +14,7 @@ const OrderSummaryDetails = ({
   deliveryDistance,
   courierTip,
   total,
-  currencySymbol = '€'
+  currencySymbol = 'FCFA'
 }) => {
   const { t, i18n } = useTranslation()
   const themeContext = useContext(ThemeContext)
@@ -103,7 +103,7 @@ const OrderSummaryDetails = ({
             style={themedStyles.detailValue}
             bold
           >
-            {currencySymbol} {itemSubtotal.toFixed(2)}
+            {currencySymbol} {itemSubtotal.toFixed(0)}
           </TextDefault>
         </View>
 
@@ -121,7 +121,7 @@ const OrderSummaryDetails = ({
             style={themedStyles.detailValue}
             bold
           >
-            {currencySymbol} {deliveryFee.toFixed(2)}
+            {currencySymbol} {deliveryFee.toFixed(0)}
           </TextDefault>
         </View>
 
@@ -139,7 +139,7 @@ const OrderSummaryDetails = ({
             style={themedStyles.detailValue}
             bold
           >
-            {currencySymbol} {courierTip.toFixed(2)}
+            {currencySymbol} {courierTip.toFixed(0)}
           </TextDefault>
         </View>
       </View>
@@ -161,7 +161,7 @@ const OrderSummaryDetails = ({
           style={themedStyles.totalValue}
           bolder
         >
-          {currencySymbol} {total.toFixed(2)}
+          {currencySymbol} {total.toFixed(0)}
         </TextDefault>
       </View>
     </View>
