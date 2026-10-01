@@ -328,32 +328,32 @@ const Order = ({
         <View style={styles.amountSection}>
           <AmountRow
             label={t("Sub Total")}
-            value={`${configuration?.currencySymbol}${formatAmount(orderSubTotal(order))}`}
+            value={`${formatAmount(orderSubTotal(order))} ${configuration?.currencySymbol || 'FCFA'}`}
           />
           <AmountRow
             label={t("Tip")}
-            value={`${configuration?.currencySymbol}${formatAmount(order?.tipping)}`}
+            value={`${formatAmount(order?.tipping)} ${configuration?.currencySymbol || 'FCFA'}`}
           />
           <AmountRow
             label={t("Tax")}
-            value={`${configuration?.currencySymbol}${formatAmount(order?.taxationAmount)}`}
+            value={`${formatAmount(order?.taxationAmount)} ${configuration?.currencySymbol || 'FCFA'}`}
           />
           {order?.discountAmount > 0 && (
             <AmountRow
               label={t("discountAmount")}
-              value={`${configuration?.currencySymbol}${formatAmount(order?.discountAmount)}`}
+              value={`${formatAmount(order?.discountAmount)} ${configuration?.currencySymbol || 'FCFA'}`}
             />
           )}
           {!order?.isPickedUp && (
             <AmountRow
               label={t("Delivery Charges")}
-              value={`${configuration?.currencySymbol}${formatAmount(order?.deliveryCharges)}`}
+              value={`${formatAmount(order?.deliveryCharges)} ${configuration?.currencySymbol || 'FCFA'}`}
             />
           )}
           <AmountRow
             emphasized
             label={t("Total")}
-            value={`${configuration?.currencySymbol}${formatAmount(order?.orderAmount)}`}
+            value={`${formatAmount(order?.orderAmount)} ${configuration?.currencySymbol || 'FCFA'}`}
           />
         </View>
 

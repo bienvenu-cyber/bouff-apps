@@ -35,7 +35,7 @@ const PromoBanner = () => {
             textColor="#000000"
             style={styles(currentTheme).title}
           >
-            {t('Unlimited Deliveries for €1')}
+            {'Livraisons illimitées'}
           </TextDefault>
           <TextDefault
             textColor="#000000"
@@ -43,7 +43,7 @@ const PromoBanner = () => {
             bolder
             style={styles(currentTheme).subtitle}
           >
-            {t('Save €3.99 Each!')}
+            {'Économise sur chaque commande'}
           </TextDefault>
         </View>
         <TouchableOpacity
