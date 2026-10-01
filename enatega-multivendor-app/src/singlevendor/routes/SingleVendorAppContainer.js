@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React, { useCallback, useContext, useEffect } from 'react'
 import { Text, View } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
@@ -164,7 +165,7 @@ function MainNavigator() {
       <NavigationStack.Screen
         name='SVPaymentCheckout'
         component={SingleVendorPaymentCheckout}
-        options={{ headerShown: true, title: 'Secure payment' }}
+        options={{ headerShown: true, title: i18next.t('Secure payment') }}
       />
       {/* <NavigationStack.Screen name='HypCheckout' component={HypCheckout} /> */}
 

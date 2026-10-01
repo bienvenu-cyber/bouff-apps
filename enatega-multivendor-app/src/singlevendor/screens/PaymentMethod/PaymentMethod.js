@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React, { useContext, useState, useRef } from 'react'
 import { SafeAreaView, View, Text, TouchableOpacity, ScrollView, Switch } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
@@ -81,7 +82,7 @@ const PaymentMethod = () => {
         return (
           <View style={styles(currentTheme).applePayContainer}>
             <Ionicons name="logo-apple" size={24} color="#000" />
-            <TextDefault bold style={styles(currentTheme).applePayText}>Pay</TextDefault>
+            <TextDefault bold style={styles(currentTheme).applePayText}>{i18next.t('Pay')}</TextDefault>
           </View>
         )
       default:

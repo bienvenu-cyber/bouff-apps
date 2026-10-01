@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import { FlatList, Pressable, StyleSheet, TextInput, View } from 'react-native'
 import React from 'react'
 import { Feather, Ionicons } from '@expo/vector-icons'
@@ -76,7 +77,7 @@ const SearchingAddress = ({
             ? (
           <Pressable
             accessibilityRole='button'
-            accessibilityLabel='Clear search'
+            accessibilityLabel={i18next.t('Clear search')}
             onPress={handleClearSearch}
             hitSlop={10}
             style={[styles.clearButton, { backgroundColor: currentTheme.gray300 }]}

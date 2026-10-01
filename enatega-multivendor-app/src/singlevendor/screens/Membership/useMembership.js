@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import { Alert } from 'react-native'
 import { useContext, useState } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
@@ -51,7 +52,7 @@ const useMembership = () => {
       error?.localizedMessage || error?.message || t('Something went wrong, please try again!'),
       [
         {
-          text: 'Ok',
+          text: i18next.t('OK'),
           onPress: () => { } // dismiss only
         }
       ]
@@ -80,12 +81,12 @@ const useMembership = () => {
   const handleCancelSubscription = () => {
     Alert.alert('Subscription', 'Are you sure you want to cancel your active subscription', [
       {
-        text: 'Cancel',
+        text: i18next.t('Cancel'),
         style: 'cancel',
         onPress: () => { } // dismiss only
       },
       {
-        text: 'Yes',
+        text: i18next.t('Yes'),
         onPress: () => {
           setisLoading(true)
           mutateCancelSubscription({
@@ -103,11 +104,11 @@ const useMembership = () => {
   const handleUpdateSubscription = () => {
     Alert.alert('Subscription', 'Are you sure you want to update your active subscription', [
       {
-        text: 'Cancel',
+        text: i18next.t('Cancel'),
         onPress: () => { } // dismiss only
       },
       {
-        text: 'Yes',
+        text: i18next.t('Yes'),
         onPress: () =>
           mutateUpdateSubscription({
             variables: {
@@ -133,7 +134,7 @@ const useMembership = () => {
 
       Alert.alert(`${error?.code}`, `${error?.localizedMessage}`, [
         {
-          text: 'Ok',
+          text: i18next.t('OK'),
           onPress: () => { } // dismiss only
         }
       ])

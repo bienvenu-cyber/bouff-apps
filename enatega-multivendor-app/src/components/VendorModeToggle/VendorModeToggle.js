@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React from 'react'
 import {
   ActivityIndicator,
@@ -58,8 +59,8 @@ const VendorModeToggle = ({ hasActiveOrder = false, hasCartItems = false }) => {
         'Switch delivery mode?',
         'Your cart and active orders will remain on the current service. Switch back to continue tracking or checkout.',
         [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Switch', onPress: performSwitch }
+          { text: i18next.t('Cancel'), style: 'cancel' },
+          { text: i18next.t('Switch'), onPress: performSwitch }
         ]
       )
       return

@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 /* eslint-disable indent */
 import React, { useState, useEffect, useContext, useRef, useCallback, useMemo } from 'react'
 import { View, ScrollView, TouchableOpacity, StatusBar, Platform, Alert, TextInput, Dimensions } from 'react-native'
@@ -580,7 +581,7 @@ function Checkout(props) {
         if (isPickup) {
           // For pickup, use the location from context
           orderVariables.address = {
-            label: 'Current Location',
+            label: i18next.t('Current Location'),
             deliveryAddress: 'Pickup',
             details: 'User will pick up the order',
             longitude: '' + location.longitude,

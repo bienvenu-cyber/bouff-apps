@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React, { useState, useMemo, useContext, useRef } from 'react'
 import { View, StyleSheet, ActivityIndicator } from 'react-native'
 import { FlashList } from '@shopify/flash-list'
@@ -105,7 +106,7 @@ const ProductsList = ({ onClose, items = [], isPaginated = false, categoryId = n
   return (
     <View style={[styles(currentTheme).container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       {/* 🔹 Search Header */}
-      <SearchHeader value={query} placeholder='Search items' onChangeText={onSearchChange} onBackPress={onClose} />
+      <SearchHeader value={query} placeholder={i18next.t('Search items')} onChangeText={onSearchChange} onBackPress={onClose} />
 
       {/* 🔹 Results */}
       <FlashList

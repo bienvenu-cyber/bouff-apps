@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React from 'react'
 import OptionList from './OptionsList'
 
@@ -14,7 +15,7 @@ const Variations = ({
       <OptionList
         t={t}
         title='Choose Your Variation'
-        subtitle='Select one'
+        subtitle={i18next.t('Select one')}
         list={variations}
         isVariation
         selectedIds={selectedVariationId}

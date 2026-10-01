@@ -53,7 +53,7 @@ const OrderProgressBanner = ({
     else if (currentTotal >= minimumOrder && currentTotal < lowOrderFeeThreshold - 2) {
       const progress = ((currentTotal - minimumOrder) / (lowOrderFeeThreshold - minimumOrder)) * 33.33;
       return {
-        text: `A `,
+        text: `${t('A')} `,
         boldText: `${lowOrderFee} ${currencySymbol}`,
         text2: ` ${t('low-order fee applies') || 'low-order fee applies'}`,
         progress1: 33.33,
@@ -66,11 +66,11 @@ const OrderProgressBanner = ({
       const remaining = (lowOrderFeeThreshold - currentTotal).toFixed(0);
       const progress = ((currentTotal - minimumOrder) / (lowOrderFeeThreshold - minimumOrder)) * 33.33;
       return {
-        text: `Add `,
+        text: `${t('Add')} `,
         boldText: `${remaining} ${currencySymbol}`,
-        text2: ` more to avoid the `,
+        text2: ` ${t('more to avoid the')} `,
         boldText2: `${lowOrderFee} ${currencySymbol}`,
-        text3: ` low-order fee`,
+        text3: ` ${t('low-order fee')}`,
         progress1: 33.33,
         progress2: Math.min(progress, 33.33),
         progress3: 0
@@ -79,7 +79,7 @@ const OrderProgressBanner = ({
     // State 5: No fee applied
     else {
       return {
-        text: 'No low-order fee applied',
+        text: t('No low-order fee applied'),
         boldText: null,
         progress1: 33.33,
         progress2: 33.33,

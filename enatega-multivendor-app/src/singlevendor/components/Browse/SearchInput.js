@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import { StyleSheet, View, TextInput, Pressable } from 'react-native'
 import React, { useEffect } from 'react'
 import { Entypo, Ionicons } from '@expo/vector-icons'
@@ -17,7 +18,7 @@ const SearchInput = ({ currentTheme, handleClearSearch, inputRef, searchTerm, se
         style={styles(currentTheme).input}
         value={searchTerm}
         onChangeText={setSearchTerm}
-        placeholder='Search'
+        placeholder={i18next.t('Search')}
         placeholderTextColor={currentTheme.colorTextMuted}
         selectionColor={currentTheme.singleVendorBrandForeground}
       />
