@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import * as Location from 'expo-location'
 import { getLocationFromStorage } from './useWatchLocation'
 
@@ -52,7 +53,7 @@ export default function useLocation() {
         return { error: true, message: e.message }
       }
     }
-    return { error: true, message: 'Location permission was not granted' }
+    return { error: true, message: i18next.t('Location permission was not granted') }
   }
 
   return { getCurrentLocation, getLocationPermission }

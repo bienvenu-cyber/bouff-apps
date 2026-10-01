@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React, { useContext, useEffect, useState, useCallback, useRef } from 'react'
 import {
   Modal,
@@ -385,7 +386,7 @@ export default function SearchModal({
                 borderRadius: 6 
               }}
             >
-              <TextDefault textColor={currentTheme.buttonText} center>Close</TextDefault>
+              <TextDefault textColor={currentTheme.buttonText} center>{i18next.t('Close')}</TextDefault>
             </TouchableOpacity>
           </View>
         </View>

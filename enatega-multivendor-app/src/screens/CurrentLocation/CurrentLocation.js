@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React, { useContext, useEffect, useState } from 'react'
 import { View, TouchableOpacity, Linking, Platform, StatusBar, ActivityIndicator, Text, StyleSheet, Alert } from 'react-native'
 import { useLocation } from '../../ui/hooks'
@@ -59,7 +60,7 @@ export default function CurrentLocation() {
       // Show the Allow Location screen
     } else if (status === 'blocked') {
       Alert.alert('Location Permission Blocked', 'Please enable location services in your device settings.', [
-        { text: 'Cancel', style: 'cancel' },
+        { text: i18next.t('Cancel'), style: 'cancel' },
         { text: 'Open Settings', onPress: () => Linking.openSettings() }
       ])
       setLoading(false)
@@ -248,10 +249,10 @@ export default function CurrentLocation() {
 
   return !currentLocation && !isInitialLoading ? (
     <View style={[allowedLocationStyles.container, { backgroundColor: currentTheme.themeBackground }]}>
-      <Text style={allowedLocationStyles.title}>Enable Location Services</Text>
+      <Text style={allowedLocationStyles.title}>{i18next.t('Enable Location Services')}</Text>
       <Text style={allowedLocationStyles.description}>We need access to your location to show nearby restaurants and provide accurate delivery services.</Text>
       <TouchableOpacity style={allowedLocationStyles.button} onPress={onRequestPermissionHandler}>
-        <Text style={allowedLocationStyles.buttonText}>Allow Location Access</Text>
+        <Text style={allowedLocationStyles.buttonText}>{i18next.t('Allow Location Access')}</Text>
       </TouchableOpacity>
     </View>
   ) : (

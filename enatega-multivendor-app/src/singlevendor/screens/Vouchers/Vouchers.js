@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ScrollView, Alert, RefreshControl, Platform, View } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -95,7 +96,7 @@ const Vouchers = () => {
       `Are you want to use ${voucher?.title}?`,
       [
         {
-          text: 'Cancel',
+          text: i18next.t('Cancel'),
           onPress: () => console.log('Cancel Pressed')
         },
         {

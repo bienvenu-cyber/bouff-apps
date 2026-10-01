@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 // useCreateAccount.ios.js
 
 import { useEffect, useState, useContext } from 'react'
@@ -306,7 +307,7 @@ export const useCreateAccount = () => {
         !data?.login?.name?.trim()
 
       await setTokenAsync(data.login.token)
-      FlashMessage({ message: 'Successfully logged in' })
+      FlashMessage({ message: i18next.t('Successfully logged in') })
 
       if (needsName) {
         logStep('onCompleted: Apple account has no persisted name → request name')

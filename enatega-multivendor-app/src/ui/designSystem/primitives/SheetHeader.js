@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
@@ -20,7 +21,7 @@ const SheetHeader = ({ title, onClose, action, showHandle = true, style }) => {
           {action || (onClose && (
             <Pressable
               accessibilityRole='button'
-              accessibilityLabel='Close'
+              accessibilityLabel={i18next.t('Close')}
               hitSlop={8}
               onPress={onClose}
               style={({ pressed }) => [themedStyles.closeButton, pressed && themedStyles.pressed]}

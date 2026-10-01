@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React, { useContext, useMemo } from 'react'
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { Feather, Ionicons } from '@expo/vector-icons'
@@ -178,7 +179,7 @@ const HomeCart = () => {
     return (
       <SectionErrorCard
         compact
-        title='Active order'
+        title={i18next.t('Active order')}
         message='Your active order could not be loaded.'
         onRetry={refetch}
       />

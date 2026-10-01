@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React, { useState, useContext, useLayoutEffect, useEffect } from 'react'
 import {
   View,
@@ -100,7 +101,7 @@ function RateAndReview(props) {
       })
     } else {
       FlashMessage({
-        message: 'Please add star rating first'
+        message: i18next.t('Please add star rating first')
       })
     }
   }

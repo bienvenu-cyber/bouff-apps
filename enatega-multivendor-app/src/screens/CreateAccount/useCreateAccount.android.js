@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 // useCreateAccount.android.js
 
 import { useEffect, useState, useContext } from 'react'
@@ -153,7 +154,7 @@ export const useCreateAccount = () => {
       ) {
         FlashMessage({ message: socialLoginMessages.invalidToken })
       } else if (error.code !== 'SIGN_IN_CANCELLED') {
-        FlashMessage({ message: 'Google sign in failed' })
+        FlashMessage({ message: i18next.t('Google sign in failed') })
       }
 
       setLoading(false)
@@ -269,7 +270,7 @@ export const useCreateAccount = () => {
         !data?.login?.name?.trim()
 
       await setTokenAsync(data.login.token)
-      FlashMessage({ message: 'Successfully logged in' })
+      FlashMessage({ message: i18next.t('Successfully logged in') })
 
       if (needsName) {
         logStep('onCompleted: Apple account has no persisted name → request name')

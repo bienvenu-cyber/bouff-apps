@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native'
 import { WebView } from 'react-native-webview'
@@ -210,7 +211,7 @@ function StripeCheckout(props) {
               }}
               style={{ marginTop: 24, borderRadius: 999, backgroundColor: '#7AC943', paddingHorizontal: 20, paddingVertical: 12 }}
             >
-              <Text style={{ color: '#fff', fontWeight: '600' }}>Go to home</Text>
+              <Text style={{ color: '#fff', fontWeight: '600' }}>{i18next.t('Go to home')}</Text>
             </TouchableOpacity>
               )
             : null}
