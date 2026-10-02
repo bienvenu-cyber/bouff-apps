@@ -38,20 +38,14 @@ export default function AppThemeProvidor({
   const colorScheme = Appearance.getColorScheme();
 
   // States
-  const [currentTheme, setCurrentTheme] = useState<app_theme>("light");
-  const [appTheme, setAppTheme] = useState(
-    colorScheme === "dark"
-      ? Colors.dark
-      : colorScheme === "light"
-        ? Colors.light
-        : Colors.light,
-  );
+  const [currentTheme, setCurrentTheme] = useState<app_theme>("dark");
+  const [appTheme, setAppTheme] = useState(Colors.dark);
 
   // Methods
   async function getCurrentAppTheme() {
-    const systemTheme = Appearance.getColorScheme();
-    const localTheme = await AsyncStorage.getItem("app_theme");
-    const theme = localTheme || systemTheme || "dark";
+        const localTheme = await AsyncStorage.getItem("app_theme");
+    // BOUFF : sombre par défaut, le téléphone ne décide plus.
+    const theme = localTheme === "light" ? "light" : "dark";
     Appearance.setColorScheme(theme as app_theme);
     setCurrentTheme(theme as app_theme);
     setAppTheme(
@@ -80,7 +74,8 @@ export default function AppThemeProvidor({
     // Store the subscription so it can be removed on unmount — without this,
     // React Strict Mode's double-invoke and every remount leak listeners.
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-      setCurrentTheme(colorScheme as app_theme);
+      // Thème choisi dans l'app uniquement (pas le réglage du téléphone).
+      void colorScheme;
     });
     return () => subscription.remove();
   }, []);

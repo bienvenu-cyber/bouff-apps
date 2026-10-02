@@ -151,7 +151,7 @@ function ModeAwareApp() {
   // Use the system theme only as the first-install default. A manually selected
   // theme is restored from storage before the splash screen is dismissed.
   const systemTheme = useColorScheme()
-  const [theme, themeSetter] = useReducer(ThemeReducer, systemTheme === 'dark' ? 'Dark' : 'Pink')
+  const [theme, themeSetter] = useReducer(ThemeReducer, 'Dark')
 
   // Match the Android system navigation bar to the bottom tab bar
   // (currentTheme.cardBackground) for both light and dark themes, so the two
