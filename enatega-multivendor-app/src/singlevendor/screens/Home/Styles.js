@@ -16,21 +16,23 @@ const styles = (currentTheme) =>
       zIndex: 20,
       elevation: 20,
       height: scale(58),
+      flexDirection: 'row',
+      alignItems: 'center',
       overflow: 'visible',
       backgroundColor: currentTheme?.themeBackground || '#F5F5F5',
       borderBottomWidth: StyleSheet.hairlineWidth
     },
     androidAddress: {
+      flex: 1,
       height: '100%',
-      paddingRight: scale(116),
       justifyContent: 'center'
     },
+    // BOUFF : horloge posée sur la même ligne que l'adresse, centrée verticalement
     androidScheduleOverlay: {
-      position: 'absolute',
-      right: 0,
-      bottom: -scale(13),
-      zIndex: 30,
-      elevation: 30
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'flex-end',
+      paddingRight: scale(8)
     },
     image: {
       width: '100%',
