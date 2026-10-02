@@ -74,6 +74,41 @@ function variations(item: BouffItem) {
   }));
 }
 
+function comboPrice(item: BouffItem): number {
+  const c = item.variations.find((x) => x.kind === "combo");
+  return c ? c.price : Number.MAX_SAFE_INTEGER;
+}
+
+// Fiche combo : seule la formule combo est proposée, au prix combo.
+function comboItem(item: BouffItem) {
+  const base = shortItem(item);
+  const combo = item.variations.find((x) => x.kind === "combo");
+  return {
+    ...base,
+    variations: base.variations.filter((x: any) => !combo || x.id === combo.id),
+  };
+}
+
+let popularCache: { at: number; ids: string[] } | null = null;
+async function popularItems(menu: BouffMenu, pool: BouffItem[], limit: number) {
+  if (!popularCache || Date.now() - popularCache.at > 5 * 60 * 1000) {
+    try {
+      const { data } = await bouffDb().rpc("popular_menu_items", { _limit: 20 });
+      popularCache = { at: Date.now(), ids: (data ?? []).map((r: any) => String(r.menu_item_id)) };
+    } catch {
+      popularCache = { at: Date.now(), ids: [] };
+    }
+  }
+  const allowed = new Set(pool.map((i) => i.id));
+  const out: BouffItem[] = [];
+  for (const id of popularCache.ids) {
+    const it = findItem(menu, id);
+    if (it && allowed.has(it.id)) out.push(it);
+  }
+  for (const it of pool) if (it.isFeatured && !out.includes(it)) out.push(it);
+  return out.slice(0, limit);
+}
+
 function shortItem(item: BouffItem) {
   return {
     id: item.id,
@@ -95,7 +130,8 @@ function categoryPayload(menu: BouffMenu) {
     _id: c.id,
     name: c.name,
     icon: null,
-    image: c.image,
+    // Pas de photo de catégorie : on prend celle du premier plat.
+    image: c.image ?? c.items.find((i) => i.image)?.image ?? null,
     description: c.description,
     itemCount: c.items.length,
     viewType: "grid",
@@ -599,18 +635,64 @@ const resolvers: Record<string, Resolver> = {
   SingleVendorDealSection: async (v) => {
     const menu = await loadMenu();
     const section = String(v.section ?? "").toUpperCase();
-    const list =
-      section === "LIMITED_TIME" || section === "POPULAR" || section === "RECOMMENDED"
-        ? menu.items.filter((i) => i.isFeatured)
-        : [];
+    const available = menu.items.filter((i) => !i.isOutOfStock);
+    let list: BouffItem[] = [];
+    if (section === "POPULAR") {
+      // BOUFF : « Les plus commandés » = ventes réelles des 30 derniers jours,
+      // complétées par les plats mis en avant tant qu'il y a peu de commandes.
+      list = await popularItems(menu, available, 10);
+    } else if (section === "COMBOS") {
+      // Plats qui ont une formule « combo », du moins cher au plus cher.
+      list = available
+        .filter((i) => i.variations.some((x) => x.kind === "combo" && !x.isOutOfStock))
+        .sort((a, b) => comboPrice(a) - comboPrice(b));
+    }
+    // LIMITED_TIME / WEEKLY / NEW_OFFERS : aucune promo n'existe encore dans la
+    // carte BOUFF, donc liste vide -> sections masquées dans l'app.
     const skip = Number(v.skip ?? 0);
     const limit = Number(v.limit ?? 20);
-    const items = list.slice(skip, skip + limit).map(shortItem);
+    const items = list.slice(skip, skip + limit).map((i) =>
+      section === "COMBOS" ? comboItem(i) : shortItem(i),
+    );
     return {
       singleVendorDeals: {
         items,
         totalCount: list.length,
         hasMore: skip + limit < list.length,
+      },
+    };
+  },
+  GetRecommendedFoods: async (v) => {
+    // BOUFF : recommandations du panier = ce qui manque pour compléter le repas.
+    // 1) une boisson si le panier n'en a pas, 2) des frites si aucune,
+    // 3) puis les plus commandés. Jamais un plat déjà dans le panier.
+    const menu = await loadMenu();
+    const inCart = new Set(getCartLines().map((l) => String(l.foodId)));
+    if (v.foodId) inCart.add(String(v.foodId));
+    const available = menu.items.filter((i) => !i.isOutOfStock && !inCart.has(i.id));
+    const catName = (i: BouffItem) =>
+      (menu.categories.find((c) => c.id === i.categoryId)?.name ?? "").toLowerCase();
+    const cartItems = menu.items.filter((i) => inCart.has(i.id));
+    const hasDrink = cartItems.some((i) => catName(i).includes("boisson"));
+    const hasFries =
+      cartItems.some((i) => catName(i).includes("frite")) ||
+      getCartLines().some((l) => {
+        const it = findItem(menu, String(l.foodId));
+        const k = it?.variations.find((x) => x.id === l.variationId)?.kind;
+        return k === "fries" || k === "combo";
+      });
+    const picks: BouffItem[] = [];
+    const add = (arr: BouffItem[]) => {
+      for (const i of arr) if (!picks.some((p) => p.id === i.id)) picks.push(i);
+    };
+    if (!hasDrink) add(available.filter((i) => catName(i).includes("boisson")).slice(0, 3));
+    if (!hasFries) add(available.filter((i) => catName(i).includes("frite")).slice(0, 2));
+    add(await popularItems(menu, available, 6));
+    const items = picks.slice(0, Number(v.limit ?? 8)).map(shortItem);
+    return {
+      getRecommendedFoods: {
+        items,
+        pagination: { totalItems: items.length, hasMore: false },
       },
     };
   },
