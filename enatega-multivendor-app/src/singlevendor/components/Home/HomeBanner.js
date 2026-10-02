@@ -6,6 +6,16 @@ import { scale, verticalScale } from '../../../utils/scaling'
 import { useNavigation } from '@react-navigation/native'
 import VideoBanner from '../../../components/Main/Banner/VideoBanner'
 import { LinearGradient } from 'expo-linear-gradient'
+import { tr } from '../../../utils/tr'
+
+// BOUFF : bannière principale intégrée, toujours en 1re position.
+// Les pubs ajoutées depuis l'admin défilent ensuite (swipe + défilement auto).
+const BOUFF_MAIN_SLIDE = {
+  id: 'bouff-main',
+  isMain: true,
+  image: require('../../../../assets/home-hero-bouff.jpg'),
+  screen: 'ProductExplorer'
+}
 
 const { width } = Dimensions.get('window')
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window')
@@ -34,7 +44,7 @@ const HomeBanner = ({ banners = [], onBannerPress, autoplay = true, autoplayDela
     buttonText: banner.buttonText
   }))
 
-  const bannersToDisplay = transformedBanners
+  const bannersToDisplay = [BOUFF_MAIN_SLIDE, ...transformedBanners]
 
   const handleBannerPress = (banner) => {
     console.log('Banner pressed:', banner)
@@ -72,9 +82,9 @@ const HomeBanner = ({ banners = [], onBannerPress, autoplay = true, autoplayDela
   const renderContent = (item) => (
     <LinearGradient
       colors={[
-        'rgba(8, 15, 7, 0.72)',
-        'rgba(8, 15, 7, 0.38)',
-        'rgba(8, 15, 7, 0.06)',
+        'rgba(0, 0, 0, 0.82)',
+        'rgba(0, 0, 0, 0.45)',
+        'rgba(0, 0, 0, 0.08)',
         'transparent'
       ]}
       locations={[0, 0.42, 0.76, 1]}
@@ -82,6 +92,17 @@ const HomeBanner = ({ banners = [], onBannerPress, autoplay = true, autoplayDela
       end={{ x: 1, y: 0.5 }}
       style={s.textOverlay}
     >
+      {item.isMain
+        ? (
+        <View style={s.textContent}>
+          <Text style={s.brandText}>BOUFF<Text style={s.brandDot}>.</Text></Text>
+          <Text style={s.sloganText}>{tr("Mange d'abord.", 'Eat first.')}</Text>
+          <TouchableOpacity style={s.detailButton} onPress={(event) => { event.stopPropagation(); handleBannerPress(item) }} activeOpacity={0.8}>
+            <Text style={s.detailButtonText}>{tr('Commander', 'Order now')}</Text>
+          </TouchableOpacity>
+        </View>
+          )
+        : (
       <View style={s.textContent}>
         {item.title && (
           <Text style={s.titleText} numberOfLines={2}>
@@ -96,9 +117,10 @@ const HomeBanner = ({ banners = [], onBannerPress, autoplay = true, autoplayDela
           }}
           activeOpacity={0.8}
         >
-          <Text style={s.detailButtonText}>{item.buttonText || 'View offer'}</Text>
+          <Text style={s.detailButtonText}>{item.buttonText || tr("Voir l'offre", 'View offer')}</Text>
         </TouchableOpacity>
       </View>
+          )}
     </LinearGradient>
   )
 
@@ -172,7 +194,7 @@ const styles = (tablet = false) => StyleSheet.create({
   },
   bannerImage: {
     width: '100%',
-    height: verticalScale(140),
+    height: verticalScale(170),
     borderRadius: 16,
     overflow: 'hidden'
   },
@@ -212,9 +234,24 @@ const styles = (tablet = false) => StyleSheet.create({
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 3
   },
+  brandText: {
+    fontSize: scale(30),
+    fontWeight: '900',
+    color: '#FFFFFF',
+    lineHeight: scale(32)
+  },
+  brandDot: {
+    color: '#FF7A1A'
+  },
+  sloganText: {
+    fontSize: scale(17),
+    fontWeight: '800',
+    color: '#FF7A1A',
+    marginTop: -verticalScale(6)
+  },
   detailButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderColor: 'rgba(255, 255, 255, 0.55)',
+    backgroundColor: '#FF7A1A',
+    borderColor: '#FF7A1A',
     borderWidth: StyleSheet.hairlineWidth,
     paddingVertical: verticalScale(7),
     paddingHorizontal: scale(13),
@@ -226,8 +263,8 @@ const styles = (tablet = false) => StyleSheet.create({
     shadowRadius: 2
   },
   detailButtonText: {
-    color: '#10200A',
-    fontSize: scale(12),
+    color: '#FFFFFF',
+    fontSize: scale(13),
     fontWeight: '700'
   },
   dealHighlightContainer: {
