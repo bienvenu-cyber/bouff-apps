@@ -32,7 +32,7 @@ function Location({
   const translatedAddress =
     location?.deliveryAddress === 'Current Location'
       ? t('currentLocation')
-      : location?.deliveryAddress
+      : location?.deliveryAddress || t('chooseDeliveryAddress', { defaultValue: i18n.language?.startsWith('en') ? 'Choose a delivery address' : 'Choisir une adresse de livraison' })
   const onLocationPress = (event) => {
 
     if (screenName === 'checkout') {

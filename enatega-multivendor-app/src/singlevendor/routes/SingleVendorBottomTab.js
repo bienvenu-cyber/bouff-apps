@@ -100,7 +100,6 @@ const SingleVendorBottomTab = () => {
             justifyContent: 'center',
             paddingRight: 0,
             overflow: 'visible',
-            transform: [{ translateY: scale(Platform.OS === 'android' ? 8 : 13) }],
             zIndex: 10
           }
         }}
