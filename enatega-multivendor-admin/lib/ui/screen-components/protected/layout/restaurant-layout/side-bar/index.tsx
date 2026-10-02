@@ -170,6 +170,13 @@ export default function MakeSidebar() {
       isClickable: true,
     },
     {
+      text: 'Escale BOUFF',
+      route: '/admin/store/escale',
+      isParent: true,
+      icon: faMoneyBillTrendUp,
+      isClickable: true,
+    },
+    {
       text: t('Reviews'),
       route: '/admin/store/ratings',
       isParent: true,
