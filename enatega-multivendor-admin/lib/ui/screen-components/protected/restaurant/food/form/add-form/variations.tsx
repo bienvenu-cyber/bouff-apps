@@ -342,18 +342,17 @@ export default function VariationAddForm({
                                               {value.discounted > 0 && (
                                                 <div className="absolute bottom-[-15px] left-[2px] font-semibold text-[10px] flex gap-2">
                                                   <p>
-                                                    {t('Actual Price')}&nbsp;:
+                                                    Prix normal&nbsp;:
                                                     &nbsp;
                                                     <span className="line-through">
-                                                      {value.price +
-                                                        value.discounted}
+                                                      {value.price} F
                                                     </span>
                                                   </p>
                                                   ,
                                                   <p>
-                                                    {t('Discounted Price')}
+                                                    Prix promo
                                                     &nbsp;: &nbsp;
-                                                    <span>{value.price}</span>
+                                                    <span>{value.price - value.discounted} F</span>
                                                   </p>
                                                 </div>
                                               )}
@@ -363,9 +362,7 @@ export default function VariationAddForm({
                                               <CustomNumberField
                                                 name={`variations[${index}].discounted`}
                                                 min={0}
-                                                placeholder={t(
-                                                  'Discount Price'
-                                                )}
+                                                placeholder="Réduction promo (FCFA, 0 = pas de promo)"
                                                 showLabel={true}
                                                 value={value.discounted}
                                                 onChangeFieldValue={

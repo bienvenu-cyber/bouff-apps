@@ -250,9 +250,12 @@ async function saveFood(input: any) {
     price: Math.round(Number(v.price) || 0),
     addons: (v.addons ?? []).filter((x: string) => /^[0-9a-f-]{36}$/i.test(x)),
     is_available: !v.isOutOfStock,
+    discount: Math.max(0, Math.round(Number(v.discounted) || 0)),
   }));
   if (variations.some((v: any) => v.price < 0)) throw new BouffError('Prix invalide.');
-  await must(
+  if (variations.some((v: any) => v.discount > 0 && v.discount >= v.price))
+    throw new BouffError('La réduction doit être inférieure au prix.');
+  const foodId = await must(
     db().rpc('admin_save_food', {
       p: {
         id: input._id || null,
@@ -266,6 +269,22 @@ async function saveFood(input: any) {
       },
     })
   );
+  // Prix promo : formules relues dans l'ordre d'enregistrement (sort_order 1..n).
+  const saved = (await must(
+    db().from('item_variants').select('id, sort_order').eq('menu_item_id', foodId as any).order('sort_order')
+  )) as any[];
+  for (let i = 0; i < variations.length; i++) {
+    const row = saved.find((r) => r.sort_order === i + 1);
+    if (!row) continue;
+    const v = variations[i];
+    await must(
+      db().rpc('admin_set_variant_promo', {
+        p_variant_id: row.id,
+        p_promo_price: v.discount > 0 ? v.price - v.discount : null,
+        p_ends_at: null,
+      } as any)
+    );
+  }
   return fullRestaurant(input.restaurant);
 }
 
