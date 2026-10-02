@@ -39,7 +39,7 @@ import { WrongAddressModal } from '../../../components/Checkout/WrongAddressModa
 import { APP_MODES } from '../../../mode/constants'
 import { getModeItem, removeModeItem, setModeItem } from '../../../mode/storage'
 import OrderSummarySkeleton from './OrderSummarySkeleton'
-import SmallOrderFeeTip from '../../components/Checkout/SmallOrderFeeTip'
+import { tr } from '../../../utils/tr'
 import WalletPayToggle from '../../components/Rewards/WalletPayToggle'
 
 const Checkout = (props) => {
@@ -85,7 +85,8 @@ const Checkout = (props) => {
   const [tipAmount, setTipAmount] = useState(0)
   const [summaryExpanded, setSummaryExpanded] = useState(false)
   const [isWrongAddressModalVisible, setIsWrongAddressModalVisible] = useState(false)
-  const [isSmallOrderFeeTipVisible, setIsSmallOrderFeeTipVisible] = useState(true)
+  // Options secondaires repliées ; ouvertes d'office si un code promo ou une heure programmée est déjà choisi.
+  const [moreOptionsOpen, setMoreOptionsOpen] = useState(Boolean(selectedSchedule))
   const [, setIsSmallOrderFeePromoVisible] = useState(false)
   const [, setIsSmallOrderFeePromoExpanded] = useState(false)
   const isSubscribed = Boolean(profile?.stripe_plan_id)
@@ -383,8 +384,11 @@ const Checkout = (props) => {
       <ScrollView style={styles().scrollView} contentContainerStyle={styles().contentContainer} showsVerticalScrollIndicator={false}>
         <FulfillmentTabs selectedMode={fulfillmentMode} onSelectMode={setFulfillmentMode} />
         {fulfillmentMode === 'delivery' && <DeliveryOptions deliveryAddress={location} onSelectAddress={() => onOpen()} leaveAtDoor={leaveAtDoor} onToggleLeaveAtDoor={setLeaveAtDoor} callOnArrival={callOnArrival} onToggleCallOnArrival={setCallOnArrival} courierInstructions={courierInstructions} onChangeCourierInstructions={setCourierInstructions} />}
+        {fulfillmentMode === 'collection' && (
         <DeliveryTimeOptions priorityDeliveryFee={priorityDeliveryFee} selectedTime={deliveryTime} onSelectTime={setDeliveryTime} mode={fulfillmentMode} scheduledTime={selectedSchedule} />
+        )}
         <PaymentSection
+          part='methods'
           paymentMethod={paymentMethod}
           isPickup={fulfillmentMode === 'collection'}
           onSelectPaymentMethod={setPaymentMethod}
@@ -404,8 +408,45 @@ const Checkout = (props) => {
           onOpenVouchers={() => navigation.navigate('Vouchers', { returnTo: 'Checkout' })}
           voucherBottomSheetRef={voucherBottomSheetRef}
         />
-        <WalletPayToggle currentTheme={currentTheme} onChange={() => recalculateSummary()} />
-        {fulfillmentMode === 'delivery' && <TipSection selectedTip={tipAmount} onSelectTip={handleTipSelection} currencySymbol={currencySymbol} />}
+        <TouchableOpacity onPress={() => setMoreOptionsOpen((v) => !v)} activeOpacity={0.7} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: scale(14), paddingHorizontal: scale(16), marginTop: scale(8), borderRadius: scale(12), borderWidth: 1, borderColor: currentTheme.borderColor || 'rgba(127,127,127,0.25)' }}>
+          <View style={{ flex: 1 }}>
+            <TextDefault textColor={currentTheme.fontMainColor} bolder>{tr('Plus d\'options', 'More options')}</TextDefault>
+            <TextDefault textColor={currentTheme.fontSecondColor} small>
+              {fulfillmentMode === 'delivery' ? tr('Code promo, portefeuille, pourboire, heure programmée', 'Promo code, wallet, tip, scheduled time') : tr('Code promo, portefeuille', 'Promo code, wallet')}
+            </TextDefault>
+          </View>
+          <AntDesign name={moreOptionsOpen ? 'up' : 'down'} size={16} color={currentTheme.fontSecondColor} />
+        </TouchableOpacity>
+        {moreOptionsOpen && (
+          <>
+        <PaymentSection
+          part='voucher'
+          paymentMethod={paymentMethod}
+          isPickup={fulfillmentMode === 'collection'}
+          onSelectPaymentMethod={setPaymentMethod}
+          selectedCard={selectedCard}
+          selectedVoucher={selectedVoucher}
+          voucherCode={voucherCode}
+          onChangeVoucherCode={setVoucherCode}
+          onApplyVoucherCode={handleApplyVoucherCode}
+          applyingVoucher={applyingCoupon}
+          onRemoveVoucher={handleRemoveVoucher}
+          onChangeCard={() => {
+            /* TODO: Navigate to payment methods */
+          }}
+          onChangeVoucher={() => {
+            /* TODO: Navigate to vouchers */
+          }}
+          onOpenVouchers={() => navigation.navigate('Vouchers', { returnTo: 'Checkout' })}
+          voucherBottomSheetRef={voucherBottomSheetRef}
+        />
+            <WalletPayToggle currentTheme={currentTheme} onChange={() => recalculateSummary()} />
+            {fulfillmentMode === 'delivery' && <TipSection selectedTip={tipAmount} onSelectTip={handleTipSelection} currencySymbol={currencySymbol} />}
+            {fulfillmentMode === 'delivery' && (
+        <DeliveryTimeOptions priorityDeliveryFee={priorityDeliveryFee} selectedTime={deliveryTime} onSelectTime={setDeliveryTime} mode={fulfillmentMode} scheduledTime={selectedSchedule} />
+            )}
+          </>
+        )}
         <View style={{ height: scale(24) }} />
       </ScrollView>
       <View style={styles(currentTheme).stickyBottomContainer}>
@@ -420,21 +461,6 @@ const Checkout = (props) => {
             : (
           <OrderSummary creditsUsed={creditsUsed} dealDiscount={dealDiscount} isCheckout={true} priorityDeliveryFee={deliveryTime === 'priority' ? priorityDeliveryFee : 0} couponDiscountAmount={couponApplied ? couponDiscountAmount : 0} minimumOrderFee={isBelowMaximumOrder ? minimumOrderFee : 0} freeDeliveriesRemaining={freeDeliveriesRemaining} subtotal={subtotal} deliveryFee={deliveryFee} serviceFee={serviceFee} deliveryDiscount={deliveryDiscount ?? 0} originalDeliveryCharges={originalDeliveryCharges} tipAmount={fulfillmentMode === 'delivery' ? tipAmount : 0} total={total} currencySymbol={currencySymbol} expanded={summaryExpanded} onToggleExpanded={() => setSummaryExpanded(!summaryExpanded)} />
               )}
-        {minimumOrderFee > 0 && isSmallOrderFeeTipVisible && (
-          <SmallOrderFeeTip
-            currencySymbol={currencySymbol}
-            minimumOrderAmount={maximumOrderAmount}
-            onClose={() => {
-              setIsSmallOrderFeeTipVisible(false)
-              if (!isSubscribed) {
-                setIsSmallOrderFeePromoVisible(true)
-                setIsSmallOrderFeePromoExpanded(true)
-              }
-            }}
-            currentTheme={currentTheme}
-            t={t}
-          />
-        )}
         {/* {minimumOrderFee > 0 && isSmallOrderFeePromoVisible && !isSubscribed && (
           <SmallOrderFeeSubscribeCard
             currentTheme={currentTheme}
