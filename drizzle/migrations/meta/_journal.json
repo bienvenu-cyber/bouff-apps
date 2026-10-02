@@ -8,6 +8,13 @@
       "when": 1790981461372,
       "tag": "0000_popular_menu_items",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790982223618,
+      "tag": "0001_variant_promo_price",
+      "breakpoints": true
     }
   ]
 }
