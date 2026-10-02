@@ -175,7 +175,8 @@ const PaymentSection = ({
   onRemoveVoucher,
   onOpenVouchers,
   voucherBottomSheetRef,
-  isPickup = false
+  isPickup = false,
+  part = 'all'
 }) => {
   const { t, i18n } = useTranslation()
   const themeContext = useContext(ThemeContext)
@@ -202,6 +203,7 @@ const PaymentSection = ({
 
   return (
     <View style={styles(currentTheme).container}>
+      {part !== 'voucher' && (<>
       <TextDefault textColor={currentTheme.fontMainColor} bolder H4 style={styles().sectionTitle}>
         {t('Payment') || 'Payment'}
       </TextDefault>
@@ -291,6 +293,8 @@ const PaymentSection = ({
         </>
       )}
 
+      </>)}
+      {part !== 'methods' && (<>
       <TouchableOpacity style={styles(currentTheme).paymentRow} onPress={() => voucherBottomSheetRef?.current?.open()} activeOpacity={0.7}>
         <View style={styles().paymentLeft}>
           <Image source={require('../../assets/images/promo-icon.png')} style={styles().paymentIcon} resizeMode='contain' />
@@ -327,6 +331,7 @@ const PaymentSection = ({
             )
           : null}
       </View>
+      </>)}
 
       {/* <View style={styles().voucherInputRow}>
         <TextInput
