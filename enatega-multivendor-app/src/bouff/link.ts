@@ -39,15 +39,19 @@ function variations(item: BouffItem) {
     id: v.id,
     _id: v.id,
     title: v.title,
-    price: v.price,
-    discounted: null,
+    // Prix normal affiché + réduction (prix promo) quand une promo est active.
+    price: v.regularPrice ?? v.price,
+    discounted: v.regularPrice > v.price ? v.price : null,
     isOutOfStock: v.isOutOfStock,
     outofstock: v.isOutOfStock,
     cartQuantity: 0,
     isSelected: v.isDefault,
-    actualUnitPrice: v.price,
+    actualUnitPrice: v.regularPrice ?? v.price,
     discountedUnitPrice: v.price,
-    deal: noDeal,
+    deal:
+      v.regularPrice > v.price
+        ? { id: `promo-${v.id}`, discountType: "FIXED", discountValue: v.regularPrice - v.price, isActive: true }
+        : noDeal,
     addons: item.optionGroups
       .filter((g) => !g.appliesToKind || g.appliesToKind === v.kind)
       .map((g) => ({
@@ -647,8 +651,11 @@ const resolvers: Record<string, Resolver> = {
         .filter((i) => i.variations.some((x) => x.kind === "combo" && !x.isOutOfStock))
         .sort((a, b) => comboPrice(a) - comboPrice(b));
     }
-    // LIMITED_TIME / WEEKLY / NEW_OFFERS : aucune promo n'existe encore dans la
-    // carte BOUFF, donc liste vide -> sections masquées dans l'app.
+    } else if (section === "LIMITED_TIME") {
+      // Promos : seulement les plats qui ont au moins une formule en prix promo actif.
+      list = available.filter((i) => i.variations.some((x) => x.regularPrice > x.price));
+    }
+    // WEEKLY / NEW_OFFERS : pas utilisées par BOUFF -> vides, donc masquées.
     const skip = Number(v.skip ?? 0);
     const limit = Number(v.limit ?? 20);
     const items = list.slice(skip, skip + limit).map((i) =>
