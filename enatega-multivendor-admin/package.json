@@ -23,6 +23,8 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@react-google-maps/api": "^2.19.3",
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.117.1",
     "autosuggest-highlight": "^3.3.4",
     "browser-image-compression": "^2.0.2",
     "chart.js": "^4.4.4",
@@ -40,8 +42,7 @@
     "react-international-phone": "^4.3.0",
     "subscriptions-transport-ws": "^0.11.0",
     "tailwind-merge": "^2.5.2",
-    "yup": "^1.6.1",
-    "@supabase/supabase-js": "^2.117.1"
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
