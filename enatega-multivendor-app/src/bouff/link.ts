@@ -650,7 +650,6 @@ const resolvers: Record<string, Resolver> = {
       list = available
         .filter((i) => i.variations.some((x) => x.kind === "combo" && !x.isOutOfStock))
         .sort((a, b) => comboPrice(a) - comboPrice(b));
-    }
     } else if (section === "LIMITED_TIME") {
       // Promos : seulement les plats qui ont au moins une formule en prix promo actif.
       list = available.filter((i) => i.variations.some((x) => x.regularPrice > x.price));
