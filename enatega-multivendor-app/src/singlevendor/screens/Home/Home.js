@@ -23,6 +23,7 @@ import SectionErrorCard from '../../components/SectionErrorCard'
 import SelectedLocation from '../../../components/Main/Location/Location'
 import RestaurantScheduleTime from '../../components/RestaurantScheduleTime/RestaurantScheduleTime'
 import DiscoveryDeals from '../../components/Home/DiscoveryDeals'
+import FloatingCartButton from '../../components/Cart/FloatingCartButton'
 import { HomeBannerSkeleton, HomeCategoriesSkeleton } from '../../components/Home/HomeSectionSkeletons'
 
 const Home = () => {
@@ -150,9 +151,12 @@ const Home = () => {
         data={error ? [] : categoriesData}
         renderItem={({ item }) => <WrapperHorizontalProductsList data={item} listTitle={item?.name} />}
         keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingBottom: 80 }}
         ListHeaderComponent={listHeader}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={spinnerColor} colors={[spinnerColor]} />}
       />
+
+      <FloatingCartButton inTab />
 
       <MainModalize modalRef={modalRef} currentTheme={currentTheme} isLoggedIn={isLoggedIn} addressIcons={addressIcons} modalHeader={modalHeader} modalFooter={modalFooter} setAddressLocation={setAddressLocation} profile={profile} location={location} />
     </SafeAreaView>
