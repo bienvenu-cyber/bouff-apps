@@ -117,17 +117,8 @@ const Home = () => {
         {isConnected
           ? (
           <>
-            {bannersLoading && !bannersData?.banners?.length
-              ? <HomeBannerSkeleton />
-              : bannersError
-                ? (
-                <SectionErrorCard
-                  compact
-                  title={t('offers', { defaultValue: 'Offers' })}
-                  onRetry={refetchBanners}
-                />
-                  )
-                : <HomeBanner banners={bannersData?.banners || []} />}
+            {/* BOUFF : la bannière principale reste visible même si les pubs ne chargent pas. */}
+            <HomeBanner banners={bannersError ? [] : (bannersData?.banners || [])} />
             {orderConfirmation}
           </>
             )
