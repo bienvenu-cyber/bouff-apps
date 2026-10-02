@@ -47,6 +47,10 @@ const LANGUAGES = [
   { code: 'zh', name: '中文', subtitle: 'Chinese' }
 ]
 
+// BOUFF : seules ces langues sont proposées ; les autres restent dans le code, masquées
+const VISIBLE_LANGUAGE_CODES = ['fr', 'en']
+const VISIBLE_LANGUAGES = LANGUAGES.filter((l) => VISIBLE_LANGUAGE_CODES.includes(l.code))
+
 const LanguageSelection = () => {
   const navigation = useNavigation()
   const { t, i18n } = useTranslation()
@@ -84,11 +88,11 @@ const LanguageSelection = () => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles(currentTheme).listContainer}>
-          {LANGUAGES.map((language) => (
+          {VISIBLE_LANGUAGES.map((language) => (
             <LanguageItem
               key={language.code}
               name={language.name}
-              subtitle={language.subtitle}
+              subtitle={language.code === 'fr' ? (i18n.language?.startsWith('en') ? 'French' : 'Français') : (i18n.language?.startsWith('en') ? 'English' : 'Anglais')}
               isSelected={selectedLanguage === language.code}
               onPress={() => handleLanguageSelect(language.code, language.name)}
               currentTheme={currentTheme}
