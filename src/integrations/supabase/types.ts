@@ -241,6 +241,8 @@ export type Database = {
           menu_item_id: string
           name: string
           price_fcfa: number
+          promo_ends_at: string | null
+          promo_price_fcfa: number | null
           sort_order: number
           updated_at: string
         }
@@ -254,6 +256,8 @@ export type Database = {
           menu_item_id: string
           name: string
           price_fcfa: number
+          promo_ends_at?: string | null
+          promo_price_fcfa?: number | null
           sort_order?: number
           updated_at?: string
         }
@@ -267,6 +271,8 @@ export type Database = {
           menu_item_id?: string
           name?: string
           price_fcfa?: number
+          promo_ends_at?: string | null
+          promo_price_fcfa?: number | null
           sort_order?: number
           updated_at?: string
         }
@@ -1520,6 +1526,30 @@ export type Database = {
         Returns: undefined
       }
       admin_save_food: { Args: { p: Json }; Returns: string }
+      admin_set_variant_promo: {
+        Args: { p_ends_at: string; p_promo_price: number; p_variant_id: string }
+        Returns: {
+          addon_ids: string[]
+          created_at: string
+          id: string
+          is_available: boolean
+          is_default: boolean
+          kind: Database["public"]["Enums"]["variant_kind"]
+          menu_item_id: string
+          name: string
+          price_fcfa: number
+          promo_ends_at: string | null
+          promo_price_fcfa: number | null
+          sort_order: number
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "item_variants"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       admin_sync_library: {
         Args: { p_restaurant_id: string }
         Returns: undefined
@@ -1649,6 +1679,10 @@ export type Database = {
           p_subtotal: number
         }
         Returns: Json
+      }
+      effective_variant_price: {
+        Args: { v: Database["public"]["Tables"]["item_variants"]["Row"] }
+        Returns: number
       }
       email_exists: { Args: { p_email: string }; Returns: boolean }
       ensure_referral_code: { Args: { p_user: string }; Returns: string }
@@ -1956,6 +1990,8 @@ export type Database = {
           menu_item_id: string
           name: string
           price_fcfa: number
+          promo_ends_at: string | null
+          promo_price_fcfa: number | null
           sort_order: number
           updated_at: string
         }

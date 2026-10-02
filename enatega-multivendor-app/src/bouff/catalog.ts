@@ -32,6 +32,7 @@ export interface BouffVariant {
   title: string;
   kind: string;
   price: number;
+  regularPrice: number;
   isDefault: boolean;
   isOutOfStock: boolean;
 }
@@ -108,6 +109,13 @@ const TTL_MS = 2 * 60_000;
 const PERSIST_KEY = "bouff/menu-cache-v2";
 const PERSIST_MAX_AGE_MS = 24 * 60 * 60_000;
 let persistedLoaded = false;
+
+function effectivePrice(v: any): number {
+  const promo = Number(v.promo_price_fcfa);
+  const ends = v.promo_ends_at ? Date.parse(v.promo_ends_at) : null;
+  if (promo > 0 && promo < v.price_fcfa && (ends === null || ends > Date.now())) return promo;
+  return v.price_fcfa;
+}
 
 export function invalidateMenu() {
   cache = null;
@@ -217,7 +225,9 @@ async function fetchMenu(): Promise<BouffMenu> {
           id: v.id,
           title: v.name,
           kind: v.kind,
-          price: v.price_fcfa,
+          // BOUFF : prix promo actif -> c'est lui qui est facturé (comme côté serveur).
+          price: effectivePrice(v),
+          regularPrice: v.price_fcfa,
           isDefault: v.is_default,
           isOutOfStock: !v.is_available || !item.is_available,
         })),

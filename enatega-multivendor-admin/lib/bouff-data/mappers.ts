@@ -68,7 +68,13 @@ export function mapFood(m: any) {
       _id: v.id,
       title: v.name,
       price: v.price_fcfa,
-      discounted: 0,
+      // BOUFF : « discounted » = réduction en FCFA (prix normal - prix promo actif).
+      discounted:
+        v.promo_price_fcfa != null &&
+        v.promo_price_fcfa < v.price_fcfa &&
+        (!v.promo_ends_at || Date.parse(v.promo_ends_at) > Date.now())
+          ? v.price_fcfa - v.promo_price_fcfa
+          : 0,
       addons: v.addon_ids ?? [],
       isOutOfStock: !v.is_available,
     })),
