@@ -19,6 +19,7 @@ import useCartStore from '../stores/useCartStore'
 import { scale } from '../../utils/scaling'
 
 const Tab = createBottomTabNavigator()
+const SHOW_BROWSE_TAB = false
 const tabIconNames = {
   SVDiscovery: 'discovery',
   SVDeals: 'deals',
@@ -137,13 +138,16 @@ const SingleVendorBottomTab = () => {
           queryType: 'grocery'
         }}
       />
-      <Tab.Screen
-        name='SVBrowse'
-        component={Browse}
-        options={{
-          tabBarLabel: t('Browse')
-        }}
-      />
+      {/* BOUFF : onglet « Explorer » masqué (carte courte, catégories déjà sur l'accueil). Ne pas supprimer. */}
+      {SHOW_BROWSE_TAB && (
+        <Tab.Screen
+          name='SVBrowse'
+          component={Browse}
+          options={{
+            tabBarLabel: t('Browse')
+          }}
+        />
+      )}
       <Tab.Screen
         name='SVProfile'
         component={SingleVendorProfileTab}

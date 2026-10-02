@@ -34,7 +34,7 @@ const WalletScreen = () => {
   const creditsHistory = creditsHistoryData?.getUserCreditsHistory ?? []
 
   const handleBrowseProducts = () => {
-    navigation.navigate('SVBrowse')
+    navigation.navigate('SVDiscovery')
   }
 
   return (

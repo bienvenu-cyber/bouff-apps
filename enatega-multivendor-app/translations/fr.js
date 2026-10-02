@@ -1077,4 +1077,6 @@ loginRequired: 'Connexion requise',
   "Active": "En cours",
   "Open Settings": "Ouvrir les réglages",
   "Current Location": "Position actuelle",
+  'Recommended for you': 'Recommandé pour toi',
+  chooseDeliveryAddress: 'Choisir une adresse de livraison'
 }

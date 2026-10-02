@@ -10,14 +10,16 @@ import useGetRecommendedFoods from './useGetRecommendedProducts';
 import HorizontalProductsList from '../HorizontalProductsList';
 
 const RecommendedProducts = ({ cartItemId }) => {
-  const { data, loading } = useGetRecommendedFoods({ foodId: cartItemId })
+  const { t } = useTranslation()
+  const { data, loading, error } = useGetRecommendedFoods({ foodId: cartItemId })
+  const items = data?.getRecommendedFoods?.items || []
 
-  console.log("recommended list data", data?.getRecommendedFoods?.items)
-  if (!loading && data?.getRecommendedFoods?.items?.length === 0 || !data) {
+  // BOUFF : rien à recommander (ou erreur) -> on masque toute la section
+  if (loading || error || items.length === 0) {
     return null
   }
 
-  return <HorizontalProductsList showSeeAll={false} listTitle='Recommended for you' ListData={data?.getRecommendedFoods?.items} isLoading={loading} containerStyles={{ paddingHorizontal: 0 }} />
+  return <HorizontalProductsList showSeeAll={false} listTitle={t('Recommended for you')} ListData={items} isLoading={false} containerStyles={{ paddingHorizontal: 0 }} />
 
 };
 

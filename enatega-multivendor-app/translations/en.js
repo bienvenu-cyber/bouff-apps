@@ -764,4 +764,6 @@ export const en = {
   "סגור": "Close",
   "reviews": "reviews",
   "product": "product",
+  'Recommended for you': 'Recommended for you',
+  chooseDeliveryAddress: 'Choose a delivery address'
 }
