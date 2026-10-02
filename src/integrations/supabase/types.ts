@@ -204,6 +204,122 @@ export type Database = {
           },
         ]
       }
+      escale_countries: {
+        Row: {
+          country: string
+          created_at: string
+          description: string | null
+          dish: string
+          flag: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          is_african: boolean
+          kitchen_base: string | null
+          restaurant_id: string
+          solo_price_fcfa: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          country: string
+          created_at?: string
+          description?: string | null
+          dish: string
+          flag?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          is_african?: boolean
+          kitchen_base?: string | null
+          restaurant_id: string
+          solo_price_fcfa?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          description?: string | null
+          dish?: string
+          flag?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          is_african?: boolean
+          kitchen_base?: string | null
+          restaurant_id?: string
+          solo_price_fcfa?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escale_countries_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escales: {
+        Row: {
+          country_id: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          ends_on: string
+          id: string
+          needs_approval: boolean
+          restaurant_id: string
+          starts_on: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          country_id: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          ends_on: string
+          id?: string
+          needs_approval?: boolean
+          restaurant_id: string
+          starts_on: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          country_id?: string
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          ends_on?: string
+          id?: string
+          needs_approval?: boolean
+          restaurant_id?: string
+          starts_on?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escales_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "escale_countries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escales_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorites: {
         Row: {
           created_at: string
@@ -1172,6 +1288,8 @@ export type Database = {
           cover_url: string | null
           created_at: string
           description: string | null
+          escale_menu_item_id: string | null
+          escale_per_month: number
           id: string
           is_active: boolean
           is_temporarily_closed: boolean
@@ -1200,6 +1318,8 @@ export type Database = {
           cover_url?: string | null
           created_at?: string
           description?: string | null
+          escale_menu_item_id?: string | null
+          escale_per_month?: number
           id?: string
           is_active?: boolean
           is_temporarily_closed?: boolean
@@ -1228,6 +1348,8 @@ export type Database = {
           cover_url?: string | null
           created_at?: string
           description?: string | null
+          escale_menu_item_id?: string | null
+          escale_per_month?: number
           id?: string
           is_active?: boolean
           is_temporarily_closed?: boolean
@@ -1245,7 +1367,15 @@ export type Database = {
           updated_at?: string
           whatsapp_number?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "restaurants_escale_menu_item_id_fkey"
+            columns: ["escale_menu_item_id"]
+            isOneToOne: false
+            referencedRelation: "menu_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reward_ledger: {
         Row: {
@@ -1484,6 +1614,28 @@ export type Database = {
         Args: { p_from?: string; p_restaurant_id?: string; p_to?: string }
         Returns: Json
       }
+      admin_escale_decide: {
+        Args: { p_action: string; p_escale_id: string }
+        Returns: {
+          country_id: string
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          ends_on: string
+          id: string
+          needs_approval: boolean
+          restaurant_id: string
+          starts_on: string
+          status: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "escales"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       admin_find_user: { Args: { p_email: string }; Returns: string }
       admin_grant_reward: {
         Args: {
@@ -1680,12 +1832,18 @@ export type Database = {
         }
         Returns: Json
       }
+      current_escale: { Args: { p_restaurant: string }; Returns: Json }
       effective_variant_price: {
         Args: { v: Database["public"]["Tables"]["item_variants"]["Row"] }
         Returns: number
       }
       email_exists: { Args: { p_email: string }; Returns: boolean }
       ensure_referral_code: { Args: { p_user: string }; Returns: string }
+      escale_dates: {
+        Args: { p_month: string; p_per_month: number }
+        Returns: string[]
+      }
+      escale_tick: { Args: never; Returns: undefined }
       is_restaurant_open: {
         Args: { p_restaurant_id: string }
         Returns: boolean
@@ -1933,6 +2091,8 @@ export type Database = {
           cover_url: string | null
           created_at: string
           description: string | null
+          escale_menu_item_id: string | null
+          escale_per_month: number
           id: string
           is_active: boolean
           is_temporarily_closed: boolean
