@@ -1734,6 +1734,13 @@ export type Database = {
         Returns: Json
       }
       points_catalog: { Args: never; Returns: Json }
+      popular_menu_items: {
+        Args: { _limit?: number }
+        Returns: {
+          menu_item_id: string
+          total_qty: number
+        }[]
+      }
       public_coupons: {
         Args: { p_restaurant: string }
         Returns: {

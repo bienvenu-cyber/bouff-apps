@@ -23,7 +23,7 @@ const styles = (currentTheme) =>
     },
     imageContainer: {
       backgroundColor: currentTheme.cardBackground,
-      borderRadius: 12,
+      borderRadius: 999, // BOUFF : catégories en ronds avec photo
       overflow: 'hidden',
       marginBottom: 8,
       shadowColor: currentTheme.shadowColor,
