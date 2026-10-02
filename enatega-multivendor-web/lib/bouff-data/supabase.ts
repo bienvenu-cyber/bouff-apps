@@ -38,7 +38,6 @@ export function bouffDb(): SupabaseClient {
         secure: window.location.protocol === "https:",
         maxAge: 60 * 60 * 24 * 7,
       },
-      auth: { detectSessionInUrl: false },
     }) as unknown as SupabaseClient;
     migrateLegacySession(client);
   }
