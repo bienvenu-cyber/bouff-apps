@@ -1,1 +1,2 @@
 - Escale BOUFF (pays du mois) is driven by the database: daily pg_cron job calls public.escale_tick(), which proposes, publishes and removes the single linked menu item (restaurants.escale_menu_item_id) — why: kitchen/admin/client apps need no special code beyond reading the menu.
+- Marketing push notifications are decided in the database: hourly pg_cron job calls public.marketing_tick(), every send goes through public.marketing_send() which enforces quiet hours, opt-in, daily/weekly caps and no-active-order — why: one place for all anti-spam rules.

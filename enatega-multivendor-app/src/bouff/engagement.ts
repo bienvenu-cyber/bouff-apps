@@ -259,3 +259,15 @@ export async function applyReferralCode(code: string): Promise<{ success: boolea
   if (error) return { success: false, message: error.message };
   return data as { success: boolean; message: string };
 }
+
+/* ------------------------- Panier (rappel unique) ------------------------- */
+
+// Signale à BOUFF le nombre d'articles du panier, pour un seul rappel 1 h après si rien n'est commandé.
+export async function touchCart(items: number) {
+  try {
+    if (!(await currentUserId())) return;
+    await bouffDb().rpc("touch_cart", { p_items: items, p_first_item: null } as any);
+  } catch {
+    // silencieux : simple confort marketing
+  }
+}

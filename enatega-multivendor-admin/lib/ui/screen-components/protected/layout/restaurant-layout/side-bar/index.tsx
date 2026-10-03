@@ -177,6 +177,13 @@ export default function MakeSidebar() {
       isClickable: true,
     },
     {
+      text: 'Notifications',
+      route: '/admin/store/notifications',
+      isParent: true,
+      icon: faMoneyBillTrendUp,
+      isClickable: true,
+    },
+    {
       text: t('Reviews'),
       route: '/admin/store/ratings',
       isParent: true,
