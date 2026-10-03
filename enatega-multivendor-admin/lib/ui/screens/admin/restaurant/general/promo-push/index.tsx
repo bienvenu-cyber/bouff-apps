@@ -8,7 +8,7 @@ type Row = { id: string; name: string; price_fcfa: number; promo_price_fcfa: num
 
 const KIND_LABELS: Record<string, string> = {
   promo: 'Promo (un clic)', birthday: 'Anniversaire', night: 'Nuit', friday: 'Vendredi soir', habit: 'Heure habituelle',
-  winback: 'Client absent', cart: 'Panier abandonné', escale_teaser: 'Escale : veille', escale_launch: 'Escale : jour J', escale_last: 'Escale : dernier jour',
+  winback: 'Client absent', cart: 'Panier abandonné', escale_teaser: 'Escale : veille', escale_live: 'Escale : jour J', escale_last: 'Escale : dernier jour',
 };
 
 export default function PromoPushScreen() {
