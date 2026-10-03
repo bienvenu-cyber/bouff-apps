@@ -18,7 +18,7 @@ const BOUFF_MAIN_SLIDE = {
 }
 
 // BOUFF : pubs maison intégrées, affichées après la bannière principale.
-const BOUFF_HOUSE_SLIDES = [
+const getHouseSlides = () => [
   { id: 'bouff-combos', image: require('../../../../assets/promo-combos.jpg'), title: tr('Nos combos, dès 2 500 F', 'Our combos, from 2,500 F'), buttonText: tr('Voir les combos', 'See combos'), screen: 'ProductExplorer' },
   { id: 'bouff-nuit', image: require('../../../../assets/promo-nuit.jpg'), title: tr('Faim à 2 h du mat ? BOUFF livre.', 'Hungry at 2 a.m.? BOUFF delivers.'), buttonText: tr('Commander', 'Order now'), screen: 'ProductExplorer' },
   { id: 'bouff-escale', image: require('../../../../assets/promo-escale.jpg'), title: tr('Escale BOUFF : ce mois-ci, on voyage', 'Escale BOUFF: this month, we travel'), buttonText: tr('Découvrir', 'Discover'), screen: 'ProductExplorer' },
@@ -54,7 +54,7 @@ const HomeBanner = ({ banners = [], onBannerPress, autoplay = true, autoplayDela
   }))
 
   // Promos de l'admin d'abord (après la principale), puis les pubs maison.
-  const bannersToDisplay = [BOUFF_MAIN_SLIDE, ...transformedBanners, ...BOUFF_HOUSE_SLIDES]
+  const bannersToDisplay = [BOUFF_MAIN_SLIDE, ...transformedBanners, ...getHouseSlides()]
 
   const handleBannerPress = (banner) => {
     console.log('Banner pressed:', banner)
