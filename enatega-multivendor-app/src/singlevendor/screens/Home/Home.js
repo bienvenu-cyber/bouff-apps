@@ -19,6 +19,7 @@ import AddressModalHeader from '../../components/Home/AddressModalHeader'
 import AddressModalFooter from '../../components/Home/AddressModalFooter'
 import OrderConfirmation from '../Checkout/OrderConfirmation'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
+import useAutoLocation from '../../hooks/useAutoLocation'
 import SectionErrorCard from '../../components/SectionErrorCard'
 import SelectedLocation from '../../../components/Main/Location/Location'
 import RestaurantScheduleTime from '../../components/RestaurantScheduleTime/RestaurantScheduleTime'
@@ -49,6 +50,7 @@ const Home = () => {
   } = useHome()
   const { refreshing, handleRefresh, spinnerColor } = usePullToRefresh([refetch])
   useCart()
+  useAutoLocation()
   const categoriesData = data?.getRestaurantCategoriesSingleVendor ?? []
 
   const navigation = useNavigation()

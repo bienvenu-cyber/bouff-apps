@@ -282,7 +282,7 @@ secureAccountWithPhone: 'Nous n’utiliserons votre numéro que si nous devons v
   SelectDeliveryDT: "Sélectionner la date et l'heure de livraison",
   viewLess: 'Voir moins',
   viewAll: 'Voir tout',
-  currentLocation: 'Emplacement actuel',
+  currentLocation: 'Ma position',
   useCurrentLocation: "Utiliser l'emplacement actuel",
   locationPermissionMessage:
     "Appuyez sur ce message pour ouvrir les paramètres, puis autorisez l'application à utiliser l'emplacement depuis les autorisations.",

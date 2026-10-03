@@ -32,7 +32,9 @@ function Location({
   const translatedAddress =
     location?.deliveryAddress === 'Current Location'
       ? t('currentLocation')
-      : location?.deliveryAddress || t('chooseDeliveryAddress', { defaultValue: i18n.language?.startsWith('en') ? 'Choose a delivery address' : 'Choisir une adresse de livraison' })
+      : location?.deliveryAddress || (screenName === 'checkout'
+        ? t('chooseDeliveryAddress', { defaultValue: i18n.language?.startsWith('en') ? 'Choose a delivery address' : 'Choisir une adresse de livraison' })
+        : 'Parakou')
   const onLocationPress = (event) => {
 
     if (screenName === 'checkout') {
