@@ -1,0 +1,1 @@
+ALTER FUNCTION public.ensure_referral_code(uuid) SET search_path = public, extensions;

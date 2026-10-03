@@ -47,7 +47,7 @@ const SESSION_KEY = 'enatega-live-activity-session-v2'
 const RETRY_DELAYS_MS = [750, 2000, 5000]
 const defaultConfiguration = {
   appGroupId: 'group.bj.bouff.app.shared',
-  appScheme: 'enategamultivendor',
+  appScheme: 'bouff',
   brandName: 'BOUFF',
   primaryColor: '#FF7A1A',
   accentColor: '#FFA921',

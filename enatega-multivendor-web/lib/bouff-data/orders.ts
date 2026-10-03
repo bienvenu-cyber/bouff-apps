@@ -95,6 +95,8 @@ export async function placeOrder(variables: Record<string, any>) {
     p_note: variables.instructions ?? variables.specialInstructions ?? null,
     p_tip_fcfa: tipFcfa,
     p_scheduled_for: scheduledFor,
+    // Le site n'affiche pas le portefeuille : ne jamais le dépenser à l'insu du client.
+    p_use_wallet: false,
   });
   if (error) throw new Error(error.message);
 

@@ -358,7 +358,10 @@ export function deliveryEta(o: any) {
   if (!Number.isFinite(ready)) return null;
   if (takeaway) return { windowStartAt: iso(ready), windowEndAt: iso(ready), readyAt: iso(ready) };
   const picked = at(o.picked_up_at);
-  const base = Number.isFinite(picked) ? picked : Math.max(ready, Date.now());
+  // Base fixe (pas l'heure courante) pour que le créneau promis ne glisse pas ;
+  // une commande programmée ne part pas avant son heure prévue moins le trajet.
+  const sched = at(o.scheduled_for) - DELIVERY_MAX * MIN;
+  const base = Number.isFinite(picked) ? picked : Math.max(ready, Number.isFinite(sched) ? sched : ready);
   return {
     windowStartAt: iso(base + DELIVERY_MIN * MIN),
     windowEndAt: iso(base + DELIVERY_MAX * MIN),
