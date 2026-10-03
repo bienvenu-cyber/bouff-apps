@@ -6,12 +6,23 @@ import { bouffDb } from '@/lib/bouff-data/supabase';
 
 type Row = { id: string; name: string; price_fcfa: number; promo_price_fcfa: number; promo_ends_at: string | null; menu_items: { name: string } | null };
 
+const KIND_LABELS: Record<string, string> = {
+  promo: 'Promo (un clic)', birthday: 'Anniversaire', night: 'Nuit', friday: 'Vendredi soir', habit: 'Heure habituelle',
+  winback: 'Client absent', cart: 'Panier abandonné', escale_teaser: 'Escale : veille', escale_launch: 'Escale : jour J', escale_last: 'Escale : dernier jour',
+};
+
 export default function PromoPushScreen() {
   const { restaurantLayoutContextData } = useContext(RestaurantLayoutContext);
   const restaurantId = restaurantLayoutContextData?.restaurantId || '';
   const [rows, setRows] = useState<Row[]>([]);
   const [busy, setBusy] = useState('');
   const [msg, setMsg] = useState('');
+  const [days, setDays] = useState(30);
+  const [stats, setStats] = useState<{ kind: string; sent: number; opened: number; ordered: number }[]>([]);
+
+  useEffect(() => {
+    bouffDb().rpc('admin_push_stats', { p_days: days } as any).then(({ data }) => setStats((data as any) ?? []));
+  }, [days]);
 
   useEffect(() => {
     if (!restaurantId) return;
@@ -43,6 +54,30 @@ export default function PromoPushScreen() {
           message par jour maximum, 2 automatiques par semaine, rien entre 22 h et 9 h (sauf nuit), rien pendant une
           commande en cours, seulement les clients qui acceptent les offres.
         </p>
+      </div>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="font-semibold">Ce qui marche</h2>
+        <select className="border rounded px-2 py-1 bg-transparent" value={days} onChange={(e) => setDays(Number(e.target.value))}>
+          <option value={7}>7 jours</option><option value={30}>30 jours</option><option value={90}>90 jours</option>
+        </select>
+      </div>
+      <p className="text-xs opacity-70">« Commandé » = le client a commandé dans les 24 h après le message.</p>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead><tr className="text-left opacity-70"><th className="py-1">Message</th><th>Envoyées</th><th>Ouvertes</th><th>Commandé</th></tr></thead>
+          <tbody>
+            {stats.length === 0 && <tr><td colSpan={4} className="py-2 opacity-70">Aucune notification envoyée sur la période.</td></tr>}
+            {stats.map((r) => {
+              const pct = (n: number) => (r.sent ? ` (${Math.round((n * 100) / r.sent)} %)` : '');
+              return (
+                <tr key={r.kind} className="border-t">
+                  <td className="py-1">{KIND_LABELS[r.kind] ?? r.kind}</td>
+                  <td>{r.sent}</td><td>{r.opened}{pct(r.opened)}</td><td>{r.ordered}{pct(r.ordered)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
       <h2 className="font-semibold">Promos en cours</h2>
       {msg && <p className="text-sm">{msg}</p>}
