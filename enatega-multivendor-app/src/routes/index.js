@@ -80,6 +80,7 @@ const MultiVendorProfileTab = props => (
 const linking = {
   prefixes: [
     Linking.createURL('/'),
+    'bouff://',
     'enategamultivendor://',
     'https://bouff-apps.vercel.app',
     'https://bouff.bj',

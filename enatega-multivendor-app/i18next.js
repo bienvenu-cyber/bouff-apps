@@ -81,7 +81,7 @@ export const languageResources = {
 i18next.use(initReactI18next).init({
   compatibilityJSON: 'v3',
   lng: 'fr', // BOUFF : français par défaut
-  fallbackLng: 'fr',
+  fallbackLng: 'en',
   resources: languageResources,
   interpolation: {
     escapeValue: false // React already escapes by default

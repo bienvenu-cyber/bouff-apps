@@ -4,7 +4,7 @@ const helperMethods = `
   // Opens Live Activity rider calls without passing them to Expo Router.
   private static func riderPhoneURL(from url: URL) -> URL? {
     guard
-      url.scheme?.lowercased() == "enategamultivendor",
+      url.scheme?.lowercased() == "bouff",
       url.host?.lowercased() == "call-rider",
       let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
       let rawPhone = components.queryItems?.first(where: { $0.name == "phone" })?.value
