@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      birthday_gifts: {
+        Row: {
+          created_at: string
+          user_id: string
+          year: number
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+          year: number
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+          year?: number
+        }
+        Relationships: []
+      }
       cart_activity: {
         Row: {
           first_item: string | null
@@ -176,6 +194,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      customer_birthdays: {
+        Row: {
+          created_at: string
+          day: number
+          month: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          day: number
+          month: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          day?: number
+          month?: number
+          user_id?: string
+        }
+        Relationships: []
       }
       delivery_zones: {
         Row: {
@@ -435,6 +474,7 @@ export type Database = {
           id: string
           kind: string
           local_day: string
+          opened_at: string | null
           ref: string
           sent_at: string
           user_id: string
@@ -444,6 +484,7 @@ export type Database = {
           id?: string
           kind: string
           local_day: string
+          opened_at?: string | null
           ref: string
           sent_at?: string
           user_id: string
@@ -453,6 +494,7 @@ export type Database = {
           id?: string
           kind?: string
           local_day?: string
+          opened_at?: string | null
           ref?: string
           sent_at?: string
           user_id?: string
@@ -1077,6 +1119,52 @@ export type Database = {
             columns: ["rider_id"]
             isOneToOne: false
             referencedRelation: "riders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      passport_stamps: {
+        Row: {
+          country_id: string
+          created_at: string
+          escale_id: string | null
+          order_id: string | null
+          user_id: string
+        }
+        Insert: {
+          country_id: string
+          created_at?: string
+          escale_id?: string | null
+          order_id?: string | null
+          user_id: string
+        }
+        Update: {
+          country_id?: string
+          created_at?: string
+          escale_id?: string | null
+          order_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "passport_stamps_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "escale_countries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "passport_stamps_escale_id_fkey"
+            columns: ["escale_id"]
+            isOneToOne: false
+            referencedRelation: "escales"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "passport_stamps_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
             referencedColumns: ["id"]
           },
         ]
@@ -1745,6 +1833,7 @@ export type Database = {
       }
       admin_my_access: { Args: never; Returns: Json }
       admin_push_promo: { Args: { p_variant_id: string }; Returns: number }
+      admin_push_stats: { Args: { p_days?: number }; Returns: Json }
       admin_remove_staff: {
         Args: {
           p_restaurant_id: string
@@ -1834,6 +1923,7 @@ export type Database = {
         }
       }
       apply_referral_code: { Args: { p_code: string }; Returns: Json }
+      birthday_tick: { Args: never; Returns: number }
       bouff_restaurant_id: { Args: never; Returns: string }
       cancel_my_order: {
         Args: { p_order_number: string; p_phone?: string }
@@ -1969,6 +2059,8 @@ export type Database = {
         Returns: boolean
       }
       marketing_tick: { Args: never; Returns: number }
+      my_birthday: { Args: never; Returns: Json }
+      my_passport: { Args: never; Returns: Json }
       my_rewards: { Args: never; Returns: Json }
       ops_tick: { Args: never; Returns: number }
       order_rider_location: {
@@ -2172,6 +2264,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      set_my_birthday: {
+        Args: { p_day: number; p_month: number }
+        Returns: Json
+      }
       set_order_location: {
         Args: { p_lat: number; p_lng: number; p_order: string; p_phone: string }
         Returns: undefined
@@ -2289,6 +2385,7 @@ export type Database = {
         Args: { p_order_number: string; p_phone: string }
         Returns: Json
       }
+      track_push_open: { Args: { p_log: string }; Returns: undefined }
       unregister_push_token: { Args: { p_token: string }; Returns: undefined }
       update_payment_status: {
         Args: {
