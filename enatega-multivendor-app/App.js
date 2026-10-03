@@ -57,6 +57,7 @@ import {
   savePendingOrderNavigation
 } from './src/mode/orderOrigin'
 import { getGoogleAuthConfigurationErrors } from './src/utils/googleAuthConfig'
+import { trackPushOpen } from './src/bouff/engagement'
 
 Notifications.setNotificationHandler({
   handleNotification: async (notification) => {
@@ -263,6 +264,7 @@ function ModeAwareApp() {
 
   // BOUFF : une notification marketing ouvre le bon écran (plat, panier, carte).
   const openMarketingTarget = (data, attempt = 0) => {
+    if (attempt === 0 && data?.logId) trackPushOpen(data.logId)
     try {
       if (data?.screen === 'product' && data?.productId) {
         navigationService.navigate('ProductDetails', { productId: data.productId })

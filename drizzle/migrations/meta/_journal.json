@@ -50,6 +50,13 @@
       "when": 1791052149105,
       "tag": "0006_ops_automation",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1791052400362,
+      "tag": "0007_push_stats_passport_birthday",
+      "breakpoints": true
     }
   ]
 }
