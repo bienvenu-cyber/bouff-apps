@@ -15,6 +15,7 @@ import { dismissSessionExpiredModal, isLogoutInProgress, setLogoutInProgress, su
 import { clearPublicToken } from '../utils/publicAccessToken'
 import { deleteToken } from '../utils/secureToken'
 import { useAppMode } from '../mode/AppModeContext'
+import { touchCart } from '../bouff/engagement'
 import { APP_MODES } from '../mode/constants'
 import {
   getModeItem,
@@ -243,6 +244,12 @@ export const UserProvider = (props) => {
         return a + b
       }, 0)
   }, [cart])
+
+  // Rappel unique de panier abandonné : on signale le nombre d'articles (après 3 s sans changement).
+  useEffect(() => {
+    const t = setTimeout(() => { touchCart(numberOfCartItems) }, 3000)
+    return () => clearTimeout(t)
+  }, [numberOfCartItems])
 
   const addCartItem = useCallback(async (_id, variation, quantity = 1, addons = [], clearFlag, specialInstructions = '') => {
     const cartItems = clearFlag ? [] : cart
