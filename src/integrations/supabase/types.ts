@@ -201,18 +201,21 @@ export type Database = {
           day: number
           month: number
           user_id: string
+          year: number | null
         }
         Insert: {
           created_at?: string
           day: number
           month: number
           user_id: string
+          year?: number | null
         }
         Update: {
           created_at?: string
           day?: number
           month?: number
           user_id?: string
+          year?: number | null
         }
         Relationships: []
       }
@@ -2264,10 +2267,12 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      set_my_birthday: {
-        Args: { p_day: number; p_month: number }
-        Returns: Json
-      }
+      set_my_birthday:
+        | { Args: { p_day: number; p_month: number }; Returns: Json }
+        | {
+            Args: { p_day: number; p_month: number; p_year: number }
+            Returns: Json
+          }
       set_order_location: {
         Args: { p_lat: number; p_lng: number; p_order: string; p_phone: string }
         Returns: undefined
