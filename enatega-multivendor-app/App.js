@@ -261,6 +261,32 @@ function ModeAwareApp() {
     })()
   }, [])
 
+  // BOUFF : une notification marketing ouvre le bon écran (plat, panier, carte).
+  const openMarketingTarget = (data, attempt = 0) => {
+    try {
+      if (data?.screen === 'product' && data?.productId) {
+        navigationService.navigate('ProductDetails', { productId: data.productId })
+      } else if (data?.screen === 'cart') {
+        navigationService.navigate('Cart')
+      } else if (data?.screen === 'referral') {
+        navigationService.navigate('ReferAFriend')
+      } else {
+        navigationService.navigate('ProductExplorer')
+      }
+    } catch {
+      // navigation pas encore prête (app qui démarre) : on réessaie un peu plus tard
+      if (attempt < 10) setTimeout(() => openMarketingTarget(data, attempt + 1), 500)
+    }
+  }
+
+  // App ouverte depuis une notification alors qu'elle était fermée
+  useEffect(() => {
+    Notifications.getLastNotificationResponseAsync?.().then((response) => {
+      const data = response?.notification?.request?.content?.data
+      if (data?.type === 'marketing') openMarketingTarget(data)
+    }).catch(() => {})
+  }, [])
+
   // For Push Notification
   useEffect(() => {
     const notifSub  = Notifications.addNotificationReceivedListener((notification) => {
@@ -281,6 +307,11 @@ function ModeAwareApp() {
           setOrderId(id)
           reviewModalRef?.current?.open()
         }
+        return
+      }
+
+      if (data?.type === 'marketing') {
+        openMarketingTarget(data)
         return
       }
 

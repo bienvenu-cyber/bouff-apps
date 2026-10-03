@@ -380,6 +380,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["variant_kind"]
           menu_item_id: string
           name: string
+          out_of_stock_at: string | null
           price_fcfa: number
           promo_ends_at: string | null
           promo_price_fcfa: number | null
@@ -395,6 +396,7 @@ export type Database = {
           kind?: Database["public"]["Enums"]["variant_kind"]
           menu_item_id: string
           name: string
+          out_of_stock_at?: string | null
           price_fcfa: number
           promo_ends_at?: string | null
           promo_price_fcfa?: number | null
@@ -410,6 +412,7 @@ export type Database = {
           kind?: Database["public"]["Enums"]["variant_kind"]
           menu_item_id?: string
           name?: string
+          out_of_stock_at?: string | null
           price_fcfa?: number
           promo_ends_at?: string | null
           promo_price_fcfa?: number | null
@@ -468,6 +471,7 @@ export type Database = {
           is_available: boolean
           is_featured: boolean
           name: string
+          out_of_stock_at: string | null
           restaurant_id: string
           sort_order: number
           updated_at: string
@@ -483,6 +487,7 @@ export type Database = {
           is_available?: boolean
           is_featured?: boolean
           name: string
+          out_of_stock_at?: string | null
           restaurant_id: string
           sort_order?: number
           updated_at?: string
@@ -498,6 +503,7 @@ export type Database = {
           is_available?: boolean
           is_featured?: boolean
           name?: string
+          out_of_stock_at?: string | null
           restaurant_id?: string
           sort_order?: number
           updated_at?: string
@@ -622,6 +628,21 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ops_alert_log: {
+        Row: {
+          created_at: string
+          key: string
+        }
+        Insert: {
+          created_at?: string
+          key: string
+        }
+        Update: {
+          created_at?: string
+          key?: string
+        }
+        Relationships: []
       }
       option_groups: {
         Row: {
@@ -1744,6 +1765,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["variant_kind"]
           menu_item_id: string
           name: string
+          out_of_stock_at: string | null
           price_fcfa: number
           promo_ends_at: string | null
           promo_price_fcfa: number | null
@@ -1888,6 +1910,7 @@ export type Database = {
         Returns: Json
       }
       current_escale: { Args: { p_restaurant: string }; Returns: Json }
+      daily_ops_tick: { Args: never; Returns: undefined }
       effective_variant_price: {
         Args: { v: Database["public"]["Tables"]["item_variants"]["Row"] }
         Returns: number
@@ -1937,6 +1960,7 @@ export type Database = {
         Args: {
           p_body: string
           p_capped?: boolean
+          p_data?: Json
           p_kind: string
           p_ref: string
           p_title: string
@@ -1946,6 +1970,7 @@ export type Database = {
       }
       marketing_tick: { Args: never; Returns: number }
       my_rewards: { Args: never; Returns: Json }
+      ops_tick: { Args: never; Returns: number }
       order_rider_location: {
         Args: { p_order: string; p_phone?: string }
         Returns: Json
@@ -2011,6 +2036,15 @@ export type Database = {
           title: string
           value: number
         }[]
+      }
+      push_users: {
+        Args: {
+          p_body: string
+          p_data: Json
+          p_title: string
+          p_users: string[]
+        }
+        Returns: number
       }
       record_payment_intent: {
         Args: {
@@ -2126,6 +2160,7 @@ export type Database = {
           is_available: boolean
           is_featured: boolean
           name: string
+          out_of_stock_at: string | null
           restaurant_id: string
           sort_order: number
           updated_at: string
@@ -2216,6 +2251,7 @@ export type Database = {
           kind: Database["public"]["Enums"]["variant_kind"]
           menu_item_id: string
           name: string
+          out_of_stock_at: string | null
           price_fcfa: number
           promo_ends_at: string | null
           promo_price_fcfa: number | null
@@ -2228,6 +2264,13 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      staff_ids: {
+        Args: {
+          p_restaurant: string
+          p_roles: Database["public"]["Enums"]["app_role"][]
+        }
+        Returns: string[]
       }
       submit_order_review: {
         Args: {

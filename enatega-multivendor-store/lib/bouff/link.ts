@@ -359,14 +359,24 @@ const resolvers: Record<string, Resolver> = {
       },
     };
   },
-  saveRestaurantToken: async (v) => ({
+  saveRestaurantToken: async (v) => {
+    // BOUFF : enregistre le téléphone de la cuisine pour les alertes (commande en attente, pas de livreur, bilan du soir).
+    if (v.token) {
+      try {
+        await bouffDb().rpc("register_push_token", { p_token: v.token, p_platform: "kitchen" });
+      } catch {
+        // l'app continue même sans alerte
+      }
+    }
+    return {
     saveRestaurantToken: {
       __typename: "Restaurant",
       _id: await restaurantId(),
       notificationToken: v.token ?? null,
       enableNotification: v.isEnabled ?? true,
     },
-  }),
+  };
+  },
   UpdateTimings: async (v) => {
     // Un seul créneau par restaurant pour l'instant : on prend le premier jour renseigné.
     const rid = await restaurantId();
