@@ -44,7 +44,7 @@ const DeliveryTimeOptions = ({ selectedTime, onSelectTime, priorityDeliveryFee, 
     {
       id: 'standard',
       title: mode === 'collection' ? (t('Immediate') || 'Immediate') : (t('Now') || 'Maintenant'),
-      subtitle: mode === 'collection' ? (t('2-5 Min abholbereit') || '2-5 Min abholbereit') : (t('under 35 minutes') || 'under 35 minutes')
+      subtitle: mode === 'collection' ? (i18n.language?.startsWith('en') ? 'Ready in 10-15 min' : 'Prêt en 10-15 min') : (i18n.language?.startsWith('en') ? 'About 30-45 min' : 'Environ 30-45 min')
     },
     {
       id: 'schedule',
@@ -113,7 +113,8 @@ const DeliveryTimeOptions = ({ selectedTime, onSelectTime, priorityDeliveryFee, 
       </TextDefault>
 
       {timeOptions.map((option) => {
-        if (mode === 'collection' && option.id === 'priority') return null
+        // BOUFF : pas de livraison prioritaire payante -> option masquée (sinon chargement sans fin).
+        if (option.id === 'priority' && (mode === 'collection' || !priorityDeliveryFee)) return null
         return (
           <TouchableOpacity key={option.id} style={[styles(currentTheme).optionCard, selectedTime === option.id && styles(currentTheme).optionCardSelected]} onPress={() => handleTimeSelect(option.id)} activeOpacity={0.7}>
             <View style={styles().radioButton}>

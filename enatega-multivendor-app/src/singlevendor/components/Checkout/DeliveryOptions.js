@@ -62,67 +62,7 @@ const DeliveryOptions = ({
         />
       </TouchableOpacity>
 
-      {/* Leave at the door */}
-      <View style={styles(currentTheme).optionRow}>
-        <MaterialIcons
-          name="door-front"
-          size={22}
-          color={currentTheme.fontSecondColor}
-          style={styles().rowIcon}
-        />
-        <View style={styles().optionContent}>
-          <TextDefault
-            textColor={currentTheme.fontMainColor}
-            isRTL
-            bold
-            h5
-          >
-            {t('Leave at the door') || 'Leave at the door'}
-          </TextDefault>
-          <TextDefault
-            textColor={currentTheme.fontSecondColor}
-            small
-            isRTL
-          >
-            {t('After drop-off, responsibility for the delivery and the condition of the goods passes to the customer.')}
-          </TextDefault>
-        </View>
-        <Switch
-          value={leaveAtDoor}
-          onValueChange={onToggleLeaveAtDoor}
-          trackColor={{ false: currentTheme.gray200, true: currentTheme.singleVendorBrand }}
-          thumbColor="#fff"
-          style={styles().switch}
-        />
-      </View>
-
-      {/* Call when you arrive */}
-      <View style={styles(currentTheme).optionRow}>
-        <Feather
-          name="phone-call"
-          size={21}
-          color={currentTheme.fontSecondColor}
-          style={styles().rowIcon}
-        />
-        <View style={styles().optionContent}>
-          <TextDefault
-            textColor={currentTheme.fontMainColor}
-            isRTL
-            bold
-            h5
-          >
-            {t('Call when you arrive') || 'Call when you arrive'}
-          </TextDefault>
-        </View>
-        <Switch
-          value={callOnArrival}
-          onValueChange={onToggleCallOnArrival}
-          trackColor={{ false: currentTheme.gray200, true: currentTheme.singleVendorBrand }}
-          thumbColor="#fff"
-          style={styles().switch}
-        />
-      </View>
-
+      {/* BOUFF : « Laisser devant la porte » masqué ; « Appeler à l'arrivée » toujours actif. */}
       {/* Instructions for courier */}
       <View style={styles(currentTheme).instructionsContainer}>
         <Feather
