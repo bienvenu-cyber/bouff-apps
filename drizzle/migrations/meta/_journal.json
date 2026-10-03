@@ -64,6 +64,13 @@
       "when": 1791052684838,
       "tag": "0008_birthday_with_year",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791052760692,
+      "tag": "0009_passport_reward_free_delivery",
+      "breakpoints": true
     }
   ]
 }
