@@ -29,6 +29,13 @@
       "when": 1791041075809,
       "tag": "0003_fix_referral_code_search_path",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791049987380,
+      "tag": "0004_smart_marketing_push",
+      "breakpoints": true
     }
   ]
 }

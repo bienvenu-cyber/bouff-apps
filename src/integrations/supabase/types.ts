@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      cart_activity: {
+        Row: {
+          first_item: string | null
+          items: number
+          reminded: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          first_item?: string | null
+          items?: number
+          reminded?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          first_item?: string | null
+          items?: number
+          reminded?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -401,6 +425,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      marketing_push_log: {
+        Row: {
+          capped: boolean
+          id: string
+          kind: string
+          local_day: string
+          ref: string
+          sent_at: string
+          user_id: string
+        }
+        Insert: {
+          capped?: boolean
+          id?: string
+          kind: string
+          local_day: string
+          ref: string
+          sent_at?: string
+          user_id: string
+        }
+        Update: {
+          capped?: boolean
+          id?: string
+          kind?: string
+          local_day?: string
+          ref?: string
+          sent_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       menu_items: {
         Row: {
@@ -1669,6 +1723,7 @@ export type Database = {
         }[]
       }
       admin_my_access: { Args: never; Returns: Json }
+      admin_push_promo: { Args: { p_variant_id: string }; Returns: number }
       admin_remove_staff: {
         Args: {
           p_restaurant_id: string
@@ -1878,6 +1933,18 @@ export type Database = {
         }
         Returns: undefined
       }
+      marketing_send: {
+        Args: {
+          p_body: string
+          p_capped?: boolean
+          p_kind: string
+          p_ref: string
+          p_title: string
+          p_user: string
+        }
+        Returns: boolean
+      }
+      marketing_tick: { Args: never; Returns: number }
       my_rewards: { Args: never; Returns: Json }
       order_rider_location: {
         Args: { p_order: string; p_phone?: string }
@@ -2170,6 +2237,10 @@ export type Database = {
           p_rating: number
         }
         Returns: Json
+      }
+      touch_cart: {
+        Args: { p_first_item?: string; p_items: number }
+        Returns: undefined
       }
       track_order: {
         Args: { p_order_number: string; p_phone: string }
