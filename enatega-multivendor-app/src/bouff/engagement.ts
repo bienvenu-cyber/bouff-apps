@@ -263,6 +263,39 @@ export async function applyReferralCode(code: string): Promise<{ success: boolea
 /* ------------------------- Panier (rappel unique) ------------------------- */
 
 // Signale à BOUFF le nombre d'articles du panier, pour un seul rappel 1 h après si rien n'est commandé.
+/* ---------------- Statistiques, Passport, anniversaire ---------------- */
+
+export async function trackPushOpen(logId: string) {
+  try {
+    if (!(await currentUserId())) return;
+    await bouffDb().rpc("track_push_open", { p_log: logId } as any);
+  } catch {
+    // silencieux
+  }
+}
+
+export type BouffPassport = { goal: number; reward_fcfa: number; stamps: { country: string; flag: string; dish: string; at: string }[] };
+
+export async function myPassport(): Promise<BouffPassport | null> {
+  if (!(await currentUserId())) return null;
+  const { data, error } = await bouffDb().rpc("my_passport");
+  if (error) throw new Error(error.message);
+  return data as any;
+}
+
+export async function myBirthday(): Promise<{ month: number; day: number } | null> {
+  if (!(await currentUserId())) return null;
+  const { data, error } = await bouffDb().rpc("my_birthday");
+  if (error) throw new Error(error.message);
+  return (data as any) ?? null;
+}
+
+export async function setMyBirthday(month: number, day: number) {
+  const { data, error } = await bouffDb().rpc("set_my_birthday", { p_month: month, p_day: day } as any);
+  if (error) throw new Error(error.message);
+  return data as any;
+}
+
 export async function touchCart(items: number) {
   try {
     if (!(await currentUserId())) return;
