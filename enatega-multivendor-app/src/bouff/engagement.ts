@@ -283,15 +283,15 @@ export async function myPassport(): Promise<BouffPassport | null> {
   return data as any;
 }
 
-export async function myBirthday(): Promise<{ month: number; day: number } | null> {
+export async function myBirthday(): Promise<{ month: number; day: number; year?: number } | null> {
   if (!(await currentUserId())) return null;
   const { data, error } = await bouffDb().rpc("my_birthday");
   if (error) throw new Error(error.message);
   return (data as any) ?? null;
 }
 
-export async function setMyBirthday(month: number, day: number) {
-  const { data, error } = await bouffDb().rpc("set_my_birthday", { p_month: month, p_day: day } as any);
+export async function setMyBirthday(month: number, day: number, year: number) {
+  const { data, error } = await bouffDb().rpc("set_my_birthday", { p_month: month, p_day: day, p_year: year } as any);
   if (error) throw new Error(error.message);
   return data as any;
 }
