@@ -16,6 +16,8 @@ import { formatDateTime } from '../../../utils/formatDateTime'
 import FreeDeliveriesCountCard from '../../components/FreeDeliveries/FreeDeliveriesCountCard'
 import { usePullToRefresh } from '../../hooks/usePullToRefresh'
 import PointsCard from '../../components/Rewards/PointsCard'
+import PassportCard from '../../components/Rewards/PassportCard'
+import BirthdayCard from '../../components/Rewards/BirthdayCard'
 
 const WalletScreen = () => {
   const navigation = useNavigation()
@@ -69,6 +71,8 @@ const WalletScreen = () => {
         </View>
 
         <PointsCard currentTheme={currentTheme} refreshKey={refreshing} />
+        <PassportCard currentTheme={currentTheme} refreshKey={refreshing} />
+        <BirthdayCard currentTheme={currentTheme} />
 
         <FreeDeliveriesCountCard currentTheme={currentTheme} style={styles(currentTheme).walletFreeDeliveriesCard} />
 
