@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import TextDefault from '../../../components/Text/TextDefault/TextDefault'
 import { myPassport } from '../../../bouff/engagement'
 
-// BOUFF Passport : un tampon par pays d'Escale goûté, un combo offert tous les 5 pays.
+// BOUFF Passport : un tampon par pays d'Escale goûté, une livraison offerte tous les 5 pays.
 const PassportCard = ({ currentTheme, refreshKey }) => {
   const [data, setData] = useState(null)
   useEffect(() => {
@@ -31,7 +31,7 @@ const PassportCard = ({ currentTheme, refreshKey }) => {
         ))}
       </View>
       <TextDefault textColor={muted} small>
-        Goûte le plat de chaque Escale BOUFF pour gagner un tampon. Encore {left} pays et on t’offre un combo (2 500 F dans ton portefeuille).
+        Goûte le plat de chaque Escale BOUFF pour gagner un tampon. Encore {left} pays et ta prochaine livraison est offerte.
       </TextDefault>
     </View>
   )
