@@ -75,7 +75,7 @@ const Checkout = (props) => {
   // State management
   const [fulfillmentMode, setFulfillmentMode] = useState('delivery') // 'delivery' or 'collection'
   const [leaveAtDoor, setLeaveAtDoor] = useState(false)
-  const [callOnArrival, setCallOnArrival] = useState(false)
+  const [callOnArrival, setCallOnArrival] = useState(true) // BOUFF : le livreur appelle toujours à l'arrivée
   const [courierInstructions, setCourierInstructions] = useState('')
   const [deliveryTime, setDeliveryTime] = useState(selectedSchedule ? 'schedule' : 'standard') // 'priority', 'standard', 'schedule'
   const [paymentMethod, setPaymentMethod] = useState('COD') // 'card' or 'voucher'
@@ -408,11 +408,12 @@ const Checkout = (props) => {
           onOpenVouchers={() => navigation.navigate('Vouchers', { returnTo: 'Checkout' })}
           voucherBottomSheetRef={voucherBottomSheetRef}
         />
+        {fulfillmentMode === 'delivery' && <TipSection selectedTip={tipAmount} onSelectTip={setTipAmount} currencySymbol={currencySymbol} />}
         <TouchableOpacity onPress={() => setMoreOptionsOpen((v) => !v)} activeOpacity={0.7} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: scale(14), paddingHorizontal: scale(16), marginTop: scale(8), borderRadius: scale(12), borderWidth: 1, borderColor: currentTheme.borderColor || 'rgba(127,127,127,0.25)' }}>
           <View style={{ flex: 1 }}>
             <TextDefault textColor={currentTheme.fontMainColor} bolder>{tr('Plus d\'options', 'More options')}</TextDefault>
             <TextDefault textColor={currentTheme.fontSecondColor} small>
-              {fulfillmentMode === 'delivery' ? tr('Code promo, portefeuille, pourboire, heure programmée', 'Promo code, wallet, tip, scheduled time') : tr('Code promo, portefeuille', 'Promo code, wallet')}
+              {fulfillmentMode === 'delivery' ? tr('Code promo, portefeuille, heure programmée', 'Promo code, wallet, scheduled time') : tr('Code promo, portefeuille', 'Promo code, wallet')}
             </TextDefault>
           </View>
           <AntDesign name={moreOptionsOpen ? 'up' : 'down'} size={16} color={currentTheme.fontSecondColor} />
@@ -441,7 +442,6 @@ const Checkout = (props) => {
           voucherBottomSheetRef={voucherBottomSheetRef}
         />
             <WalletPayToggle currentTheme={currentTheme} onChange={() => recalculateSummary()} />
-            {fulfillmentMode === 'delivery' && <TipSection selectedTip={tipAmount} onSelectTip={handleTipSelection} currencySymbol={currencySymbol} />}
             {fulfillmentMode === 'delivery' && (
         <DeliveryTimeOptions priorityDeliveryFee={priorityDeliveryFee} selectedTime={deliveryTime} onSelectTime={setDeliveryTime} mode={fulfillmentMode} scheduledTime={selectedSchedule} />
             )}
