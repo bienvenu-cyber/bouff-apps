@@ -34,6 +34,8 @@ import { LocationPermissionComp } from "@/lib/ui/useable-components";
 import AnimatedSplashScreen from "@/lib/ui/useable-components/splash/AnimatedSplashScreen";
 import UnavailableStatus from "@/lib/ui/useable-components/unavailable-status";
 import StartupErrorBoundary from "@/lib/ui/useable-components/startup-error-boundary";
+import StartupTraceOverlay from "@/lib/ui/useable-components/startup-trace-overlay";
+import { traceStartup } from "@/lib/utils/startup-trace";
 import { requestMediaLibraryPermissionsAsync } from "expo-image-picker";
 import { useEffect, useState } from "react";
 
@@ -89,6 +91,12 @@ function ModeAwareApp({ fontsLoaded }: { fontsLoaded: boolean }) {
 
   const appReady = fontsLoaded && modeReady && isPublicTokenReady;
 
+  useEffect(() => {
+    traceStartup(
+      `polices=${fontsLoaded ? "ok" : "..."} mode=${modeReady ? mode : "..."} jeton=${isPublicTokenReady ? "ok" : "..."}`,
+    );
+  }, [fontsLoaded, modeReady, isPublicTokenReady, mode]);
+
   return (
     <AnimatedSplashScreen ready={appReady}>
       {appReady ? (
@@ -131,6 +139,7 @@ function RootLayout() {
   useEffect(() => {
     const previousHandler = ErrorUtils.getGlobalHandler?.();
     ErrorUtils.setGlobalHandler((error, isFatal) => {
+      traceStartup(`ERREUR${isFatal ? " fatale" : ""}: ${error?.message ?? error}`);
       if (__DEV__) {
         console.log("Global Error Caught:", { error, isFatal });
       }
@@ -148,6 +157,7 @@ function RootLayout() {
       <RiderModeProvider>
         <AppThemeProvidor>
           <ModeAwareApp fontsLoaded={loaded} />
+          <StartupTraceOverlay />
         </AppThemeProvidor>
       </RiderModeProvider>
     </StartupErrorBoundary>
