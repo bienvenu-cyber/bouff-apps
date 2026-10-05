@@ -33,6 +33,7 @@ import RootStackLayout from "@/lib/ui/layouts/root-layout";
 import { LocationPermissionComp } from "@/lib/ui/useable-components";
 import AnimatedSplashScreen from "@/lib/ui/useable-components/splash/AnimatedSplashScreen";
 import UnavailableStatus from "@/lib/ui/useable-components/unavailable-status";
+import StartupErrorBoundary from "@/lib/ui/useable-components/startup-error-boundary";
 import { requestMediaLibraryPermissionsAsync } from "expo-image-picker";
 import { useEffect, useState } from "react";
 
@@ -143,11 +144,13 @@ function RootLayout() {
   }, []);
 
   return (
-    <RiderModeProvider>
-      <AppThemeProvidor>
-        <ModeAwareApp fontsLoaded={loaded} />
-      </AppThemeProvidor>
-    </RiderModeProvider>
+    <StartupErrorBoundary>
+      <RiderModeProvider>
+        <AppThemeProvidor>
+          <ModeAwareApp fontsLoaded={loaded} />
+        </AppThemeProvidor>
+      </RiderModeProvider>
+    </StartupErrorBoundary>
   );
 }
 
