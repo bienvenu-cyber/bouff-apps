@@ -41,13 +41,12 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({
           ),
         ]);
         traceStartup(`auth: jeton ${storedToken ? "trouvé" : "absent"}`);
-      } catch (e) {
-        traceStartup(`auth: erreur ${(e as Error)?.message}`);
-        throw e;
 
         if (isMounted && storedToken) {
           setToken(storedToken);
         }
+      } catch (e) {
+        traceStartup(`auth: erreur ${(e as Error)?.message}`);
       } finally {
         if (isMounted) {
           setIsAuthReady(true);
