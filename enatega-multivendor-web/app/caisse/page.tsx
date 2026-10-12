@@ -324,7 +324,7 @@ function Register({
                 </button>
               ))}
           </nav>
-          <div className="grid flex-1 auto-rows-min grid-cols-2 gap-3 overflow-y-auto p-4 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid flex-1 auto-rows-min grid-cols-2 gap-4 overflow-y-auto p-5 lg:grid-cols-3">
             {items.map((item) => {
               const prices = item.variations.map((v) => v.price);
               const from = prices.length ? Math.min(...prices) : 0;
@@ -337,13 +337,13 @@ function Register({
                 >
                   {item.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.image} alt="" className="h-28 w-full object-cover" loading="lazy" />
+                    <img src={item.image} alt="" className="h-44 w-full object-cover xl:h-52" loading="lazy" />
                   ) : (
-                    <div className="h-28 w-full bg-bouff-surface-raised" />
+                    <div className="h-44 w-full bg-bouff-surface-raised xl:h-52" />
                   )}
-                  <div className="p-3">
-                    <p className="font-semibold leading-tight">{item.title}</p>
-                    <p className="mt-1 text-bouff-primary">
+                  <div className="p-4">
+                    <p className="text-xl font-semibold leading-tight">{item.title}</p>
+                    <p className="mt-1 text-lg text-bouff-primary">
                       {item.isOutOfStock ? "Rupture" : `${prices.length > 1 ? "dès " : ""}${fcfa(from)}`}
                     </p>
                   </div>
