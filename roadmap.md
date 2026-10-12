@@ -33,6 +33,9 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 - [x] Back-office : restaurants, carte, comptes de l'équipe, livreurs, commissions, statistiques branchés — à tester en ligne
 - [ ] Retirer les adresses de serveurs Enatega écrites en dur — fait pour livreur et cuisine ; reste app client (à faire avec test sur téléphone)
 
+- [x] Caisse comptoir sur le site (/caisse) : code par caissière, sur place / à emporter, espèces ou MoMo, envoi en cuisine ; caissières gérées dans l'admin
+- [ ] Acheter la tablette du comptoir et créer les codes des caissières
+
 ## Déjà disponible côté base (rien à refaire)
 - [x] Prise de commande avec total, frais de zone et commission recalculés côté base
 - [x] Suivi de commande sans compte (numéro + téléphone)
