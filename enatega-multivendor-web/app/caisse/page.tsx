@@ -381,9 +381,9 @@ function Register({
         </div>
       </header>
 
-      <div className="flex min-h-0 flex-1">
+      <div className="flex min-h-0 flex-1 flex-col md:flex-row">
         {/* Produits */}
-        <section className="flex min-h-0 flex-[2] flex-col">
+        <section className="flex min-h-0 min-w-0 flex-1 flex-col">
           <nav className="flex shrink-0 gap-2 overflow-x-auto border-b border-bouff-line px-4 py-3">
             {tabs.map((c) => (
                 <button
@@ -397,7 +397,7 @@ function Register({
                 </button>
               ))}
           </nav>
-          <div className="grid flex-1 auto-rows-min grid-cols-2 gap-4 overflow-y-auto p-5 lg:grid-cols-3">
+          <div className="grid flex-1 auto-rows-min grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-3 overflow-y-auto p-3 sm:gap-4 sm:p-5 xl:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             {items.map((item) => {
               const prices = item.variations.filter((v) => !comboTab || v.kind === COMBO_KIND).map((v) => v.price);
               const from = prices.length ? Math.min(...prices) : 0;
@@ -406,17 +406,17 @@ function Register({
                   key={item.id}
                   onClick={() => tapItem(item, comboTab ? COMBO_KIND : undefined)}
                   disabled={item.isOutOfStock}
-                  className="flex flex-col overflow-hidden rounded-bouff-lg border border-bouff-line bg-bouff-surface text-left transition active:scale-95 disabled:opacity-40"
+                  className="flex min-w-0 flex-col overflow-hidden rounded-bouff-lg border border-bouff-line bg-bouff-surface text-left transition active:scale-95 disabled:opacity-40"
                 >
                   {item.image ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.image} alt="" className="h-44 w-full object-cover xl:h-52" loading="lazy" />
+                    <img src={item.image} alt="" className="aspect-[4/3] w-full object-cover" loading="lazy" />
                   ) : (
-                    <div className="h-44 w-full bg-bouff-surface-raised xl:h-52" />
+                    <div className="aspect-[4/3] w-full bg-bouff-surface-raised" />
                   )}
-                  <div className="p-4">
-                    <p className="text-xl font-semibold leading-tight">{item.title}</p>
-                    <p className="mt-1 text-lg text-bouff-primary">
+                  <div className="p-3 lg:p-4">
+                    <p className="line-clamp-2 text-base font-semibold leading-tight lg:text-xl">{item.title}</p>
+                    <p className="mt-1 text-base text-bouff-primary lg:text-lg">
                       {item.isOutOfStock ? "Rupture" : `${prices.length > 1 ? "dès " : ""}${fcfa(from)}`}
                     </p>
                   </div>
@@ -427,7 +427,7 @@ function Register({
         </section>
 
         {/* Ticket */}
-        <aside className="flex min-h-0 w-[380px] shrink-0 flex-col border-l border-bouff-line bg-bouff-surface">
+        <aside className="flex max-h-[55vh] min-h-0 w-full shrink-0 flex-col border-t border-bouff-line md:max-h-none md:w-[clamp(300px,32vw,400px)] md:border-t-0 md:border-l border-bouff-line bg-bouff-surface">
           <div className="grid grid-cols-2 gap-2 p-4">
             {[
               { v: true, label: "Sur place" },
@@ -436,7 +436,7 @@ function Register({
               <button
                 key={o.label}
                 onClick={() => setDineIn(o.v)}
-                className={`rounded-bouff-md py-3 text-lg font-semibold ${
+                className={`min-w-0 truncate rounded-bouff-md px-2 py-3 text-base font-semibold lg:text-lg ${
                   dineIn === o.v ? "bg-bouff-primary text-bouff-on-primary" : "bg-bouff-surface-raised"
                 }`}
               >
@@ -467,38 +467,38 @@ function Register({
           </div>
 
           <div className="space-y-3 border-t border-bouff-line p-4">
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
               <input
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
                 placeholder="Prénom (facultatif)"
-                className="rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2"
+                className="w-full min-w-0 rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2"
               />
               <input
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
                 placeholder="N° pour ses points"
                 inputMode="tel"
-                className="rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2"
+                className="w-full min-w-0 rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2"
               />
             </div>
             <div className="flex items-baseline justify-between">
               <span className="text-lg text-bouff-text-muted">Total</span>
-              <span className="font-bouff-display text-4xl">{fcfa(total)}</span>
+              <span className="font-bouff-display text-3xl lg:text-4xl">{fcfa(total)}</span>
             </div>
             {error && <p className="text-bouff-danger">{error}</p>}
             <div className="grid grid-cols-2 gap-2">
               <button
                 disabled={!lines.length || busy}
                 onClick={() => setConfirmPay("cash")}
-                className="rounded-bouff-md bg-bouff-primary py-4 text-xl font-bold text-bouff-on-primary disabled:opacity-40"
+                className="min-w-0 rounded-bouff-md bg-bouff-primary py-4 text-lg font-bold lg:text-xl text-bouff-on-primary disabled:opacity-40"
               >
                 Espèces
               </button>
               <button
                 disabled={!lines.length || busy}
                 onClick={() => setConfirmPay("mobile_money")}
-                className="rounded-bouff-md border-2 border-bouff-primary py-4 text-xl font-bold text-bouff-primary disabled:opacity-40"
+                className="min-w-0 rounded-bouff-md border-2 border-bouff-primary py-4 text-lg font-bold lg:text-xl text-bouff-primary disabled:opacity-40"
               >
                 MoMo
               </button>
