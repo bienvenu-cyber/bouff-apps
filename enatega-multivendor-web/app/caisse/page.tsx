@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { bouffDb } from "@/lib/bouff-data/supabase";
 import { loadMenu, type BouffItem, type BouffMenu, type BouffVariant } from "@/lib/bouff-data/catalog";
 import {
   checkCounterSession,
@@ -25,6 +26,33 @@ interface TicketLine {
   optionNames: string[];
   unit: number;
   quantity: number;
+}
+
+// Ticket en cours gardé sur la tablette : une actualisation ne vide plus la commande.
+const TICKET_KEY = "bouff/counter-ticket";
+interface SavedTicket {
+  lines: { itemId: string; variantId: string | null; optionIds: string[]; quantity: number }[];
+  dineIn: boolean;
+  customerName: string;
+  customerPhone: string;
+}
+
+// Onglets calculés depuis la carte : toute nouvelle catégorie, tout nouveau plat ou
+// combo ajouté dans l'admin apparaît ici sans toucher au code.
+const POPULAR_TAB = "__popular";
+const COMBOS_TAB = "__combos";
+const COMBO_KIND = "combo";
+
+function buildLine(item: BouffItem, variant: BouffVariant | null, optionIds: string[]) {
+  const options = item.optionGroups.flatMap((g) => g.options);
+  const picked = optionIds.map((id) => options.find((o) => o.id === id)).filter(Boolean) as { id: string; title: string; price: number }[];
+  return {
+    item,
+    variant,
+    optionIds: picked.map((o) => o.id),
+    optionNames: picked.map((o) => o.title),
+    unit: (variant?.price ?? 0) + picked.reduce((sum, o) => sum + o.price, 0),
+  };
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -204,7 +232,9 @@ function Register({
   const [menuError, setMenuError] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [lines, setLines] = useState<TicketLine[]>([]);
-  const [picking, setPicking] = useState<BouffItem | null>(null);
+  const [picking, setPicking] = useState<{ item: BouffItem; kind?: string } | null>(null);
+  const [popularIds, setPopularIds] = useState<string[]>([]);
+  const [restored, setRestored] = useState(false);
   const [dineIn, setDineIn] = useState(true);
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -218,16 +248,67 @@ function Register({
     loadMenu(true)
       .then((m) => {
         setMenu(m);
-        setCategory(m.categories.find((c) => c.items.length)?.id ?? null);
+        try {
+          const saved = JSON.parse(window.localStorage.getItem(TICKET_KEY) ?? "null") as SavedTicket | null;
+          if (saved) {
+            const back: TicketLine[] = [];
+            for (const l of saved.lines ?? []) {
+              const item = m.items.find((i) => i.id === l.itemId && !i.isOutOfStock);
+              if (!item) continue;
+              const variant = l.variantId ? item.variations.find((v) => v.id === l.variantId && !v.isOutOfStock) : null;
+              if (l.variantId && !variant) continue;
+              const line = buildLine(item, variant ?? null, l.optionIds ?? []);
+              back.push({ ...line, key: lineKey(line), quantity: Math.max(1, l.quantity) });
+            }
+            setLines(back);
+            setDineIn(saved.dineIn ?? true);
+            setCustomerName(saved.customerName ?? "");
+            setCustomerPhone(saved.customerPhone ?? "");
+          }
+        } catch {
+          /* ticket illisible : on repart d'un ticket vide */
+        }
+        setRestored(true);
       })
       .catch((e) => setMenuError(e.message));
+    bouffDb()
+      .rpc("popular_menu_items", { _limit: 8 })
+      .then(({ data }) => setPopularIds(((data ?? []) as { menu_item_id: string }[]).map((r) => r.menu_item_id)));
   }, []);
 
+  useEffect(() => {
+    if (!restored) return;
+    const saved: SavedTicket = {
+      lines: lines.map((l) => ({ itemId: l.item.id, variantId: l.variant?.id ?? null, optionIds: l.optionIds, quantity: l.quantity })),
+      dineIn,
+      customerName,
+      customerPhone,
+    };
+    window.localStorage.setItem(TICKET_KEY, JSON.stringify(saved));
+  }, [restored, lines, dineIn, customerName, customerPhone]);
+
+  const tabs = useMemo(() => {
+    if (!menu) return [];
+    const popular = popularIds.map((id) => menu.items.find((i) => i.id === id)).filter(Boolean) as BouffItem[];
+    const popularItems = popular.length ? popular : menu.items.filter((i) => i.isFeatured);
+    const comboItems = menu.items.filter((i) => i.variations.some((v) => v.kind === COMBO_KIND));
+    return [
+      { id: POPULAR_TAB, name: "Populaires", items: popularItems },
+      { id: COMBOS_TAB, name: "Nos combos", items: comboItems },
+      ...menu.categories.map((c) => ({ id: c.id, name: c.name, items: c.items })),
+    ].filter((t) => t.items.length);
+  }, [menu, popularIds]);
+
+  useEffect(() => {
+    if (tabs.length && !tabs.some((t) => t.id === category)) setCategory(tabs[0].id);
+  }, [tabs, category]);
+
   const total = useMemo(() => lines.reduce((s, l) => s + l.unit * l.quantity, 0), [lines]);
-  const items = menu?.categories.find((c) => c.id === category)?.items ?? [];
+  const items = tabs.find((t) => t.id === category)?.items ?? [];
+  const comboTab = category === COMBOS_TAB;
 
   const addLine = (line: Omit<TicketLine, "key" | "quantity">) => {
-    const key = [line.item.id, line.variant?.id ?? "", [...line.optionIds].sort().join("-")].join("|");
+    const key = lineKey(line);
     setLines((prev) => {
       const found = prev.find((l) => l.key === key);
       if (found) return prev.map((l) => (l.key === key ? { ...l, quantity: l.quantity + 1 } : l));
@@ -235,13 +316,12 @@ function Register({
     });
   };
 
-  const tapItem = (item: BouffItem) => {
+  const tapItem = (item: BouffItem, kind?: string) => {
     if (item.isOutOfStock) return;
-    const variants = item.variations.filter((v) => !v.isOutOfStock);
+    const variants = item.variations.filter((v) => !v.isOutOfStock && (!kind || v.kind === kind));
     if (variants.length <= 1 && item.optionGroups.length === 0) {
-      const v = variants[0] ?? null;
-      addLine({ item, variant: v, optionIds: [], optionNames: [], unit: v?.price ?? 0 });
-    } else setPicking(item);
+      addLine(buildLine(item, variants[0] ?? null, []));
+    } else setPicking({ item, kind });
   };
 
   const changeQty = (key: string, delta: number) =>
@@ -310,9 +390,7 @@ function Register({
         {/* Produits */}
         <section className="flex min-h-0 flex-[2] flex-col">
           <nav className="flex gap-2 overflow-x-auto border-b border-bouff-line px-4 py-3">
-            {menu.categories
-              .filter((c) => c.items.length)
-              .map((c) => (
+            {tabs.map((c) => (
                 <button
                   key={c.id}
                   onClick={() => setCategory(c.id)}
@@ -326,12 +404,12 @@ function Register({
           </nav>
           <div className="grid flex-1 auto-rows-min grid-cols-2 gap-4 overflow-y-auto p-5 lg:grid-cols-3">
             {items.map((item) => {
-              const prices = item.variations.map((v) => v.price);
+              const prices = item.variations.filter((v) => !comboTab || v.kind === COMBO_KIND).map((v) => v.price);
               const from = prices.length ? Math.min(...prices) : 0;
               return (
                 <button
                   key={item.id}
-                  onClick={() => tapItem(item)}
+                  onClick={() => tapItem(item, comboTab ? COMBO_KIND : undefined)}
                   disabled={item.isOutOfStock}
                   className="flex flex-col overflow-hidden rounded-bouff-lg border border-bouff-line bg-bouff-surface text-left transition active:scale-95 disabled:opacity-40"
                 >
