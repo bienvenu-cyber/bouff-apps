@@ -85,6 +85,13 @@
       "when": 1791808970979,
       "tag": "0011_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1791826456490,
+      "tag": "0012_kitchen_new_order_push",
+      "breakpoints": true
     }
   ]
 }
