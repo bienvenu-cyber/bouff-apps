@@ -40,7 +40,16 @@
       "expo-secure-store",
       "expo-web-browser",
       "expo-audio",
-      "expo-video"
+      "expo-video",
+      [
+        "expo-notifications",
+        {
+          "color": "#FF7A1A",
+          "sounds": [
+            "./lib/assets/sound/beep3.mp3"
+          ]
+        }
+      ]
     ],
     "platforms": [
       "ios",
@@ -62,7 +71,7 @@
       }
     },
     "android": {
-      "versionCode": 86,
+      "versionCode": 87,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.BLUETOOTH",

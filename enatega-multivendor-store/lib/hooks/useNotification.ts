@@ -46,6 +46,18 @@ export default function useNotification() {
         sound: "default",
         lightColor: "#FF231F7C",
       });
+      // Canal « Nouvelles commandes » : bip BOUFF même app fermée, passe le mode Ne pas déranger.
+      Notifications.setNotificationChannelAsync("orders", {
+        name: "Nouvelles commandes",
+        importance: Notifications.AndroidImportance.MAX,
+        sound: "beep3.mp3",
+        vibrationPattern: [0, 500, 300, 500, 300, 500],
+        bypassDnd: true,
+        enableVibrate: true,
+        lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+        audioAttributes: { usage: Notifications.AndroidAudioUsage.ALARM, contentType: Notifications.AndroidAudioContentType.SONIFICATION },
+        lightColor: "#FF7A1A",
+      });
     }
   }
 
@@ -68,8 +80,8 @@ export default function useNotification() {
             // shouldShowAlert: false, // Prevent the app from closing
             // shouldPlaySound: false,
             shouldSetBadge: false,
-            shouldShowBanner: false,
-            shouldShowList: false,
+            shouldShowBanner: true,
+            shouldShowList: true,
           };
         },
       });
