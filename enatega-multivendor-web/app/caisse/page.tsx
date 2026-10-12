@@ -365,18 +365,18 @@ function Register({
   if (!menu) return <Centered>Chargement du menu…</Centered>;
 
   return (
-    <div className="flex h-screen flex-col">
-      <header className="flex items-center justify-between border-b border-bouff-line bg-bouff-surface px-5 py-3">
-        <div className="flex items-baseline gap-3">
-          <span className="font-bouff-display text-3xl text-bouff-primary">BOUFF</span>
-          <span className="text-bouff-text-muted">Caisse · {session.name}</span>
+    <div className="flex h-[100dvh] flex-col overflow-hidden">
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-bouff-line bg-bouff-surface px-5 py-3">
+        <div className="flex min-w-0 items-baseline gap-3">
+          <span className="shrink-0 font-bouff-display text-3xl text-bouff-primary">BOUFF</span>
+          <span className="truncate text-bouff-text-muted">Caisse · {session.name}</span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex shrink-0 gap-2">
           <button onClick={() => setShowRecent(true)} className="rounded-bouff-md border border-bouff-line px-4 py-2">
-            Commandes du jour
+            <span className="sm:hidden">Ventes</span><span className="hidden sm:inline">Commandes du jour</span>
           </button>
           <button onClick={onLogout} className="rounded-bouff-md border border-bouff-line px-4 py-2 text-bouff-text-muted">
-            Changer de caissière
+            <span className="sm:hidden">Changer</span><span className="hidden sm:inline">Changer de caissière</span>
           </button>
         </div>
       </header>
