@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { bouffDb } from "@/lib/bouff-data/supabase";
 import { loadMenu, type BouffItem, type BouffMenu, type BouffVariant } from "@/lib/bouff-data/catalog";
 import {
   checkCounterSession,
@@ -39,7 +38,6 @@ interface SavedTicket {
 
 // Onglets calculés depuis la carte : toute nouvelle catégorie, tout nouveau plat ou
 // combo ajouté dans l'admin apparaît ici sans toucher au code.
-const POPULAR_TAB = "__popular";
 const COMBOS_TAB = "__combos";
 const COMBO_KIND = "combo";
 
@@ -237,7 +235,6 @@ function Register({
   const [category, setCategory] = useState<string | null>(null);
   const [lines, setLines] = useState<TicketLine[]>([]);
   const [picking, setPicking] = useState<{ item: BouffItem; kind?: string } | null>(null);
-  const [popularIds, setPopularIds] = useState<string[]>([]);
   const [restored, setRestored] = useState(false);
   const [dineIn, setDineIn] = useState(true);
   const [customerName, setCustomerName] = useState("");
@@ -275,9 +272,6 @@ function Register({
         setRestored(true);
       })
       .catch((e) => setMenuError(e.message));
-    bouffDb()
-      .rpc("popular_menu_items", { _limit: 8 })
-      .then(({ data }) => setPopularIds(((data ?? []) as { menu_item_id: string }[]).map((r) => r.menu_item_id)));
   }, []);
 
   useEffect(() => {
@@ -293,15 +287,12 @@ function Register({
 
   const tabs = useMemo(() => {
     if (!menu) return [];
-    const popular = popularIds.map((id) => menu.items.find((i) => i.id === id)).filter(Boolean) as BouffItem[];
-    const popularItems = popular.length ? popular : menu.items.filter((i) => i.isFeatured);
     const comboItems = menu.items.filter((i) => i.variations.some((v) => v.kind === COMBO_KIND));
     return [
-      { id: POPULAR_TAB, name: "Populaires", items: popularItems },
       { id: COMBOS_TAB, name: "Nos combos", items: comboItems },
       ...menu.categories.map((c) => ({ id: c.id, name: c.name, items: c.items })),
     ].filter((t) => t.items.length);
-  }, [menu, popularIds]);
+  }, [menu]);
 
   useEffect(() => {
     if (tabs.length && !tabs.some((t) => t.id === category)) setCategory(tabs[0].id);
@@ -393,7 +384,7 @@ function Register({
       <div className="flex min-h-0 flex-1">
         {/* Produits */}
         <section className="flex min-h-0 flex-[2] flex-col">
-          <nav className="flex gap-2 overflow-x-auto border-b border-bouff-line px-4 py-3">
+          <nav className="flex shrink-0 gap-2 overflow-x-auto border-b border-bouff-line px-4 py-3">
             {tabs.map((c) => (
                 <button
                   key={c.id}
@@ -436,7 +427,7 @@ function Register({
         </section>
 
         {/* Ticket */}
-        <aside className="flex min-h-0 flex-1 flex-col border-l border-bouff-line bg-bouff-surface">
+        <aside className="flex min-h-0 w-[380px] shrink-0 flex-col border-l border-bouff-line bg-bouff-surface">
           <div className="grid grid-cols-2 gap-2 p-4">
             {[
               { v: true, label: "Sur place" },
