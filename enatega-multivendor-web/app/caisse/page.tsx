@@ -608,7 +608,8 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
     counterRecentOrders(token)
       .then(setRows)
       .catch((e) => (isSessionError(e) ? onExpired() : setError(e.message)));
-  }, [token, onExpired]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   return (
     <Modal onClose={onClose}>
