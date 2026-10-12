@@ -55,6 +55,10 @@ function buildLine(item: BouffItem, variant: BouffVariant | null, optionIds: str
   };
 }
 
+function lineKey(line: { item: BouffItem; variant: BouffVariant | null; optionIds: string[] }) {
+  return [line.item.id, line.variant?.id ?? "", [...line.optionIds].sort().join("-")].join("|");
+}
+
 const STATUS_LABEL: Record<string, string> = {
   received: "En attente cuisine",
   in_kitchen: "En préparation",
@@ -519,7 +523,8 @@ function Register({
 
       {picking && (
         <ItemPicker
-          item={picking}
+          item={picking.item}
+          preferKind={picking.kind}
           onClose={() => setPicking(null)}
           onAdd={(line) => {
             addLine(line);
@@ -582,16 +587,18 @@ function Modal({ children, onClose }: { children: React.ReactNode; onClose: () =
 
 function ItemPicker({
   item,
+  preferKind,
   onClose,
   onAdd,
 }: {
   item: BouffItem;
+  preferKind?: string;
   onClose: () => void;
   onAdd: (line: Omit<TicketLine, "key" | "quantity">) => void;
 }) {
   const variants = item.variations.filter((v) => !v.isOutOfStock);
   const [variant, setVariant] = useState<BouffVariant | null>(
-    variants.find((v) => v.isDefault) ?? variants[0] ?? null,
+    (preferKind && variants.find((v) => v.kind === preferKind)) || variants.find((v) => v.isDefault) || variants[0] || null,
   );
   const [selected, setSelected] = useState<Record<string, string[]>>({});
 
