@@ -56,6 +56,102 @@ export type Database = {
         }
         Relationships: []
       }
+      cashier_login_attempts: {
+        Row: {
+          cashier_id: string | null
+          created_at: string
+          id: number
+          ok: boolean
+        }
+        Insert: {
+          cashier_id?: string | null
+          created_at?: string
+          id?: number
+          ok: boolean
+        }
+        Update: {
+          cashier_id?: string | null
+          created_at?: string
+          id?: number
+          ok?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cashier_login_attempts_cashier_id_fkey"
+            columns: ["cashier_id"]
+            isOneToOne: false
+            referencedRelation: "cashiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cashier_sessions: {
+        Row: {
+          cashier_id: string
+          created_at: string
+          expires_at: string
+          token_hash: string
+        }
+        Insert: {
+          cashier_id: string
+          created_at?: string
+          expires_at: string
+          token_hash: string
+        }
+        Update: {
+          cashier_id?: string
+          created_at?: string
+          expires_at?: string
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cashier_sessions_cashier_id_fkey"
+            columns: ["cashier_id"]
+            isOneToOne: false
+            referencedRelation: "cashiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cashiers: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          is_active: boolean
+          pin_hash: string
+          restaurant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id?: string
+          is_active?: boolean
+          pin_hash: string
+          restaurant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          is_active?: boolean
+          pin_hash?: string
+          restaurant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cashiers_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -988,6 +1084,7 @@ export type Database = {
           accepted_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
+          cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
           coupon_id: string | null
@@ -1001,6 +1098,7 @@ export type Database = {
           delivery_lat: number | null
           delivery_lng: number | null
           delivery_zone_id: string | null
+          dine_in: boolean
           discount_fcfa: number
           estimated_ready_at: string | null
           free_delivery_used: boolean
@@ -1009,12 +1107,14 @@ export type Database = {
           note: string | null
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
+          paid_at: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           picked_up_at: string | null
           ready_at: string | null
           restaurant_id: string
           rider_id: string | null
           scheduled_for: string | null
+          source: string
           status: Database["public"]["Enums"]["order_status"]
           tip_fcfa: number
           total_fcfa: number
@@ -1025,6 +1125,7 @@ export type Database = {
           accepted_at?: string | null
           cancel_reason?: string | null
           cancelled_at?: string | null
+          cashier_id?: string | null
           commission_fcfa?: number
           coupon_code?: string | null
           coupon_id?: string | null
@@ -1038,6 +1139,7 @@ export type Database = {
           delivery_lat?: number | null
           delivery_lng?: number | null
           delivery_zone_id?: string | null
+          dine_in?: boolean
           discount_fcfa?: number
           estimated_ready_at?: string | null
           free_delivery_used?: boolean
@@ -1046,12 +1148,14 @@ export type Database = {
           note?: string | null
           order_number?: string
           order_type?: Database["public"]["Enums"]["order_type"]
+          paid_at?: string | null
           payment_method?: Database["public"]["Enums"]["payment_method"]
           picked_up_at?: string | null
           ready_at?: string | null
           restaurant_id: string
           rider_id?: string | null
           scheduled_for?: string | null
+          source?: string
           status?: Database["public"]["Enums"]["order_status"]
           tip_fcfa?: number
           total_fcfa?: number
@@ -1062,6 +1166,7 @@ export type Database = {
           accepted_at?: string | null
           cancel_reason?: string | null
           cancelled_at?: string | null
+          cashier_id?: string | null
           commission_fcfa?: number
           coupon_code?: string | null
           coupon_id?: string | null
@@ -1075,6 +1180,7 @@ export type Database = {
           delivery_lat?: number | null
           delivery_lng?: number | null
           delivery_zone_id?: string | null
+          dine_in?: boolean
           discount_fcfa?: number
           estimated_ready_at?: string | null
           free_delivery_used?: boolean
@@ -1083,12 +1189,14 @@ export type Database = {
           note?: string | null
           order_number?: string
           order_type?: Database["public"]["Enums"]["order_type"]
+          paid_at?: string | null
           payment_method?: Database["public"]["Enums"]["payment_method"]
           picked_up_at?: string | null
           ready_at?: string | null
           restaurant_id?: string
           rider_id?: string | null
           scheduled_for?: string | null
+          source?: string
           status?: Database["public"]["Enums"]["order_status"]
           tip_fcfa?: number
           total_fcfa?: number
@@ -1096,6 +1204,13 @@ export type Database = {
           wallet_used_fcfa?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "orders_cashier_id_fkey"
+            columns: ["cashier_id"]
+            isOneToOne: false
+            referencedRelation: "cashiers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "orders_coupon_id_fkey"
             columns: ["coupon_id"]
@@ -1725,6 +1840,7 @@ export type Database = {
           accepted_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
+          cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
           coupon_id: string | null
@@ -1738,6 +1854,7 @@ export type Database = {
           delivery_lat: number | null
           delivery_lng: number | null
           delivery_zone_id: string | null
+          dine_in: boolean
           discount_fcfa: number
           estimated_ready_at: string | null
           free_delivery_used: boolean
@@ -1746,12 +1863,14 @@ export type Database = {
           note: string | null
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
+          paid_at: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           picked_up_at: string | null
           ready_at: string | null
           restaurant_id: string
           rider_id: string | null
           scheduled_for: string | null
+          source: string
           status: Database["public"]["Enums"]["order_status"]
           tip_fcfa: number
           total_fcfa: number
@@ -1813,6 +1932,7 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_list_cashiers: { Args: { p_restaurant_id?: string }; Returns: Json }
       admin_list_customers: {
         Args: { p_limit?: number; p_offset?: number; p_search?: string }
         Returns: Json
@@ -1845,7 +1965,20 @@ export type Database = {
         }
         Returns: undefined
       }
+      admin_save_cashier: {
+        Args: {
+          p_full_name: string
+          p_id: string
+          p_pin?: string
+          p_restaurant_id?: string
+        }
+        Returns: string
+      }
       admin_save_food: { Args: { p: Json }; Returns: string }
+      admin_set_cashier_active: {
+        Args: { p_active: boolean; p_id: string }
+        Returns: undefined
+      }
       admin_set_variant_promo: {
         Args: { p_ends_at: string; p_promo_price: number; p_variant_id: string }
         Returns: {
@@ -1885,6 +2018,7 @@ export type Database = {
           accepted_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
+          cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
           coupon_id: string | null
@@ -1898,6 +2032,7 @@ export type Database = {
           delivery_lat: number | null
           delivery_lng: number | null
           delivery_zone_id: string | null
+          dine_in: boolean
           discount_fcfa: number
           estimated_ready_at: string | null
           free_delivery_used: boolean
@@ -1906,12 +2041,14 @@ export type Database = {
           note: string | null
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
+          paid_at: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           picked_up_at: string | null
           ready_at: string | null
           restaurant_id: string
           rider_id: string | null
           scheduled_for: string | null
+          source: string
           status: Database["public"]["Enums"]["order_status"]
           tip_fcfa: number
           total_fcfa: number
@@ -1952,6 +2089,7 @@ export type Database = {
           accepted_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
+          cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
           coupon_id: string | null
@@ -1965,6 +2103,7 @@ export type Database = {
           delivery_lat: number | null
           delivery_lng: number | null
           delivery_zone_id: string | null
+          dine_in: boolean
           discount_fcfa: number
           estimated_ready_at: string | null
           free_delivery_used: boolean
@@ -1973,12 +2112,14 @@ export type Database = {
           note: string | null
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
+          paid_at: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           picked_up_at: string | null
           ready_at: string | null
           restaurant_id: string
           rider_id: string | null
           scheduled_for: string | null
+          source: string
           status: Database["public"]["Enums"]["order_status"]
           tip_fcfa: number
           total_fcfa: number
@@ -1992,6 +2133,26 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      counter_cashiers: { Args: { p_slug?: string }; Returns: Json }
+      counter_login: {
+        Args: { p_cashier_id: string; p_pin: string }
+        Returns: Json
+      }
+      counter_logout: { Args: { p_token: string }; Returns: undefined }
+      counter_place_order: {
+        Args: {
+          p_customer_name?: string
+          p_customer_phone?: string
+          p_dine_in: boolean
+          p_items: Json
+          p_note?: string
+          p_payment_method: Database["public"]["Enums"]["payment_method"]
+          p_token: string
+        }
+        Returns: Json
+      }
+      counter_recent_orders: { Args: { p_token: string }; Returns: Json }
+      counter_session: { Args: { p_token: string }; Returns: Json }
       coupon_quote: {
         Args: {
           p_code: string
@@ -2185,6 +2346,7 @@ export type Database = {
           accepted_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
+          cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
           coupon_id: string | null
@@ -2198,6 +2360,7 @@ export type Database = {
           delivery_lat: number | null
           delivery_lng: number | null
           delivery_zone_id: string | null
+          dine_in: boolean
           discount_fcfa: number
           estimated_ready_at: string | null
           free_delivery_used: boolean
@@ -2206,12 +2369,14 @@ export type Database = {
           note: string | null
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
+          paid_at: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           picked_up_at: string | null
           ready_at: string | null
           restaurant_id: string
           rider_id: string | null
           scheduled_for: string | null
+          source: string
           status: Database["public"]["Enums"]["order_status"]
           tip_fcfa: number
           total_fcfa: number

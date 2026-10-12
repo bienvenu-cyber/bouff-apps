@@ -71,6 +71,13 @@
       "when": 1791052760692,
       "tag": "0009_passport_reward_free_delivery",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791808787832,
+      "tag": "0010_migration",
+      "breakpoints": true
     }
   ]
 }
