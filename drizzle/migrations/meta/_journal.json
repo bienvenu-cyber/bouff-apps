@@ -92,6 +92,13 @@
       "when": 1791826456490,
       "tag": "0012_kitchen_new_order_push",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1791826711212,
+      "tag": "0013_counter_orders_no_customer_notifications",
+      "breakpoints": true
     }
   ]
 }
