@@ -114,6 +114,12 @@ export default function MakeSidebar() {
           route: '/general/staff',
           isParent: false,
         },
+        {
+          text: 'Cashiers',
+          label: t('Cashiers'),
+          route: '/general/cashiers',
+          isParent: false,
+        },
       ]),
       shouldShow: function () {
         return this.subMenu ? this.subMenu.length > 0 : false;
