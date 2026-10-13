@@ -244,6 +244,10 @@ function Register({
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<{ number: string; total: number; points: boolean } | null>(null);
   const [showRecent, setShowRecent] = useState(false);
+  const [ticketOpen, setTicketOpen] = useState(false);
+  useEffect(() => {
+    if (!lines.length) setTicketOpen(false);
+  }, [lines.length]);
 
   useEffect(() => {
     loadMenu(true)
@@ -351,6 +355,7 @@ function Register({
       });
       setConfirmPay(null);
       setDone({ number: res.order_number, total: res.total_fcfa, points: res.points_linked });
+      setTicketOpen(false);
       reset();
     } catch (e) {
       setConfirmPay(null);
@@ -397,7 +402,7 @@ function Register({
                 </button>
               ))}
           </nav>
-          <div className="grid flex-1 auto-rows-min grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-3 overflow-y-auto p-3 sm:gap-4 sm:p-5 xl:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
+          <div className="grid flex-1 auto-rows-min grid-cols-2 gap-3 overflow-y-auto p-3 sm:grid-cols-[repeat(auto-fill,minmax(170px,1fr))] sm:gap-4 sm:p-5 xl:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             {items.map((item) => {
               const prices = item.variations.filter((v) => !comboTab || v.kind === COMBO_KIND).map((v) => v.price);
               const from = prices.length ? Math.min(...prices) : 0;
@@ -427,7 +432,16 @@ function Register({
         </section>
 
         {/* Ticket */}
-        <aside className="flex max-h-[55vh] min-h-0 w-full shrink-0 flex-col border-t border-bouff-line md:max-h-none md:w-[clamp(300px,32vw,400px)] md:border-t-0 md:border-l border-bouff-line bg-bouff-surface">
+        {ticketOpen && (
+          <div className="fixed inset-0 z-30 bg-bouff-background/70 md:hidden" onClick={() => setTicketOpen(false)} />
+        )}
+        <aside
+          className={`${ticketOpen ? "flex" : "hidden"} fixed inset-x-0 bottom-0 z-40 max-h-[88dvh] min-h-0 w-full flex-col rounded-t-bouff-lg border-t border-bouff-line bg-bouff-surface md:static md:z-auto md:flex md:max-h-none md:w-[clamp(300px,32vw,400px)] md:shrink-0 md:rounded-none md:border-t-0 md:border-l`}
+        >
+          <div className="flex items-center justify-between px-4 pt-3 md:hidden">
+            <span className="text-lg font-semibold">Ticket</span>
+            <button onClick={() => setTicketOpen(false)} aria-label="Fermer le ticket" className="h-10 w-10 rounded-full bg-bouff-surface-raised text-xl">✕</button>
+          </div>
           <div className="grid grid-cols-2 gap-2 p-4">
             {[
               { v: true, label: "Sur place" },
@@ -510,6 +524,23 @@ function Register({
             )}
           </div>
         </aside>
+
+        {/* Téléphone : barre du ticket */}
+        <button
+          onClick={() => lines.length && setTicketOpen(true)}
+          className={`flex shrink-0 items-center justify-between gap-3 px-5 py-4 text-lg font-semibold md:hidden ${
+            lines.length ? "bg-bouff-primary text-bouff-on-primary" : "border-t border-bouff-line bg-bouff-surface text-bouff-text-muted"
+          }`}
+        >
+          {lines.length ? (
+            <>
+              <span>Ticket · {lines.reduce((s, l) => s + l.quantity, 0)} article{lines.reduce((s, l) => s + l.quantity, 0) > 1 ? "s" : ""}</span>
+              <span className="font-bouff-display text-2xl">{fcfa(total)}</span>
+            </>
+          ) : (
+            <span className="w-full text-center">Touche un produit</span>
+          )}
+        </button>
       </div>
 
       {picking && (
