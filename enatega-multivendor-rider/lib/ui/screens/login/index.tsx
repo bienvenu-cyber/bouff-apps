@@ -99,8 +99,11 @@ const LoginScreen = () => {
 
   if (isLogging) {
     return (
-      <View className="flex-1 items-center justify-center">
-        <Text>{t("Loading...")}</Text>
+      <View
+        className="flex-1 items-center justify-center"
+        style={{ backgroundColor: appTheme.themeBackground }}
+      >
+        <Text style={{ color: appTheme.mainTextColor }}>{t("Loading...")}</Text>
       </View>
     );
   }

@@ -1,6 +1,6 @@
 import { Href, Redirect } from "expo-router";
-
 import { useContext } from "react";
+import { ActivityIndicator, View } from "react-native";
 
 // Context
 import { AuthContext } from "@/lib/context/global/auth.context";
@@ -12,7 +12,18 @@ function App() {
   const { token, isAuthReady } = useContext(AuthContext);
 
   if (!isAuthReady) {
-    return <></>;
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#0B0B0C",
+        }}
+      >
+        <ActivityIndicator size="large" color="#FF7A1A" />
+      </View>
+    );
   }
 
   if (!token) {
