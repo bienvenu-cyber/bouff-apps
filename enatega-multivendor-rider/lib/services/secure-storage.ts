@@ -45,9 +45,15 @@ export const getSecureItem = async (
   const secureStore = secureStoreAvailable ? getSecureStore() : null;
 
   if (secureStoreAvailable && secureStore) {
-    const secureValue = await secureStore.getItemAsync(key);
-    if (secureValue !== null) {
-      return secureValue;
+    try {
+      const secureValue = await secureStore.getItemAsync(key);
+      if (secureValue !== null) {
+        return secureValue;
+      }
+    } catch {
+      // Valeur illisible (ex. clé du téléphone changée après une
+      // réinstallation) : on l'efface, le livreur se reconnectera.
+      await secureStore.deleteItemAsync(key).catch(() => {});
     }
   }
 

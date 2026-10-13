@@ -34,8 +34,6 @@ import { LocationPermissionComp } from "@/lib/ui/useable-components";
 import AnimatedSplashScreen from "@/lib/ui/useable-components/splash/AnimatedSplashScreen";
 import UnavailableStatus from "@/lib/ui/useable-components/unavailable-status";
 import StartupErrorBoundary from "@/lib/ui/useable-components/startup-error-boundary";
-import StartupTraceOverlay from "@/lib/ui/useable-components/startup-trace-overlay";
-import { traceStartup } from "@/lib/utils/startup-trace";
 import { requestMediaLibraryPermissionsAsync } from "expo-image-picker";
 import { useEffect, useState } from "react";
 
@@ -89,13 +87,17 @@ function ModeAwareApp({ fontsLoaded }: { fontsLoaded: boolean }) {
     return () => runtime.dispose();
   }, [runtime]);
 
-  const appReady = fontsLoaded && modeReady && isPublicTokenReady;
-
+  // Filet de sécurité : si une étape du démarrage ne répond jamais (police,
+  // stockage du téléphone…), on ouvre quand même l'app au bout de 8 s au lieu
+  // de rester bloqué sur un écran vide.
+  const [startupTimedOut, setStartupTimedOut] = useState(false);
   useEffect(() => {
-    traceStartup(
-      `polices=${fontsLoaded ? "ok" : "..."} mode=${modeReady ? mode : "..."} jeton=${isPublicTokenReady ? "ok" : "..."}`,
-    );
-  }, [fontsLoaded, modeReady, isPublicTokenReady, mode]);
+    const id = setTimeout(() => setStartupTimedOut(true), 8000);
+    return () => clearTimeout(id);
+  }, []);
+
+  const appReady =
+    (fontsLoaded && modeReady && isPublicTokenReady) || startupTimedOut;
 
   return (
     <AnimatedSplashScreen ready={appReady}>
@@ -128,9 +130,17 @@ function ModeAwareApp({ fontsLoaded }: { fontsLoaded: boolean }) {
 }
 
 function RootLayout() {
-  const [loaded] = useFonts({
+  const [fontLoaded, fontError] = useFonts({
     Inter: require("../lib/assets/fonts/Inter.ttf"),
   });
+  // Une police qui échoue ne doit jamais bloquer le démarrage.
+  const loaded = fontLoaded || !!fontError;
+
+  // Cache l'écran de démarrage natif quoi qu'il arrive.
+  useEffect(() => {
+    const id = setTimeout(() => SplashScreen.hideAsync().catch(() => {}), 3000);
+    return () => clearTimeout(id);
+  }, []);
 
   useEffect(() => {
     void requestMediaLibraryPermissionsAsync();
@@ -139,7 +149,6 @@ function RootLayout() {
   useEffect(() => {
     const previousHandler = ErrorUtils.getGlobalHandler?.();
     ErrorUtils.setGlobalHandler((error, isFatal) => {
-      traceStartup(`ERREUR${isFatal ? " fatale" : ""}: ${error?.message ?? error}`);
       if (__DEV__) {
         console.log("Global Error Caught:", { error, isFatal });
       }
@@ -157,7 +166,6 @@ function RootLayout() {
       <RiderModeProvider>
         <AppThemeProvidor>
           <ModeAwareApp fontsLoaded={loaded} />
-          <StartupTraceOverlay />
         </AppThemeProvidor>
       </RiderModeProvider>
     </StartupErrorBoundary>

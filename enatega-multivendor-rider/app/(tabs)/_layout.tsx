@@ -16,7 +16,6 @@ import {
 import { useApptheme } from "@/lib/context/global/theme.context";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { traceStartup } from "@/lib/utils/startup-trace";
 
 const RootLayout = () => {
   // States
@@ -33,10 +32,6 @@ const RootLayout = () => {
       setTabKey((prev) => prev + 1); // Force a re-render of the tab bar
     }
   }, [pathName]);
-
-  useEffect(() => {
-    traceStartup(`onglets: auth=${isAuthReady ? "ok" : "..."} jeton=${token ? "oui" : "non"}`);
-  }, [isAuthReady, token]);
 
   if (!isAuthReady) {
     return <SpinnerComponent />;

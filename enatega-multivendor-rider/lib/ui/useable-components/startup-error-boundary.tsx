@@ -1,25 +1,23 @@
 import { Component, ErrorInfo, ReactNode } from "react";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
-// Diagnostic : au lieu d'un écran blanc quand l'app plante au démarrage,
-// on affiche le message d'erreur pour pouvoir le photographier.
+// Si un écran plante, on affiche un message propre avec « Réessayer »
+// au lieu d'un écran vide. L'erreur est envoyée à Sentry.
 interface State {
-  error: Error | null;
-  componentStack: string;
+  hasError: boolean;
 }
 
 export default class StartupErrorBoundary extends Component<
   { children: ReactNode },
   State
 > {
-  state: State = { error: null, componentStack: "" };
+  state: State = { hasError: false };
 
-  static getDerivedStateFromError(error: Error): Partial<State> {
-    return { error };
+  static getDerivedStateFromError(): State {
+    return { hasError: true };
   }
 
-  componentDidCatch(error: Error, info: ErrorInfo) {
-    this.setState({ componentStack: info.componentStack ?? "" });
+  componentDidCatch(error: Error, _info: ErrorInfo) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       require("@sentry/react-native").captureException(error);
@@ -29,49 +27,36 @@ export default class StartupErrorBoundary extends Component<
   }
 
   render() {
-    const { error, componentStack } = this.state;
-    if (!error) return this.props.children;
+    if (!this.state.hasError) return this.props.children;
 
     return (
-      <View style={{ flex: 1, backgroundColor: "#0B0B0C", paddingTop: 60 }}>
-        <ScrollView contentContainerStyle={{ padding: 20 }}>
-          <Text style={{ color: "#FFC21A", fontSize: 22, fontWeight: "700" }}>
-            Oups, l’app a planté au démarrage
-          </Text>
-          <Text style={{ color: "#F5F0E6", marginTop: 8, fontSize: 14 }}>
-            Prends une photo de cet écran et envoie-la.
-          </Text>
-          <Text
-            selectable
-            style={{ color: "#FF6B5B", marginTop: 20, fontSize: 15, fontWeight: "600" }}
-          >
-            {error.name}: {error.message}
-          </Text>
-          <Text
-            selectable
-            style={{ color: "#B8B2A7", marginTop: 16, fontSize: 11 }}
-          >
-            {(error.stack ?? "").split("\n").slice(0, 12).join("\n")}
-          </Text>
-          <Text
-            selectable
-            style={{ color: "#8A857C", marginTop: 16, fontSize: 11 }}
-          >
-            {componentStack.split("\n").slice(0, 15).join("\n")}
-          </Text>
-          <Pressable
-            onPress={() => this.setState({ error: null, componentStack: "" })}
-            style={{
-              marginTop: 24,
-              backgroundColor: "#FFC21A",
-              borderRadius: 12,
-              paddingVertical: 14,
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ color: "#0B0B0C", fontWeight: "700" }}>Réessayer</Text>
-          </Pressable>
-        </ScrollView>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: "#0B0B0C",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 24,
+        }}
+      >
+        <Text style={{ color: "#F5F0E6", fontSize: 20, fontWeight: "700", textAlign: "center" }}>
+          Un problème est survenu
+        </Text>
+        <Text style={{ color: "#B8B2A7", marginTop: 8, fontSize: 14, textAlign: "center" }}>
+          Touche « Réessayer ». Si ça continue, ferme puis rouvre l’app.
+        </Text>
+        <Pressable
+          onPress={() => this.setState({ hasError: false })}
+          style={{
+            marginTop: 24,
+            backgroundColor: "#FF7A1A",
+            borderRadius: 12,
+            paddingVertical: 14,
+            paddingHorizontal: 32,
+          }}
+        >
+          <Text style={{ color: "#0B0B0C", fontWeight: "700" }}>Réessayer</Text>
+        </Pressable>
       </View>
     );
   }
