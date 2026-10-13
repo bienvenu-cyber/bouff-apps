@@ -49,6 +49,14 @@ export const isRiderServerMode = (
   value === RIDER_SERVER_MODES.MULTI || value === RIDER_SERVER_MODES.SINGLE;
 
 export async function migrateLegacyRiderStorage(): Promise<void> {
+  try {
+    await runLegacyRiderStorageMigration();
+  } catch (e) {
+    if (__DEV__) console.log("Legacy rider storage migration failed:", e);
+  }
+}
+
+async function runLegacyRiderStorageMigration(): Promise<void> {
   const alreadyMigrated = await AsyncStorage.getItem(
     RIDER_STORAGE_MIGRATION_KEY,
   );

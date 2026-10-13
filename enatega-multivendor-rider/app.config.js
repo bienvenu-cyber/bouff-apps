@@ -37,14 +37,10 @@ module.exports = {
       [
         'expo-splash-screen',
         {
-          // Solid per-theme background, no visible logo. The plugin requires an
-          // image to generate the native splashscreen_logo drawable, so we pass
-          // a 1x1 transparent PNG — only the background color shows. The animated
-          // pin / wordmark is drawn by the JS AnimatedSplash component, whose
-          // first frame uses these same colors so the handoff shows no flash.
+          // Fond noir BOUFF + logo BOUFF au centre pendant le chargement.
           backgroundColor: '#0B0B0C', // light
           image: './lib/assets/images/splashTransparent.png',
-          imageWidth: 1,
+          imageWidth: 200,
           resizeMode: 'contain',
           dark: {
             backgroundColor: '#0B0B0C', // dark
@@ -107,6 +103,9 @@ module.exports = {
         }
       },
       package: 'bj.bouff.livreur',
+      // Pas de sauvegarde Android auto : une session restaurée sur un autre
+      // téléphone est illisible et peut bloquer le démarrage.
+      allowBackup: false,
       icon: './lib/assets/images/icon.png',
       adaptiveIcon: {
         foregroundImage: './lib/assets/images/appIcon.png',

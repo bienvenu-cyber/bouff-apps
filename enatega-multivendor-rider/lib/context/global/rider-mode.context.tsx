@@ -43,17 +43,24 @@ export function RiderModeProvider({ children }: { children: ReactNode }) {
     let mounted = true;
 
     const hydrate = async () => {
-      await migrateLegacyRiderStorage();
-      const persistedMode = await AsyncStorage.getItem(
-        RIDER_SERVER_MODE_STORAGE_KEY,
-      );
-      if (forcedMode) {
-        await AsyncStorage.setItem(RIDER_SERVER_MODE_STORAGE_KEY, forcedMode);
-        if (mounted) setMode(forcedMode);
-      } else if (mounted && isRiderServerMode(persistedMode)) {
-        setMode(persistedMode);
+      // Le mode forcé (BOUFF) est appliqué tout de suite, sans attendre le stockage.
+      if (forcedMode && mounted) setMode(forcedMode);
+      try {
+        await migrateLegacyRiderStorage();
+        const persistedMode = await AsyncStorage.getItem(
+          RIDER_SERVER_MODE_STORAGE_KEY,
+        );
+        if (forcedMode) {
+          await AsyncStorage.setItem(RIDER_SERVER_MODE_STORAGE_KEY, forcedMode);
+        } else if (mounted && isRiderServerMode(persistedMode)) {
+          setMode(persistedMode);
+        }
+      } catch (e) {
+        // Un stockage illisible ne doit jamais bloquer l'ouverture de l'app.
+        if (__DEV__) console.log("Rider mode hydrate error:", e);
+      } finally {
+        if (mounted) setModeReady(true);
       }
-      if (mounted) setModeReady(true);
     };
 
     void hydrate();
