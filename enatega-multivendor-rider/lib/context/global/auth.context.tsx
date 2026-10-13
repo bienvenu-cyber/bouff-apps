@@ -7,7 +7,6 @@ import { getSecureItem, removeSecureItem, setSecureItem } from "@/lib/services/s
 import { IAuthContext, IAuthProviderProps } from "@/lib/utils/interfaces";
 import { useRouter } from "expo-router";
 import { useRiderMode } from "@/lib/context/global/rider-mode.context";
-import { traceStartup } from "@/lib/utils/startup-trace";
 
 export const AuthContext = React.createContext<IAuthContext>(
   {} as IAuthContext,
@@ -30,23 +29,20 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({
 
     const hydrateAuth = async () => {
       try {
-        traceStartup("auth: lecture jeton");
         const storedToken = await Promise.race([
           getSecureItem(tokenKey),
           new Promise<null>((resolve) =>
-            setTimeout(() => {
-              traceStartup("auth: lecture jeton trop longue, on continue");
-              resolve(null);
-            }, 4000),
+            // Si le stockage du téléphone ne répond pas, on n'attend pas
+            // indéfiniment : le livreur arrive sur l'écran de connexion.
+            setTimeout(() => resolve(null), 4000),
           ),
         ]);
-        traceStartup(`auth: jeton ${storedToken ? "trouvé" : "absent"}`);
 
         if (isMounted && storedToken) {
           setToken(storedToken);
         }
       } catch (e) {
-        traceStartup(`auth: erreur ${(e as Error)?.message}`);
+        if (__DEV__) console.log("Auth hydrate error:", e);
       } finally {
         if (isMounted) {
           setIsAuthReady(true);
