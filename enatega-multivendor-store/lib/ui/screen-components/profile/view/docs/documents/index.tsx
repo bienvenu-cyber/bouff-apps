@@ -12,6 +12,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Switch } from "react-native-switch";
 
+const SHOW_BANK_DETAILS = false;
+
 export default function DocumentsSection() {
   // Hooks
   const { appTheme, currentTheme, toggleTheme } = useApptheme();
@@ -21,6 +23,8 @@ export default function DocumentsSection() {
 
   return (
     <View className="flex flex-col w-full items-center">
+      {/* BOUFF : coordonnées bancaires masquées pour la cuisine. */}
+      {SHOW_BANK_DETAILS && (
       <View
         className="flex flex-col gap-3 items-start justify-center px-5 w-full border-b-2 py-3"
         style={{ borderColor: appTheme.borderLineColor }}
@@ -60,6 +64,7 @@ export default function DocumentsSection() {
           </Text>
         </View>
       </View>
+      )}
       <View>
         <Text
           className="font-bold m-3"

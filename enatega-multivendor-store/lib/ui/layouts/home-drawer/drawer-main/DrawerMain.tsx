@@ -89,6 +89,8 @@ export default function DrawerMain() {
       <Drawer.Screen
         name="bank-management"
         options={{
+          // BOUFF : masqué pour la cuisine.
+          drawerItemStyle: { display: "none" },
           drawerLabel: t("Bank Management"),
           title: t("Bank Management"),
           drawerIcon: ({ color, size }) => (

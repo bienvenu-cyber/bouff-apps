@@ -85,6 +85,8 @@ const RootLayout = () => {
       <Tabs.Screen
         name="wallet"
         options={{
+          // BOUFF : masqué pour la cuisine (l'argent se suit dans l'admin).
+          href: null,
           title: t("Wallet"),
           tabBarIcon: ({ color }) => (
             <WalletIcon color={color} width={25} height={25} />
@@ -94,6 +96,8 @@ const RootLayout = () => {
       <Tabs.Screen
         name="earnings"
         options={{
+          // BOUFF : masqué pour la cuisine (les chiffres sont dans l'admin).
+          href: null,
           title: t("Earnings"),
           tabBarIcon: ({ color }) => (
             <CurrencyIcon color={color} width={25} height={25} />
