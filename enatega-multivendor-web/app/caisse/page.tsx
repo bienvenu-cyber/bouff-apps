@@ -471,13 +471,13 @@ function Register({
               <input
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                placeholder="Prénom (facultatif)"
+                placeholder="Prénom client"
                 className="w-full min-w-0 rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2"
               />
               <input
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
-                placeholder="N° pour ses points"
+                placeholder="N° (points)"
                 inputMode="tel"
                 className="w-full min-w-0 rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2"
               />
