@@ -472,14 +472,14 @@ function Register({
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
                 placeholder="Prénom client"
-                className="w-full min-w-0 rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2"
+                className="w-full min-w-0 rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2 text-bouff-text placeholder:text-bouff-text-muted placeholder:opacity-100"
               />
               <input
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
                 placeholder="N° (points)"
                 inputMode="tel"
-                className="w-full min-w-0 rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2"
+                className="w-full min-w-0 rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2 text-bouff-text placeholder:text-bouff-text-muted placeholder:opacity-100"
               />
             </div>
             <div className="flex items-baseline justify-between">
