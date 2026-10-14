@@ -1,7 +1,19 @@
 // Caisse du comptoir : connexion par code caissière, commandes payées sur place.
 // Le code est vérifié par la base BOUFF ; la tablette garde seulement un jeton de session.
-import { bouffDb } from "./supabase";
-import { RESTAURANT_SLUG } from "./config";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { RESTAURANT_SLUG, SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./config";
+
+// Client sans session : la caisse n'utilise jamais le compte client
+// éventuellement connecté sur la tablette.
+let counterClient: SupabaseClient | null = null;
+function bouffDb(): SupabaseClient {
+  if (!counterClient) {
+    counterClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false, storageKey: "bouff-counter" },
+    });
+  }
+  return counterClient;
+}
 
 const TOKEN_KEY = "bouff/counter-token";
 const NAME_KEY = "bouff/counter-name";
