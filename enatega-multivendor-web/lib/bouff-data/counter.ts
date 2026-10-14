@@ -107,6 +107,7 @@ export async function counterRecentOrders(token: string) {
   const { data, error } = await bouffDb().rpc("counter_recent_orders", { p_token: token });
   if (error) throw new Error(error.message);
   return (data ?? []) as Array<{
+    id: string;
     order_number: string;
     status: string;
     total_fcfa: number;
@@ -114,5 +115,37 @@ export async function counterRecentOrders(token: string) {
     dine_in: boolean;
     payment_method: string;
     created_at: string;
+    cancel_reason: string | null;
   }>;
+}
+
+export async function counterCancelOrder(token: string, orderId: string, reason: string) {
+  const { error } = await bouffDb().rpc("counter_cancel_order", { p_token: token, p_order_id: orderId, p_reason: reason });
+  if (error) throw new Error(error.message);
+}
+
+export interface CounterDaySummary {
+  period_start: string;
+  orders_count: number;
+  cancelled_count: number;
+  cash_fcfa: number;
+  momo_fcfa: number;
+  cash_counted_fcfa?: number;
+  gap_fcfa?: number;
+}
+
+export async function counterDaySummary(token: string) {
+  const { data, error } = await bouffDb().rpc("counter_day_summary", { p_token: token });
+  if (error) throw new Error(error.message);
+  return data as CounterDaySummary;
+}
+
+export async function counterCloseDay(token: string, cashCounted: number, note?: string) {
+  const { data, error } = await bouffDb().rpc("counter_close_day", {
+    p_token: token,
+    p_cash_counted: cashCounted,
+    p_note: note || null,
+  });
+  if (error) throw new Error(error.message);
+  return data as CounterDaySummary;
 }

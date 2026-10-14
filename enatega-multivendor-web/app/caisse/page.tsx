@@ -7,15 +7,29 @@ import {
   clearCounterSession,
   counterLogin,
   counterLogout,
+  counterCancelOrder,
+  counterCloseDay,
+  counterDaySummary,
   counterPlaceOrder,
   counterRecentOrders,
   isSessionError,
   listCashiers,
   readCounterSession,
   type CounterCashier,
+  type CounterDaySummary,
 } from "@/lib/bouff-data/counter";
 
 const fcfa = (n: number) => `${n.toLocaleString("fr-FR").replace(/\u202f|\u00a0/g, " ")} F`;
+
+// Billets courants : compte juste + coupures supérieures au total.
+function cashSuggestions(total: number) {
+  const out = [total];
+  for (const step of [500, 1000, 2000, 5000, 10000]) {
+    const v = Math.ceil(total / step) * step;
+    if (v > total && !out.includes(v)) out.push(v);
+  }
+  return out.slice(0, 6);
+}
 
 interface TicketLine {
   key: string;
@@ -240,10 +254,12 @@ function Register({
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [confirmPay, setConfirmPay] = useState<"cash" | "mobile_money" | null>(null);
+  const [received, setReceived] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState<{ number: string; total: number; points: boolean } | null>(null);
+  const [done, setDone] = useState<{ number: string; total: number; points: boolean; dineIn: boolean; change: number | null } | null>(null);
   const [showRecent, setShowRecent] = useState(false);
+  const [showClose, setShowClose] = useState(false);
   const [ticketOpen, setTicketOpen] = useState(false);
   useEffect(() => {
     if (!lines.length) setTicketOpen(false);
@@ -354,7 +370,14 @@ function Register({
         customerPhone: customerPhone.trim(),
       });
       setConfirmPay(null);
-      setDone({ number: res.order_number, total: res.total_fcfa, points: res.points_linked });
+      setDone({
+        number: res.order_number,
+        total: res.total_fcfa,
+        points: res.points_linked,
+        dineIn,
+        change: payment === "cash" && received !== "" ? Math.max(0, Number(received) - res.total_fcfa) : null,
+      });
+      setReceived("");
       setTicketOpen(false);
       reset();
     } catch (e) {
@@ -379,6 +402,9 @@ function Register({
         <div className="flex shrink-0 gap-2">
           <button onClick={() => setShowRecent(true)} className="rounded-bouff-md border border-bouff-line px-4 py-2">
             <span className="sm:hidden">Ventes</span><span className="hidden sm:inline">Commandes du jour</span>
+          </button>
+          <button onClick={() => setShowClose(true)} className="rounded-bouff-md border border-bouff-primary px-4 py-2 text-bouff-primary">
+            <span className="sm:hidden">Clôture</span><span className="hidden sm:inline">Clôturer ma caisse</span>
           </button>
           <button onClick={onLogout} className="rounded-bouff-md border border-bouff-line px-4 py-2 text-bouff-text-muted">
             <span className="sm:hidden">Changer</span><span className="hidden sm:inline">Changer de caissière</span>
@@ -561,14 +587,45 @@ function Register({
             {confirmPay === "cash" ? "Encaisse en espèces" : "Vérifie que le MoMo est bien reçu"}
           </p>
           <p className="my-4 text-center font-bouff-display text-6xl text-bouff-primary">{fcfa(total)}</p>
-          <p className="mb-6 text-center text-bouff-text-muted">{dineIn ? "Sur place" : "À emporter"}</p>
+          <p className="mb-4 text-center text-bouff-text-muted">{dineIn ? "Sur place" : "À emporter"}</p>
+          {confirmPay === "cash" && (
+            <div className="mb-5">
+              <p className="mb-2 font-semibold">Montant reçu du client</p>
+              <div className="mb-2 grid grid-cols-3 gap-2">
+                {cashSuggestions(total).map((v) => (
+                  <button
+                    key={v}
+                    onClick={() => setReceived(String(v))}
+                    className={`rounded-bouff-md py-3 font-semibold ${received === String(v) ? "bg-bouff-primary text-bouff-on-primary" : "bg-bouff-surface-raised"}`}
+                  >
+                    {v === total ? "Compte juste" : fcfa(v)}
+                  </button>
+                ))}
+              </div>
+              <input
+                value={received}
+                onChange={(e) => setReceived(e.target.value.replace(/\D/g, ""))}
+                inputMode="numeric"
+                placeholder="Autre montant (F)"
+                className="w-full rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-3 text-xl text-bouff-text placeholder:text-base placeholder:text-bouff-text-muted placeholder:opacity-100"
+              />
+              {received !== "" && Number(received) < total && (
+                <p className="mt-2 text-bouff-danger">Il manque {fcfa(total - Number(received))}</p>
+              )}
+              {received !== "" && Number(received) >= total && (
+                <p className="mt-3 text-center text-2xl">
+                  Monnaie à rendre : <span className="font-bouff-display text-4xl text-bouff-primary">{fcfa(Number(received) - total)}</span>
+                </p>
+              )}
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-3">
             <button onClick={() => setConfirmPay(null)} disabled={busy} className="rounded-bouff-md bg-bouff-surface-raised py-4 text-lg">
               Retour
             </button>
             <button
               onClick={() => pay(confirmPay)}
-              disabled={busy}
+              disabled={busy || (confirmPay === "cash" && received !== "" && Number(received) < total)}
               className="rounded-bouff-md bg-bouff-primary py-4 text-lg font-bold text-bouff-on-primary disabled:opacity-50"
             >
               {busy ? "Envoi…" : confirmPay === "cash" ? "Argent reçu" : "MoMo reçu"}
@@ -580,8 +637,17 @@ function Register({
       {done && (
         <Modal onClose={() => setDone(null)}>
           <p className="text-center text-xl text-bouff-text-muted">Commande envoyée en cuisine</p>
-          <p className="my-6 text-center font-bouff-display text-8xl text-bouff-primary">{done.number}</p>
-          <p className="text-center text-lg">Donne ce numéro au client · {fcfa(done.total)}</p>
+          <p className="text-center text-lg text-bouff-text-muted">Numéro de commande</p>
+          <p className="my-4 text-center font-bouff-display text-[9rem] leading-none text-bouff-primary">{done.number}</p>
+          <p className="text-center text-lg">
+            {done.dineIn ? "Sur place" : "À emporter"} · {fcfa(done.total)}
+          </p>
+          {done.change !== null && done.change > 0 && (
+            <p className="mt-3 text-center text-2xl">
+              Rends <span className="font-bouff-display text-3xl text-bouff-primary">{fcfa(done.change)}</span>
+            </p>
+          )}
+          <p className="mt-2 text-center text-bouff-text-muted">Dis ce numéro au client : il sera appelé quand c'est prêt.</p>
           {done.points && <p className="mt-2 text-center text-bouff-success">Points BOUFF ajoutés à son compte à la remise.</p>}
           <button onClick={() => setDone(null)} className="mt-8 w-full rounded-bouff-md bg-bouff-primary py-4 text-xl font-bold text-bouff-on-primary">
             Client suivant
@@ -590,6 +656,7 @@ function Register({
       )}
 
       {showRecent && <RecentOrders token={session.token} onClose={() => setShowRecent(false)} onExpired={onExpired} />}
+      {showClose && <CloseDay token={session.token} name={session.name} onClose={() => setShowClose(false)} onExpired={onExpired} />}
     </div>
   );
 }
@@ -710,13 +777,69 @@ function ItemPicker({
 function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: () => void; onExpired: () => void }) {
   const [rows, setRows] = useState<Awaited<ReturnType<typeof counterRecentOrders>> | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState<{ id: string; number: string } | null>(null);
+  const [reason, setReason] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     counterRecentOrders(token)
       .then(setRows)
       .catch((e) => (isSessionError(e) ? onExpired() : setError(e.message)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+  useEffect(load, [load]);
+
+  const confirmCancel = async () => {
+    if (!cancelling) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await counterCancelOrder(token, cancelling.id, reason.trim());
+      setCancelling(null);
+      setReason("");
+      load();
+    } catch (e) {
+      if (isSessionError(e)) onExpired();
+      else setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (cancelling) {
+    return (
+      <Modal onClose={() => !busy && setCancelling(null)}>
+        <p className="mb-2 text-2xl font-semibold">Annuler la commande {cancelling.number}</p>
+        <p className="mb-4 text-bouff-text-muted">L'annulation est enregistrée à ton nom avec le motif. Rends l'argent au client si besoin.</p>
+        <div className="mb-3 flex flex-wrap gap-2">
+          {["Erreur de saisie", "Client parti", "Produit indisponible", "Doublon"].map((r) => (
+            <button key={r} onClick={() => setReason(r)} className={`rounded-full px-4 py-2 ${reason === r ? "bg-bouff-primary text-bouff-on-primary" : "bg-bouff-surface-raised"}`}>
+              {r}
+            </button>
+          ))}
+        </div>
+        <input
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          placeholder="Motif (obligatoire)"
+          className="w-full rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-3 text-bouff-text placeholder:text-bouff-text-muted placeholder:opacity-100"
+        />
+        {error && <p className="mt-3 text-bouff-danger">{error}</p>}
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <button onClick={() => setCancelling(null)} disabled={busy} className="rounded-bouff-md bg-bouff-surface-raised py-4 text-lg">
+            Retour
+          </button>
+          <button
+            onClick={confirmCancel}
+            disabled={busy || reason.trim().length < 3}
+            className="rounded-bouff-md bg-bouff-danger py-4 text-lg font-bold text-bouff-text disabled:opacity-40"
+          >
+            {busy ? "Annulation…" : "Confirmer l'annulation"}
+          </button>
+        </div>
+      </Modal>
+    );
+  }
 
   return (
     <Modal onClose={onClose}>
@@ -725,8 +848,8 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
       {!rows && !error && <p className="text-bouff-text-muted">Chargement…</p>}
       {rows?.length === 0 && <p className="text-bouff-text-muted">Aucune commande pour l'instant.</p>}
       {rows?.map((r) => (
-        <div key={r.order_number} className="flex items-center justify-between border-b border-bouff-line py-3">
-          <div>
+        <div key={r.order_number} className="flex items-center justify-between gap-3 border-b border-bouff-line py-3">
+          <div className="min-w-0">
             <p className="font-semibold">
               {r.order_number} · {r.customer_name}
             </p>
@@ -734,10 +857,16 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
               {new Date(r.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })} ·{" "}
               {r.dine_in ? "Sur place" : "À emporter"} · {r.payment_method === "mobile_money" ? "MoMo" : "Espèces"}
             </p>
+            {r.status === "cancelled" && r.cancel_reason && <p className="text-sm text-bouff-danger">{r.cancel_reason}</p>}
           </div>
-          <div className="text-right">
-            <p>{fcfa(r.total_fcfa)}</p>
+          <div className="shrink-0 text-right">
+            <p className={r.status === "cancelled" ? "line-through text-bouff-text-muted" : ""}>{fcfa(r.total_fcfa)}</p>
             <p className="text-sm text-bouff-primary">{STATUS_LABEL[r.status] ?? r.status}</p>
+            {r.status !== "cancelled" && r.status !== "delivered" && (
+              <button onClick={() => { setReason(""); setError(null); setCancelling({ id: r.id, number: r.order_number }); }} className="mt-1 text-sm text-bouff-danger underline">
+                Annuler
+              </button>
+            )}
           </div>
         </div>
       ))}
@@ -745,5 +874,108 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
         Fermer
       </button>
     </Modal>
+  );
+}
+
+function CloseDay({ token, name, onClose, onExpired }: { token: string; name: string; onClose: () => void; onExpired: () => void }) {
+  const [summary, setSummary] = useState<CounterDaySummary | null>(null);
+  const [counted, setCounted] = useState("");
+  const [note, setNote] = useState("");
+  const [result, setResult] = useState<CounterDaySummary | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    counterDaySummary(token)
+      .then(setSummary)
+      .catch((e) => (isSessionError(e) ? onExpired() : setError(e.message)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
+  const submit = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      setResult(await counterCloseDay(token, Number(counted), note.trim()));
+    } catch (e) {
+      if (isSessionError(e)) onExpired();
+      else setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (result) {
+    const gap = result.gap_fcfa ?? 0;
+    return (
+      <Modal onClose={onClose}>
+        <p className="mb-4 text-center text-2xl font-semibold">Caisse clôturée · {name}</p>
+        <Row label="Ventes" value={String(result.orders_count)} />
+        <Row label="Espèces attendues" value={fcfa(result.cash_fcfa)} />
+        <Row label="Espèces comptées" value={fcfa(result.cash_counted_fcfa ?? 0)} />
+        <Row label="MoMo" value={fcfa(result.momo_fcfa)} />
+        <p className={`my-5 text-center font-bouff-display text-4xl ${gap === 0 ? "text-bouff-success" : "text-bouff-danger"}`}>
+          {gap === 0 ? "Caisse juste" : gap > 0 ? `Surplus ${fcfa(gap)}` : `Manque ${fcfa(-gap)}`}
+        </p>
+        <button onClick={onClose} className="w-full rounded-bouff-md bg-bouff-primary py-4 text-xl font-bold text-bouff-on-primary">
+          Terminer
+        </button>
+      </Modal>
+    );
+  }
+
+  return (
+    <Modal onClose={() => !busy && onClose()}>
+      <p className="mb-1 text-2xl font-semibold">Clôturer ma caisse</p>
+      {summary && (
+        <p className="mb-4 text-sm text-bouff-text-muted">
+          Depuis {new Date(summary.period_start).toLocaleString("fr-FR", { weekday: "long", hour: "2-digit", minute: "2-digit" })}
+        </p>
+      )}
+      {!summary && !error && <p className="text-bouff-text-muted">Chargement…</p>}
+      {summary && (
+        <>
+          <Row label="Ventes" value={String(summary.orders_count)} />
+          <Row label="Annulées" value={String(summary.cancelled_count)} />
+          <Row label="MoMo" value={fcfa(summary.momo_fcfa)} />
+          <p className="mt-5 mb-2 font-semibold">Compte l'argent du tiroir et saisis le montant</p>
+          <input
+            value={counted}
+            onChange={(e) => setCounted(e.target.value.replace(/\D/g, ""))}
+            inputMode="numeric"
+            placeholder="Espèces comptées (F)"
+            className="w-full rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-3 text-2xl text-bouff-text placeholder:text-base placeholder:text-bouff-text-muted placeholder:opacity-100"
+          />
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Remarque (facultatif)"
+            className="mt-2 w-full rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2 text-bouff-text placeholder:text-bouff-text-muted placeholder:opacity-100"
+          />
+        </>
+      )}
+      {error && <p className="mt-3 text-bouff-danger">{error}</p>}
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <button onClick={onClose} disabled={busy} className="rounded-bouff-md bg-bouff-surface-raised py-4 text-lg">
+          Retour
+        </button>
+        <button
+          onClick={submit}
+          disabled={busy || !summary || counted === ""}
+          className="rounded-bouff-md bg-bouff-primary py-4 text-lg font-bold text-bouff-on-primary disabled:opacity-40"
+        >
+          {busy ? "Envoi…" : "Clôturer"}
+        </button>
+      </div>
+    </Modal>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between border-b border-bouff-line py-2 text-lg">
+      <span className="text-bouff-text-muted">{label}</span>
+      <span className="font-semibold">{value}</span>
+    </div>
   );
 }
