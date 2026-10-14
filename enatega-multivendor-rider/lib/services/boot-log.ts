@@ -91,8 +91,10 @@ try {
     if (fatal) setTimeout(() => prev?.(e, fatal), 1500);
     else prev?.(e, fatal);
   });
-  const tracking = require("promise/setimmediate/rejection-tracking");
-  tracking?.enable?.({
+  const hermes = (globalThis as unknown as {
+    HermesInternal?: { enablePromiseRejectionTracker?: (o: unknown) => void };
+  }).HermesInternal;
+  hermes?.enablePromiseRejectionTracker?.({
     allRejections: true,
     onUnhandled: (_id: number, err: unknown) => bootLog("unhandled_promise", err),
     onHandled: () => {},
