@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker } from '../../../bouff/map';
 
 const CustomMarkerWithLabel = ({ coordinate, label, icon, onPress, currentTheme }) => {
   const styles = getStyles(currentTheme);

@@ -1,7 +1,7 @@
 import React, { useState, useContext, useLayoutEffect, useEffect } from 'react'
 import { View, TouchableOpacity } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps'
+import MapView, { PROVIDER_DEFAULT } from '../../bouff/map'
 import styles from './styles'
 import { theme } from '../../utils/themeColors'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'

@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native'
 import React from 'react'
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { PROVIDER_GOOGLE } from '../../../bouff/map'
 import { AntDesign, MaterialIcons } from '@expo/vector-icons'
 import { scale } from '../../../utils/scaling'
 import { alignment } from '../../../utils/alignment'

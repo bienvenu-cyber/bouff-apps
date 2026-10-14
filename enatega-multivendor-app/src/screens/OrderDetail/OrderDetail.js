@@ -6,7 +6,7 @@ import { alignment } from '../../utils/alignment'
 import styles from './styles'
 import React, { useContext, useEffect, useState, useRef, useCallback, useMemo } from 'react'
 import Spinner from '../../components/Spinner/Spinner'
-import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps'
+import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from '../../bouff/map'
 import ConfigurationContext from '../../context/Configuration'
 import ThemeContext from '../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../utils/themeColors'
@@ -39,6 +39,7 @@ import ErrorView from '../../components/ErrorView/ErrorView'
 import { useMultivendorTheme } from '../../ui/designSystem'
 import OrderStatusTimeline from '../../components/OrderDetail/OrderStatusTimeline'
 import { decodePolyline, trimPolylineToRider } from '../../utils/polyline'
+import { useRoute, formatEta, formatDistance } from '../../bouff/route'
 
 const CANCEL_ORDER = gql`
   ${cancelOrderMutation}
@@ -263,10 +264,16 @@ function OrderDetail(props) {
 
   const eta = tracking?.eta || order?.eta
   const riderLocation = tracking?.riderLocation || null
-  const routeCoordinates = useMemo(() => {
+  const serverRoute = useMemo(() => {
     const decoded = decodePolyline(eta?.encodedPolyline)
     return trimPolylineToRider(decoded, riderLocation)
   }, [eta?.encodedPolyline, riderLocation])
+  // Itinéraire libre (OSRM) livreur → client quand le serveur n'en fournit pas.
+  const customerPoint = order?.deliveryAddress?.location?.coordinates?.length
+    ? { latitude: +order.deliveryAddress.location.coordinates[1], longitude: +order.deliveryAddress.location.coordinates[0] }
+    : null
+  const freeRoute = useRoute(order?.orderStatus === 'PICKED' && riderLocation ? riderLocation : null, customerPoint)
+  const routeCoordinates = serverRoute.length > 1 ? serverRoute : freeRoute?.coordinates ?? []
 
   useEffect(() => {
     if (!mapView.current || routeCoordinates.length < 2) return
@@ -436,6 +443,11 @@ function OrderDetail(props) {
                 {eta?.windowStartAt && eta?.windowEndAt ? `${formatClockTime(eta.windowStartAt)}–${formatClockTime(eta.windowEndAt)}` : t('calculating', { defaultValue: 'Calculating…' })}
               </TextDefault>
             </View>
+          )}
+          {order?.orderStatus === 'PICKED' && freeRoute && (
+            <TextDefault textColor={currentTheme.colors.textSecondary}>
+              {`Votre livreur arrive dans ${formatEta(freeRoute.durationMin)} · ${formatDistance(freeRoute.distanceKm)}`}
+            </TextDefault>
           )}
           <OrderStatusTimeline currentStatus={order?.orderStatus} isPickup={order?.isPickedUp} theme={currentTheme} />
         </View>
