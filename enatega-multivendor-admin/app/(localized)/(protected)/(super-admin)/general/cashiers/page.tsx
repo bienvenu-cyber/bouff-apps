@@ -73,16 +73,16 @@ export default function CashiersPage() {
     <div className="screen-container p-6">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">Caissières</h1>
+          <h1 className="text-2xl font-semibold">Hôtesses</h1>
           <p className="text-sm text-gray-500">
-            Chaque caissière a son propre code à 6 chiffres pour ouvrir la caisse du comptoir :{' '}
+            Chaque hôtesse a son propre code à 6 chiffres pour ouvrir la caisse du comptoir :{' '}
             <a className="underline" href={`${SITE.replace(/\/$/, '')}/caisse`} target="_blank" rel="noreferrer">
               {SITE.replace(/^https?:\/\//, '').replace(/\/$/, '')}/caisse
             </a>
           </p>
         </div>
         <button onClick={() => open('new')} className="rounded-md bg-black px-4 py-2 text-white dark:bg-white dark:text-black">
-          + Ajouter une caissière
+          + Ajouter une hôtesse
         </button>
       </div>
 
@@ -90,7 +90,7 @@ export default function CashiersPage() {
       {error && !editing && <p className="mb-4 rounded-md bg-red-50 p-3 text-red-700">{error}</p>}
 
       {!rows && !error && <p className="text-gray-500">Chargement…</p>}
-      {rows?.length === 0 && <p className="text-gray-500">Aucune caissière pour l'instant.</p>}
+      {rows?.length === 0 && <p className="text-gray-500">Aucune hôtesse pour l'instant.</p>}
 
       {rows && rows.length > 0 && (
         <table className="w-full text-left">
@@ -125,7 +125,7 @@ export default function CashiersPage() {
       {editing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={() => !busy && setEditing(null)}>
           <div className="w-full max-w-md rounded-lg bg-white p-6 dark:bg-neutral-900" onClick={(e) => e.stopPropagation()}>
-            <h2 className="mb-4 text-xl font-semibold">{editing === 'new' ? 'Nouvelle caissière' : `Modifier ${editing.full_name}`}</h2>
+            <h2 className="mb-4 text-xl font-semibold">{editing === 'new' ? 'Nouvelle hôtesse' : `Modifier ${editing.full_name}`}</h2>
             <label className="mb-1 block text-sm">Prénom</label>
             <input value={name} onChange={(e) => setName(e.target.value)} className="mb-4 w-full rounded-md border px-3 py-2 dark:bg-neutral-800" />
             <label className="mb-1 block text-sm">
