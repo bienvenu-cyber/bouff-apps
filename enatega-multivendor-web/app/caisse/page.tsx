@@ -884,6 +884,8 @@ function CloseDay({ token, name, onClose, onExpired }: { token: string; name: st
   const [result, setResult] = useState<CounterDaySummary | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [settled, setSettled] = useState(false);
+  const liveGap = summary && counted !== "" ? Number(counted) - summary.cash_fcfa : null;
 
   useEffect(() => {
     counterDaySummary(token)
@@ -896,7 +898,13 @@ function CloseDay({ token, name, onClose, onExpired }: { token: string; name: st
     setBusy(true);
     setError(null);
     try {
-      setResult(await counterCloseDay(token, Number(counted), note.trim()));
+      const fix =
+        liveGap && settled
+          ? liveGap < 0
+            ? `Manque de ${fcfa(-liveGap)} remboursé par la caissière.`
+            : `Surplus de ${fcfa(liveGap)} retiré du tiroir.`
+          : "";
+      setResult(await counterCloseDay(token, Number(counted), [fix, note.trim()].filter(Boolean).join(" ")));
     } catch (e) {
       if (isSessionError(e)) onExpired();
       else setError((e as Error).message);
@@ -961,7 +969,7 @@ function CloseDay({ token, name, onClose, onExpired }: { token: string; name: st
                 type="checkbox"
                 checked={settled}
                 onChange={(e) => setSettled(e.target.checked)}
-                className="mt-1 h-6 w-6 shrink-0 accent-[var(--bouff-primary,#FF7A1A)]"
+                className="mt-1 h-6 w-6 shrink-0 accent-bouff-primary"
               />
               <span className="text-bouff-text">
                 {liveGap < 0
@@ -980,7 +988,7 @@ function CloseDay({ token, name, onClose, onExpired }: { token: string; name: st
       )}
       {error && <p className="mt-3 text-bouff-danger">{error}</p>}
       <div className="mt-5 grid grid-cols-2 gap-3">
-        <button onClick={onClose} disabled={busy} className="rounded-bouff-md bg-bouff-primary/0 bg-bouff-surface-raised py-4 text-lg">
+        <button onClick={onClose} disabled={busy} className="rounded-bouff-md bg-bouff-surface-raised py-4 text-lg">
           Retour
         </button>
         <button
