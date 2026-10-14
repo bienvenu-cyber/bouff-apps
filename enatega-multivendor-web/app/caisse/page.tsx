@@ -710,13 +710,69 @@ function ItemPicker({
 function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: () => void; onExpired: () => void }) {
   const [rows, setRows] = useState<Awaited<ReturnType<typeof counterRecentOrders>> | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState<{ id: string; number: string } | null>(null);
+  const [reason, setReason] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     counterRecentOrders(token)
       .then(setRows)
       .catch((e) => (isSessionError(e) ? onExpired() : setError(e.message)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+  useEffect(load, [load]);
+
+  const confirmCancel = async () => {
+    if (!cancelling) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await counterCancelOrder(token, cancelling.id, reason.trim());
+      setCancelling(null);
+      setReason("");
+      load();
+    } catch (e) {
+      if (isSessionError(e)) onExpired();
+      else setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (cancelling) {
+    return (
+      <Modal onClose={() => !busy && setCancelling(null)}>
+        <p className="mb-2 text-2xl font-semibold">Annuler la commande {cancelling.number}</p>
+        <p className="mb-4 text-bouff-text-muted">L'annulation est enregistrée à ton nom avec le motif. Rends l'argent au client si besoin.</p>
+        <div className="mb-3 flex flex-wrap gap-2">
+          {["Erreur de saisie", "Client parti", "Produit indisponible", "Doublon"].map((r) => (
+            <button key={r} onClick={() => setReason(r)} className={`rounded-full px-4 py-2 ${reason === r ? "bg-bouff-primary text-bouff-on-primary" : "bg-bouff-surface-raised"}`}>
+              {r}
+            </button>
+          ))}
+        </div>
+        <input
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          placeholder="Motif (obligatoire)"
+          className="w-full rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-3 text-bouff-text placeholder:text-bouff-text-muted placeholder:opacity-100"
+        />
+        {error && <p className="mt-3 text-bouff-danger">{error}</p>}
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <button onClick={() => setCancelling(null)} disabled={busy} className="rounded-bouff-md bg-bouff-surface-raised py-4 text-lg">
+            Retour
+          </button>
+          <button
+            onClick={confirmCancel}
+            disabled={busy || reason.trim().length < 3}
+            className="rounded-bouff-md bg-bouff-danger py-4 text-lg font-bold text-bouff-text disabled:opacity-40"
+          >
+            {busy ? "Annulation…" : "Confirmer l'annulation"}
+          </button>
+        </div>
+      </Modal>
+    );
+  }
 
   return (
     <Modal onClose={onClose}>
@@ -725,8 +781,8 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
       {!rows && !error && <p className="text-bouff-text-muted">Chargement…</p>}
       {rows?.length === 0 && <p className="text-bouff-text-muted">Aucune commande pour l'instant.</p>}
       {rows?.map((r) => (
-        <div key={r.order_number} className="flex items-center justify-between border-b border-bouff-line py-3">
-          <div>
+        <div key={r.order_number} className="flex items-center justify-between gap-3 border-b border-bouff-line py-3">
+          <div className="min-w-0">
             <p className="font-semibold">
               {r.order_number} · {r.customer_name}
             </p>
@@ -734,10 +790,16 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
               {new Date(r.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })} ·{" "}
               {r.dine_in ? "Sur place" : "À emporter"} · {r.payment_method === "mobile_money" ? "MoMo" : "Espèces"}
             </p>
+            {r.status === "cancelled" && r.cancel_reason && <p className="text-sm text-bouff-danger">{r.cancel_reason}</p>}
           </div>
-          <div className="text-right">
-            <p>{fcfa(r.total_fcfa)}</p>
+          <div className="shrink-0 text-right">
+            <p className={r.status === "cancelled" ? "line-through text-bouff-text-muted" : ""}>{fcfa(r.total_fcfa)}</p>
             <p className="text-sm text-bouff-primary">{STATUS_LABEL[r.status] ?? r.status}</p>
+            {r.status !== "cancelled" && r.status !== "delivered" && (
+              <button onClick={() => { setReason(""); setError(null); setCancelling({ id: r.id, number: r.order_number }); }} className="mt-1 text-sm text-bouff-danger underline">
+                Annuler
+              </button>
+            )}
           </div>
         </div>
       ))}
@@ -745,5 +807,108 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
         Fermer
       </button>
     </Modal>
+  );
+}
+
+function CloseDay({ token, name, onClose, onExpired }: { token: string; name: string; onClose: () => void; onExpired: () => void }) {
+  const [summary, setSummary] = useState<CounterDaySummary | null>(null);
+  const [counted, setCounted] = useState("");
+  const [note, setNote] = useState("");
+  const [result, setResult] = useState<CounterDaySummary | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    counterDaySummary(token)
+      .then(setSummary)
+      .catch((e) => (isSessionError(e) ? onExpired() : setError(e.message)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
+  const submit = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      setResult(await counterCloseDay(token, Number(counted), note.trim()));
+    } catch (e) {
+      if (isSessionError(e)) onExpired();
+      else setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (result) {
+    const gap = result.gap_fcfa ?? 0;
+    return (
+      <Modal onClose={onClose}>
+        <p className="mb-4 text-center text-2xl font-semibold">Caisse clôturée · {name}</p>
+        <Row label="Ventes" value={String(result.orders_count)} />
+        <Row label="Espèces attendues" value={fcfa(result.cash_fcfa)} />
+        <Row label="Espèces comptées" value={fcfa(result.cash_counted_fcfa ?? 0)} />
+        <Row label="MoMo" value={fcfa(result.momo_fcfa)} />
+        <p className={`my-5 text-center font-bouff-display text-4xl ${gap === 0 ? "text-bouff-success" : "text-bouff-danger"}`}>
+          {gap === 0 ? "Caisse juste" : gap > 0 ? `Surplus ${fcfa(gap)}` : `Manque ${fcfa(-gap)}`}
+        </p>
+        <button onClick={onClose} className="w-full rounded-bouff-md bg-bouff-primary py-4 text-xl font-bold text-bouff-on-primary">
+          Terminer
+        </button>
+      </Modal>
+    );
+  }
+
+  return (
+    <Modal onClose={() => !busy && onClose()}>
+      <p className="mb-1 text-2xl font-semibold">Clôturer ma caisse</p>
+      {summary && (
+        <p className="mb-4 text-sm text-bouff-text-muted">
+          Depuis {new Date(summary.period_start).toLocaleString("fr-FR", { weekday: "long", hour: "2-digit", minute: "2-digit" })}
+        </p>
+      )}
+      {!summary && !error && <p className="text-bouff-text-muted">Chargement…</p>}
+      {summary && (
+        <>
+          <Row label="Ventes" value={String(summary.orders_count)} />
+          <Row label="Annulées" value={String(summary.cancelled_count)} />
+          <Row label="MoMo" value={fcfa(summary.momo_fcfa)} />
+          <p className="mt-5 mb-2 font-semibold">Compte l'argent du tiroir et saisis le montant</p>
+          <input
+            value={counted}
+            onChange={(e) => setCounted(e.target.value.replace(/\D/g, ""))}
+            inputMode="numeric"
+            placeholder="Espèces comptées (F)"
+            className="w-full rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-3 text-2xl text-bouff-text placeholder:text-base placeholder:text-bouff-text-muted placeholder:opacity-100"
+          />
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Remarque (facultatif)"
+            className="mt-2 w-full rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-2 text-bouff-text placeholder:text-bouff-text-muted placeholder:opacity-100"
+          />
+        </>
+      )}
+      {error && <p className="mt-3 text-bouff-danger">{error}</p>}
+      <div className="mt-5 grid grid-cols-2 gap-3">
+        <button onClick={onClose} disabled={busy} className="rounded-bouff-md bg-bouff-surface-raised py-4 text-lg">
+          Retour
+        </button>
+        <button
+          onClick={submit}
+          disabled={busy || !summary || counted === ""}
+          className="rounded-bouff-md bg-bouff-primary py-4 text-lg font-bold text-bouff-on-primary disabled:opacity-40"
+        >
+          {busy ? "Envoi…" : "Clôturer"}
+        </button>
+      </div>
+    </Modal>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between border-b border-bouff-line py-2 text-lg">
+      <span className="text-bouff-text-muted">{label}</span>
+      <span className="font-semibold">{value}</span>
+    </div>
   );
 }
