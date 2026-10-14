@@ -27,13 +27,13 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import MapView, {
-  LatLng,
-  MapStyleElement,
-  Marker,
-  PROVIDER_DEFAULT,
-} from "react-native-maps";
-import MapViewDirections from "react-native-maps-directions";
+import MapLibreGL, { type CameraRef } from "@maplibre/maplibre-react-native";
+import {
+  type LatLng,
+  mapStyleUrl,
+  toLngLat,
+  useRoute,
+} from "@/lib/utils/map/route";
 
 // Methods
 import { linkToMapsApp } from "@/lib/utils/methods";
@@ -67,7 +67,7 @@ import AccordionItem from "@/lib/ui/useable-components/accordian";
 import SpinnerComponent from "@/lib/ui/useable-components/spinner";
 import { ChatIcon, HomeIcon } from "@/lib/ui/useable-components/svg";
 import WelldoneComponent from "@/lib/ui/useable-components/well-done";
-import { CustomMapStyles } from "@/lib/utils/constants/map";
+const BOUFF_ORANGE = "#FF7A1A";
 import { map_styles } from "@/lib/utils/constants/order-details";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { RIDER_SERVER_MODES } from "@/lib/mode/rider-mode";
@@ -101,12 +101,11 @@ const isValidCoordinate = (
 export default function OrderDetailScreen() {
   // Ref
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const mapRef = useRef<MapView>(null);
+  const cameraRef = useRef<CameraRef>(null);
   const router = useRouter();
 
   // Context
   const configuration = useContext(ConfigurationContext);
-  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const insets = useSafeAreaInsets();
 
   // Hooks
@@ -134,16 +133,9 @@ export default function OrderDetailScreen() {
     useDetails(order);
 
   // States
-  // customMapStyles is a pure derivation of the active theme — memoize it
-  // instead of mirroring it into state via an effect (avoids an extra render).
-  const customMapStyles = useMemo<MapStyleElement[]>(
-    () => CustomMapStyles(appTheme),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [currentTheme],
-  );
+  // Fond de carte libre (OpenFreeMap) assorti au thème.
+  const mapStyle = mapStyleUrl(currentTheme === "dark");
   const [orderId, setOrderId] = useState("");
-  const [retryCount, setRetryCount] = useState(0);
-  const retryCountRef = useRef(0);
 
   const activeRouteCoordinates = useMemo<LatLng[]>(() => {
     const destination = ["PICKED", "DELIVERED"].includes(
@@ -161,140 +153,37 @@ export default function OrderDetailScreen() {
 
   const fitMapToCoordinates = useCallback(
     (coordinates: LatLng[], animated = true) => {
-      const validCoordinates = coordinates.filter(isValidCoordinate);
-      if (validCoordinates.length < 2) return;
-      mapRef.current?.fitToCoordinates(validCoordinates, {
-        edgePadding: MAP_EDGE_PADDING,
-        animated,
-      });
+      const valid = coordinates.filter(isValidCoordinate);
+      if (valid.length < 2) return;
+      const lats = valid.map((c) => c.latitude);
+      const lngs = valid.map((c) => c.longitude);
+      cameraRef.current?.fitBounds(
+        [Math.max(...lngs), Math.max(...lats)],
+        [Math.min(...lngs), Math.min(...lats)],
+        [
+          MAP_EDGE_PADDING.top,
+          MAP_EDGE_PADDING.right,
+          MAP_EDGE_PADDING.bottom,
+          MAP_EDGE_PADDING.left,
+        ],
+        animated ? 800 : 0,
+      );
     },
     [],
   );
 
-  // Ref
-  const latitude = useRef(
-    new Animated.Value(locationPin.location.latitude),
-  ).current;
-  const longitude = useRef(
-    new Animated.Value(locationPin.location.longitude),
-  ).current;
-  // Last coordinates the marker was moved to, so we only animate on real changes
-  const lastMarkerLocation = useRef<LatLng | null>(null);
-
-  // Handler
-  const moveMarker = useCallback((newLocation: LatLng) => {
-    // Safety check for valid coordinates before starting animation
-    // This prevents trying to animate to invalid coordinates which could cause crashes
-    if (!isValidCoordinate(newLocation)) {
-      console.warn("Attempted to move marker to invalid location", newLocation);
-      return;
-    }
-
-    // Use a single animation group to prevent potential race conditions
-    // This prevents array index issues by ensuring animations stay in sync
-    Animated.parallel([
-      Animated.timing(latitude, {
-        toValue: newLocation.latitude,
-        duration: 2000,
-        useNativeDriver: false,
-      }),
-      Animated.timing(longitude, {
-        toValue: newLocation.longitude,
-        duration: 2000,
-        useNativeDriver: false,
-      }),
-    ]).start();
-  }, [latitude, longitude]);
-
-  useEffect(() => {
-    return () => {
-      if (retryTimeoutRef.current) {
-        clearTimeout(retryTimeoutRef.current);
-        retryTimeoutRef.current = null;
-      }
-    };
-  }, []);
-
-  const clearRouteRetry = useCallback(() => {
-    if (retryTimeoutRef.current) {
-      clearTimeout(retryTimeoutRef.current);
-      retryTimeoutRef.current = null;
-    }
-  }, []);
-
-  const resetRouteRetry = useCallback(() => {
-    clearRouteRetry();
-    retryCountRef.current = 0;
-    setRetryCount(0);
-  }, [clearRouteRetry]);
-
-  const scheduleRouteRetry = useCallback(() => {
-    if (retryCountRef.current >= MAX_ROUTE_RETRIES) {
-      return;
-    }
-
-    if (retryTimeoutRef.current) {
-      return;
-    }
-
-    const nextAttempt = retryCountRef.current + 1;
-    retryTimeoutRef.current = setTimeout(() => {
-      retryTimeoutRef.current = null;
-      retryCountRef.current = nextAttempt;
-      setRetryCount(nextAttempt);
-    }, RETRY_BASE_DELAY_MS * nextAttempt);
-  }, []);
-
-  const handleRouteReady = useCallback(
-    (result: {
-      distance?: number;
-      duration?: number;
-      coordinates?: LatLng[];
-    }) => {
-      if (result?.distance) {
-        setDistance(result.distance);
-        setDuration(result.duration ?? null);
-      }
-
-      if (result.coordinates?.length) {
-        fitMapToCoordinates(result.coordinates);
-      }
-
-      resetRouteRetry();
-    },
-    [fitMapToCoordinates, resetRouteRetry, setDistance, setDuration],
-  );
-
-  const handleRouteError = useCallback(
-    (label: string) => (error: unknown) => {
-      if (__DEV__) {
-        console.log(`${label} route error:`, error);
-      }
-
-      if (String(error).includes("NOT_FOUND")) {
-        scheduleRouteRetry();
-        return;
-      }
-
-      clearRouteRetry();
-    },
-    [scheduleRouteRetry, clearRouteRetry],
-  );
-
-  // Stable per-leg error handlers so MapViewDirections doesn't see a new
-  // onError prop on every render.
-  const handleStoreRouteError = useMemo(
-    () => handleRouteError("Detailed"),
-    [handleRouteError],
-  );
-  const handleDeliveryRouteError = useMemo(
-    () => handleRouteError("Delivery"),
-    [handleRouteError],
-  );
-  const handleDefaultRouteError = useMemo(
-    () => handleRouteError("Default"),
-    [handleRouteError],
-  );
+  // Itinéraire selon l'étape : livreur → restaurant, livreur → client,
+  // sinon restaurant → client.
+  const status = order?.orderStatus ?? "";
+  const routeFrom =
+    status === "ACCEPTED" || status === "ASSIGNED" || status === "PICKED"
+      ? locationPin?.location
+      : restaurantAddressPin?.location;
+  const routeTo =
+    status === "ACCEPTED" || status === "ASSIGNED"
+      ? restaurantAddressPin?.location
+      : deliveryAddressPin?.location;
+  const route = useRoute(routeFrom, routeTo);
 
   const openMaps = () => {
     try {
@@ -359,48 +248,17 @@ export default function OrderDetailScreen() {
     }
   };
 
-  // Use Effect
+  // Distance / durée affichées dans la fiche : issues de l'itinéraire libre.
   useEffect(() => {
-    // Added validation for Google Maps API key to catch common configuration issues
-    if (__DEV__ && (!GOOGLE_MAPS_KEY || GOOGLE_MAPS_KEY === "")) {
-      console.log("Google Maps API key is missing or invalid");
-    }
-  }, [GOOGLE_MAPS_KEY]);
+    if (!route) return;
+    setDistance(route.distanceKm);
+    setDuration(route.durationMin);
+  }, [route, setDistance, setDuration]);
 
-  // Move the marker only when the rider's coordinates actually change,
-  // instead of re-animating on a timer to often-identical positions
+  // Recadre la carte quand l'itinéraire réel arrive.
   useEffect(() => {
-    if (!locationPin?.location || !isValidCoordinate(locationPin.location)) {
-      console.warn("Location pin is invalid or missing:", locationPin);
-      return;
-    }
-
-    const next = {
-      latitude: locationPin.location.latitude,
-      longitude: locationPin.location.longitude,
-    };
-    const prev = lastMarkerLocation.current;
-
-    if (!prev) {
-      // Initial positioning (without animation)
-      latitude.setValue(next.latitude);
-      longitude.setValue(next.longitude);
-    } else if (
-      prev.latitude !== next.latitude ||
-      prev.longitude !== next.longitude
-    ) {
-      moveMarker(next);
-    }
-
-    lastMarkerLocation.current = next;
-  }, [latitude, locationPin, longitude, moveMarker]);
-
-  useEffect(() => {
-    return () => {
-      latitude.stopAnimation();
-      longitude.stopAnimation();
-    };
-  }, [latitude, longitude]);
+    if (route && !route.approximate) fitMapToCoordinates(route.coordinates);
+  }, [route, fitMapToCoordinates]);
 
   useEffect(() => {
     fitMapToCoordinates(activeRouteCoordinates);
@@ -468,169 +326,118 @@ export default function OrderDetailScreen() {
               />
             </TouchableOpacity>
           </View>
-          {!GOOGLE_MAPS_KEY ? (
-            <View className="flex-1 justify-center items-center">
-              <SpinnerComponent size="large" />
-            </View>
-          ) : canRenderMap ? (
-            <MapView
-              ref={mapRef}
+          {canRenderMap ? (
+            <MapLibreGL.MapView
               style={{
                 width: "100%",
                 height: "100%",
                 backgroundColor: appTheme.themeBackground,
               }}
-              customMapStyle={customMapStyles}
-              showsUserLocation
-              showsCompass
-              showsMyLocationButton
-              zoomEnabled={true}
-              zoomControlEnabled={true}
+              mapStyle={mapStyle}
+              logoEnabled={false}
+              attributionEnabled
+              attributionPosition={{ bottom: 8, left: 8 }}
+              compassEnabled
               rotateEnabled={false}
-              mapPadding={{ top: 64, right: 16, bottom: 96, left: 16 }}
-              onMapReady={() =>
+              pitchEnabled={false}
+              onDidFinishLoadingMap={() =>
                 fitMapToCoordinates(activeRouteCoordinates, false)
               }
-              initialRegion={{
-                latitude:
-                  (hasValidRiderLocation && locationPin?.location?.latitude) ||
-                  (hasValidRestaurantLocation &&
-                    restaurantAddressPin?.location?.latitude) ||
-                  deliveryAddressPin?.location?.latitude ||
-                  0.0,
-                longitude:
-                  (hasValidRiderLocation && locationPin?.location?.longitude) ||
-                  (hasValidRestaurantLocation &&
-                    restaurantAddressPin?.location?.longitude) ||
-                  deliveryAddressPin?.location?.longitude ||
-                  0.0,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              provider={PROVIDER_DEFAULT}
-            // customMapStyle={MapStyles}
             >
-              {deliveryAddressPin?.location && (
-                <Marker
-                  coordinate={deliveryAddressPin.location}
-                  title={t("Delivery Address")}
-                  onPress={() => {
-                    linkToMapsApp(
+              <MapLibreGL.Camera
+                ref={cameraRef}
+                defaultSettings={{
+                  centerCoordinate: toLngLat(
+                    (hasValidRiderLocation && locationPin.location) ||
+                      (hasValidRestaurantLocation &&
+                        restaurantAddressPin.location) ||
                       deliveryAddressPin.location,
-                      deliveryAddressPin.label,
-                    );
+                  ),
+                  zoomLevel: 14,
+                }}
+              />
+              <MapLibreGL.UserLocation visible={false} />
+
+              {route && route.coordinates.length > 1 && (
+                <MapLibreGL.ShapeSource
+                  id="bouff-route"
+                  shape={{
+                    type: "Feature",
+                    properties: {},
+                    geometry: {
+                      type: "LineString",
+                      coordinates: route.coordinates.map(toLngLat),
+                    },
                   }}
                 >
-                  <Image
-                    source={require("@/lib/assets/home_icon.png")}
-                    style={{ height: 35, width: 32 }}
-                  />
-                </Marker>
-              )}
-              {restaurantAddressPin?.location && (
-                <Marker
-                  coordinate={restaurantAddressPin.location}
-                  title={t("Restaurant")}
-                  onPress={() => {
-                    linkToMapsApp(
-                      restaurantAddressPin.location,
-                      restaurantAddressPin.label,
-                    );
-                  }}
-                >
-                  <Image
-                    source={require("@/lib/assets/rest_icon.png")}
-                    style={{ height: 35, width: 32 }}
-                  />
-                </Marker>
-              )}
-              {/* Added multiple validation checks for rider marker to prevent array index errors */}
-              {locationPin?.location &&
-                isValidCoordinate(locationPin.location) && (
-                  <Marker.Animated
-                    coordinate={{ latitude, longitude }}
-                    title="Rider"
-                    description={t("This is rider's location")}
-                    onPress={() => {
-                      if (
-                        locationPin?.location &&
-                        isValidCoordinate(locationPin.location)
-                      ) {
-                        linkToMapsApp(locationPin.location, locationPin.label);
-                      }
+                  <MapLibreGL.LineLayer
+                    id="bouff-route-line"
+                    style={{
+                      lineColor: BOUFF_ORANGE,
+                      lineWidth: 5,
+                      lineCap: "round",
+                      lineJoin: "round",
+                      lineDasharray: route.approximate ? [2, 2] : undefined,
                     }}
+                  />
+                </MapLibreGL.ShapeSource>
+              )}
+
+              {hasValidDeliveryLocation && (
+                <MapLibreGL.MarkerView
+                  coordinate={toLngLat(deliveryAddressPin.location)}
+                  anchor={{ x: 0.5, y: 1 }}
+                >
+                  <TouchableOpacity
+                    accessibilityLabel={t("Delivery Address")}
+                    onPress={() =>
+                      linkToMapsApp(
+                        deliveryAddressPin.location,
+                        deliveryAddressPin.label,
+                      )
+                    }
                   >
                     <Image
-                      source={require("@/lib/assets/rider_icon.png")}
+                      source={require("@/lib/assets/home_icon.png")}
                       style={{ height: 35, width: 32 }}
                     />
-                  </Marker.Animated>
-                )}
-
-              {/* Added validation for rider to restaurant directions */}
-              {order?.orderStatus === "ACCEPTED" ||
-                order?.orderStatus === "ASSIGNED"
-                ? isValidCoordinate(locationPin?.location) &&
-                isValidCoordinate(restaurantAddressPin?.location) &&
-                GOOGLE_MAPS_KEY && (
-                  <MapViewDirections
-                    key={`store-route-${retryCount}`}
-                    origin={locationPin?.location}
-                    destination={restaurantAddressPin?.location}
-                    apikey={GOOGLE_MAPS_KEY}
-                    strokeWidth={5}
-                    strokeColor={appTheme.mapRoute}
-                    precision="low"
-                    resetOnChange={false} // Prevents unnecessary recalculations
-                    onReady={handleRouteReady}
-                    optimizeWaypoints={true}
-                    onError={handleStoreRouteError}
+                  </TouchableOpacity>
+                </MapLibreGL.MarkerView>
+              )}
+              {hasValidRestaurantLocation && (
+                <MapLibreGL.MarkerView
+                  coordinate={toLngLat(restaurantAddressPin.location)}
+                  anchor={{ x: 0.5, y: 1 }}
+                >
+                  <TouchableOpacity
+                    accessibilityLabel={t("Restaurant")}
+                    onPress={() =>
+                      linkToMapsApp(
+                        restaurantAddressPin.location,
+                        restaurantAddressPin.label,
+                      )
+                    }
+                  >
+                    <Image
+                      source={require("@/lib/assets/rest_icon.png")}
+                      style={{ height: 35, width: 32 }}
+                    />
+                  </TouchableOpacity>
+                </MapLibreGL.MarkerView>
+              )}
+              {hasValidRiderLocation && (
+                <MapLibreGL.MarkerView
+                  coordinate={toLngLat(locationPin.location)}
+                  anchor={{ x: 0.5, y: 0.5 }}
+                >
+                  <Image
+                    accessibilityLabel={t("This is rider's location")}
+                    source={require("@/lib/assets/rider_icon.png")}
+                    style={{ height: 35, width: 32 }}
                   />
-                )
-                : null}
-
-              {/* Added validation for rider to customer directions */}
-              {order?.orderStatus === "PICKED" &&
-                isValidCoordinate(locationPin?.location) &&
-                isValidCoordinate(deliveryAddressPin?.location) &&
-                GOOGLE_MAPS_KEY && (
-                  <MapViewDirections
-                    key={`delivery-route-${retryCount}`}
-                    origin={locationPin?.location}
-                    destination={deliveryAddressPin?.location}
-                    apikey={GOOGLE_MAPS_KEY}
-                    strokeWidth={5}
-                    strokeColor={appTheme.mapRoute}
-                    precision="low"
-                    resetOnChange={false}
-                    optimizeWaypoints={true}
-                    onReady={handleRouteReady}
-                    onError={handleDeliveryRouteError}
-                  />
-                )}
-
-              {/* Added validation for restaurant to customer directions */}
-              {order?.orderStatus !== "ACCEPTED" &&
-                order?.orderStatus !== "PICKED" &&
-                order?.orderStatus !== "ASSIGNED" &&
-                isValidCoordinate(restaurantAddressPin?.location) &&
-                isValidCoordinate(deliveryAddressPin?.location) && (
-                  <MapViewDirections
-                    key={`default-route-${retryCount}`}
-                    origin={restaurantAddressPin?.location}
-                    destination={deliveryAddressPin?.location}
-                    apikey={GOOGLE_MAPS_KEY ?? ""}
-                    strokeWidth={5}
-                    precision="low"
-                    strokeColor={appTheme.mapRoute}
-                    resetOnChange={false}
-                    optimizeWaypoints={true}
-                    onReady={handleRouteReady}
-                    onError={handleDefaultRouteError}
-                  />
-                )}
-              {/* <Button title="Open in Maps" onPress={openMaps} /> */}
-            </MapView>
+                </MapLibreGL.MarkerView>
+              )}
+            </MapLibreGL.MapView>
           ) : (
             <View className="flex-1 justify-center items-center gap-y-3">
               <Text className="text-3xl">{t("Map not loaded.")}</Text>
