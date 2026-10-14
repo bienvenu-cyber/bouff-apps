@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Platform, KeyboardAvoidingView, ScrollView, Ima
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import styles from './styles'
 import { OutlinedTextField } from 'react-native-material-textfield'
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps'
+import MapView, { PROVIDER_DEFAULT } from '../../bouff/map'
 import * as Location from 'expo-location'
 import gql from 'graphql-tag'
 import { scale } from '../../utils/scaling'

@@ -1,5 +1,5 @@
 import React from 'react'
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps'
+import MapView, { PROVIDER_DEFAULT } from '../../bouff/map'
 const CustomMapView = React.memo(
   React.forwardRef(function CustomMapView(
     { initialRegion, customMapStyle, onRegionChangeComplete },

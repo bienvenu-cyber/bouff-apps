@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import { View, StyleSheet, Image } from 'react-native'
-import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from 'react-native-maps'
+import MapView, { Marker, Polyline, PROVIDER_DEFAULT } from '../../../../bouff/map'
 import ThemeContext from '../../../../ui/ThemeContext/ThemeContext'
 import { theme } from '../../../../utils/themeColors'
 import { scale } from '../../../../utils/scaling'

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View, StatusBar, Linking, TouchableOpacity, Platform } from 'react-native'
 import { AntDesign, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons'
-import MapView, { PROVIDER_DEFAULT } from 'react-native-maps'
+import MapView, { PROVIDER_DEFAULT } from '../../bouff/map'
 import { scale } from '../../utils/scaling'
 import ImageHeader from '../../components/About/Header'
 import styles from './styles'
