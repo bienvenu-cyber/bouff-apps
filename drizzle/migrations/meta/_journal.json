@@ -134,6 +134,13 @@
       "when": 1791994573060,
       "tag": "0018_counter_cancel_only_before_kitchen",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1791995692075,
+      "tag": "0019_rename_cashier_messages_hotesse",
+      "breakpoints": true
     }
   ]
 }
