@@ -1,6 +1,6 @@
 {
   "name": "mobile-architecture",
-  "main": "expo-router/entry",
+  "main": "index.js",
   "version": "1.0.0",
   "overrides": {
     "nativewind": {
@@ -16,7 +16,6 @@
     "test": "jest --watchAll",
     "check:single-vendor-schema": "node ./scripts/check-single-vendor-schema.js",
     "lint": "npx eslint && prettier --write .",
-    "upload-sourcemaps": "npx sentry-expo upload-sourcemaps"
   },
   "jest": {
     "preset": "jest-expo"
