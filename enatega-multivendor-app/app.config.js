@@ -199,6 +199,8 @@ module.exports = () => {
       './plugins/with-firebase-notification-color',
       'expo-notifications',
       'expo-font',
+      // Carte libre (MapLibre + OpenFreeMap) : aucune clé Google nécessaire.
+      '@maplibre/maplibre-react-native',
       'expo-secure-store',
       'expo-localization',
       'expo-web-browser',
