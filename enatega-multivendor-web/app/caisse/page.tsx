@@ -938,14 +938,38 @@ function CloseDay({ token, name, onClose, onExpired }: { token: string; name: st
           <Row label="Ventes" value={String(summary.orders_count)} />
           <Row label="Annulées" value={String(summary.cancelled_count)} />
           <Row label="MoMo" value={fcfa(summary.momo_fcfa)} />
+          <Row label="Espèces attendues" value={fcfa(summary.cash_fcfa)} />
           <p className="mt-5 mb-2 font-semibold">Compte l'argent du tiroir et saisis le montant</p>
           <input
             value={counted}
-            onChange={(e) => setCounted(e.target.value.replace(/\D/g, ""))}
+            onChange={(e) => {
+              setCounted(e.target.value.replace(/\D/g, ""));
+              setSettled(false);
+            }}
             inputMode="numeric"
             placeholder="Espèces comptées (F)"
             className="w-full rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-3 text-2xl text-bouff-text placeholder:text-base placeholder:text-bouff-text-muted placeholder:opacity-100"
           />
+          {liveGap !== null && (
+            <p className={`mt-3 text-center font-bouff-display text-3xl ${liveGap === 0 ? "text-bouff-success" : "text-bouff-danger"}`}>
+              {liveGap === 0 ? "Caisse juste" : liveGap < 0 ? `Il manque ${fcfa(-liveGap)}` : `Surplus de ${fcfa(liveGap)}`}
+            </p>
+          )}
+          {liveGap !== null && liveGap !== 0 && (
+            <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-bouff-md border border-bouff-line bg-bouff-surface-raised p-3">
+              <input
+                type="checkbox"
+                checked={settled}
+                onChange={(e) => setSettled(e.target.checked)}
+                className="mt-1 h-6 w-6 shrink-0 accent-[var(--bouff-primary,#FF7A1A)]"
+              />
+              <span className="text-bouff-text">
+                {liveGap < 0
+                  ? `Je confirme avoir remboursé les ${fcfa(-liveGap)} manquants : le tiroir contient maintenant ${fcfa(summary.cash_fcfa)}.`
+                  : `Je confirme avoir retiré et remis le surplus de ${fcfa(liveGap)} : le tiroir contient maintenant ${fcfa(summary.cash_fcfa)}.`}
+              </span>
+            </label>
+          )}
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -956,12 +980,12 @@ function CloseDay({ token, name, onClose, onExpired }: { token: string; name: st
       )}
       {error && <p className="mt-3 text-bouff-danger">{error}</p>}
       <div className="mt-5 grid grid-cols-2 gap-3">
-        <button onClick={onClose} disabled={busy} className="rounded-bouff-md bg-bouff-surface-raised py-4 text-lg">
+        <button onClick={onClose} disabled={busy} className="rounded-bouff-md bg-bouff-primary/0 bg-bouff-surface-raised py-4 text-lg">
           Retour
         </button>
         <button
           onClick={submit}
-          disabled={busy || !summary || counted === ""}
+          disabled={busy || !summary || counted === "" || (liveGap !== null && liveGap !== 0 && !settled)}
           className="rounded-bouff-md bg-bouff-primary py-4 text-lg font-bold text-bouff-on-primary disabled:opacity-40"
         >
           {busy ? "Envoi…" : "Clôturer"}
