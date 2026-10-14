@@ -4,11 +4,7 @@
 // sur une ligne droite si le service ne répond pas.
 import { useEffect, useRef, useState } from "react";
 
-export type LatLng = { latitude: number; longitude: number };
   distanceKm: number;
-  durationMin: number;
-  approximate: boolean;
-};
 
 export const mapStyleUrl = (dark) =>
   `https://tiles.openfreemap.org/styles/${dark ? "dark" : "liberty"}`;
