@@ -97,7 +97,7 @@ module.exports = {
       }
     },
     android: {
-      versionCode: 96,
+      versionCode: 97,
       googleServicesFile: './google-services.json',
       config: {
         googleMaps: {
