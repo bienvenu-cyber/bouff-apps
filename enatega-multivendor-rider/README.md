@@ -23,7 +23,7 @@ npm run android
 ## Important
 
 - This is not an Expo Go project
-- It uses native modules including `expo-dev-client` and `react-native-maps`
+- It uses native modules including `expo-dev-client` and `@maplibre/maplibre-react-native` (carte libre OpenFreeMap, sans clé)
 - Run it with a custom dev build on a simulator or emulator
 
 ## Production

@@ -75,7 +75,9 @@ module.exports = {
         }
       ],
       'expo-font',
-      'expo-secure-store'
+      'expo-secure-store',
+      // Carte libre (MapLibre + OpenFreeMap) : aucune clé Google nécessaire.
+      '@maplibre/maplibre-react-native'
     ],
     platforms: ['ios', 'android'],
     ios: {
