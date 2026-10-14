@@ -4,7 +4,6 @@
 // sur une ligne droite si le service ne répond pas.
 import { useEffect, useRef, useState } from "react";
 
-  distanceKm: number;
 
 export const mapStyleUrl = (dark) =>
   `https://tiles.openfreemap.org/styles/${dark ? "dark" : "liberty"}`;
