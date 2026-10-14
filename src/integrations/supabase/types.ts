@@ -89,6 +89,66 @@ export type Database = {
         }
         Relationships: []
       }
+      cashier_closures: {
+        Row: {
+          cancelled_count: number
+          cash_counted_fcfa: number
+          cash_expected_fcfa: number
+          cashier_id: string
+          closed_at: string
+          gap_fcfa: number
+          id: string
+          momo_total_fcfa: number
+          note: string | null
+          orders_count: number
+          period_start: string
+          restaurant_id: string
+        }
+        Insert: {
+          cancelled_count: number
+          cash_counted_fcfa: number
+          cash_expected_fcfa: number
+          cashier_id: string
+          closed_at?: string
+          gap_fcfa: number
+          id?: string
+          momo_total_fcfa: number
+          note?: string | null
+          orders_count: number
+          period_start: string
+          restaurant_id: string
+        }
+        Update: {
+          cancelled_count?: number
+          cash_counted_fcfa?: number
+          cash_expected_fcfa?: number
+          cashier_id?: string
+          closed_at?: string
+          gap_fcfa?: number
+          id?: string
+          momo_total_fcfa?: number
+          note?: string | null
+          orders_count?: number
+          period_start?: string
+          restaurant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cashier_closures_cashier_id_fkey"
+            columns: ["cashier_id"]
+            isOneToOne: false
+            referencedRelation: "cashiers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cashier_closures_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cashier_login_attempts: {
         Row: {
           cashier_id: string | null
@@ -1117,6 +1177,7 @@ export type Database = {
           accepted_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
+          cancelled_by_cashier_id: string | null
           cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
@@ -1158,6 +1219,7 @@ export type Database = {
           accepted_at?: string | null
           cancel_reason?: string | null
           cancelled_at?: string | null
+          cancelled_by_cashier_id?: string | null
           cashier_id?: string | null
           commission_fcfa?: number
           coupon_code?: string | null
@@ -1199,6 +1261,7 @@ export type Database = {
           accepted_at?: string | null
           cancel_reason?: string | null
           cancelled_at?: string | null
+          cancelled_by_cashier_id?: string | null
           cashier_id?: string | null
           commission_fcfa?: number
           coupon_code?: string | null
@@ -1237,6 +1300,13 @@ export type Database = {
           wallet_used_fcfa?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "orders_cancelled_by_cashier_id_fkey"
+            columns: ["cancelled_by_cashier_id"]
+            isOneToOne: false
+            referencedRelation: "cashiers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "orders_cashier_id_fkey"
             columns: ["cashier_id"]
@@ -1873,6 +1943,7 @@ export type Database = {
           accepted_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
+          cancelled_by_cashier_id: string | null
           cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
@@ -2051,6 +2122,7 @@ export type Database = {
           accepted_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
+          cancelled_by_cashier_id: string | null
           cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
@@ -2122,6 +2194,7 @@ export type Database = {
           accepted_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
+          cancelled_by_cashier_id: string | null
           cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
@@ -2166,7 +2239,16 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      counter_cancel_order: {
+        Args: { p_order_id: string; p_reason: string; p_token: string }
+        Returns: Json
+      }
       counter_cashiers: { Args: { p_slug?: string }; Returns: Json }
+      counter_close_day: {
+        Args: { p_cash_counted: number; p_note?: string; p_token: string }
+        Returns: Json
+      }
+      counter_day_summary: { Args: { p_token: string }; Returns: Json }
       counter_login: {
         Args: { p_cashier_id: string; p_pin: string }
         Returns: Json
@@ -2379,6 +2461,7 @@ export type Database = {
           accepted_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
+          cancelled_by_cashier_id: string | null
           cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null

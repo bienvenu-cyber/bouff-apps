@@ -120,6 +120,13 @@
       "when": 1791989058881,
       "tag": "0016_counter_orders_owner_from_phone_only",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1791993533261,
+      "tag": "0017_migration",
+      "breakpoints": true
     }
   ]
 }
