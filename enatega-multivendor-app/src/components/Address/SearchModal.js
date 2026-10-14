@@ -127,12 +127,10 @@ export default function SearchModal({
   }, [])
 
   const _keyboardDidShow = () => {
-    console.log('📱 Keyboard shown')
     animate()
   }
 
   const _keyboardDidHide = () => {
-    console.log('📱 Keyboard hidden')
     animate(true)
   }
 
@@ -145,7 +143,6 @@ export default function SearchModal({
   }
 
   const close = () => {
-    console.log('🚪 SearchModal closing')
     animation.value = 0
     
     // Cleanup
@@ -166,7 +163,6 @@ export default function SearchModal({
 
   // Search for places using Google Places API
   const searchPlaces = useCallback(async (query) => {
-    console.log('🔍 SearchModal: searchPlaces called with query:', query)
     
     if (!query || query.length < 2) {
       setPredictions([])
@@ -176,7 +172,6 @@ export default function SearchModal({
     }
 
     if (false /* recherche OpenStreetMap, aucun serveur requis */) {
-      console.error('❌ SERVER_REST_URL is missing!')
       setError('Location search is not configured')
       setLoading(false)
       return
@@ -195,7 +190,6 @@ export default function SearchModal({
     setError(null)
     
     try {
-      console.log('🌐 Making API request for query:', query)
       
       const data = await fetchPlaceAutocomplete({
         baseUrl: SERVER_REST_URL,
@@ -205,18 +199,14 @@ export default function SearchModal({
         cancelToken: cancelToken.token
       })
 
-      console.log('📍 API Response status:', data.status)
       
       if (data.status === 'OK') {
-        console.log('✅ Found predictions:', data.predictions.length)
         setPredictions(data.predictions)
         setError(null)
       } else if (data.status === 'ZERO_RESULTS') {
-        console.log('🔍 No results found for query:', query)
         setPredictions([])
         setError(null)
       } else {
-        console.error('❌ API Error:', data.status, data.errorMessage)
         setPredictions([])
         setError(data.errorMessage || 'Search failed')
         
@@ -229,11 +219,9 @@ export default function SearchModal({
       }
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log('🔄 Request cancelled:', error.message)
         return // Don't update state for cancelled requests
       }
       
-      console.error('🚨 Error searching places:', error)
       setPredictions([])
       
       if (error.code === 'ECONNABORTED') {
@@ -252,10 +240,8 @@ export default function SearchModal({
 
   // Get place details
   const getPlaceDetails = useCallback(async (placeId) => {
-    console.log('📍 Getting place details for placeId:', placeId)
     
     if (false /* recherche OpenStreetMap, aucun serveur requis */) {
-      console.error('❌ SERVER_REST_URL is missing!')
       return null
     }
 
@@ -268,7 +254,6 @@ export default function SearchModal({
 
       if (data.status === 'OK' && data.result) {
         const result = data.result
-        console.log('✅ Got place details successfully')
         
         return {
           geometry: {
@@ -281,18 +266,15 @@ export default function SearchModal({
           name: result.name
         }
       } else {
-        console.error('❌ Place details error:', data.status)
         return null
       }
     } catch (error) {
-      console.error('🚨 Error getting place details:', error)
       return null
     }
   }, [SERVER_REST_URL])
 
   // Handle text input change with debouncing
   const handleTextChange = useCallback((text) => {
-    console.log('⌨️ Text changed:', text)
     setSearchText(text)
     
     // Clear existing timer
@@ -308,23 +290,19 @@ export default function SearchModal({
 
   // Handle place selection
   const handlePlaceSelect = useCallback(async (place) => {
-    console.log('🎯 Place selected:', place.description)
     setLoading(true)
     
     try {
       const details = await getPlaceDetails(place.placeId)
       
       if (details && details.geometry && details.geometry.location) {
-        console.log('✅ Successfully got place coordinates:', details.geometry.location)
         onSubmit(place.description, details.geometry.location)
         close()
       } else {
-        console.error('❌ Failed to get place coordinates')
         Alert.alert(tr('Erreur', 'Error'), tr('Impossible de localiser cet endroit', 'Unable to get coordinates for this location'))
         setLoading(false)
       }
     } catch (error) {
-      console.error('🚨 Error handling place selection:', error)
       Alert.alert(tr('Erreur', 'Error'), tr('Impossible de choisir cet endroit', 'Unable to select this location'))
       setLoading(false)
     }
