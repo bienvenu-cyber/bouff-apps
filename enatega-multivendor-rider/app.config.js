@@ -18,7 +18,8 @@ module.exports = {
     icon: './lib/assets/images/icon.png',
     assetBundlePatterns: ['lib/assets/**/*'],
     scheme: 'thebouffapprider',
-    userInterfaceStyle: 'automatic',
+    // Sombre fixé côté natif (pas de changement de thème au démarrage).
+    userInterfaceStyle: 'dark',
     // Fond noir sous toute l'app : jamais d'écran blanc pendant un chargement.
     backgroundColor: '#0B0B0C',
     newArchEnabled: true,
