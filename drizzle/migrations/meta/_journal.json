@@ -127,6 +127,13 @@
       "when": 1791993533261,
       "tag": "0017_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1791994573060,
+      "tag": "0018_counter_cancel_only_before_kitchen",
+      "breakpoints": true
     }
   ]
 }
