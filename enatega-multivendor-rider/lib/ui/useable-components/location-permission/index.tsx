@@ -8,11 +8,12 @@ import {
   Alert,
   AppState,
   Linking,
+  Modal,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import Modal from "react-native-modal";
+import { bootLog } from "@/lib/services/boot-log";
 import SpinnerComponent from "../spinner";
 
 export default function LocationPermissionComponent({
@@ -36,8 +37,14 @@ export default function LocationPermissionComponent({
 
   const getLocationPermission = useCallback(async () => {
     setLoading(true);
-    const { status } = await Location.getForegroundPermissionsAsync();
+    let status = "undetermined";
+    try {
+      status = (await Location.getForegroundPermissionsAsync()).status;
+    } catch (e) {
+      bootLog("location_check_error", e);
+    }
     setLoading(false);
+    bootLog("location_permission", status);
     if (status === "granted") {
       setLocationPermission(true);
       setIsModalVisible(false);
@@ -48,11 +55,12 @@ export default function LocationPermissionComponent({
 
   const LocationAlert = async () => {
     Alert.alert(
-      "Location access",
-      "Location permissions are required to use this app. Kindly open settings to allow location access.",
+      "Accès à la position",
+      "La position est nécessaire pour faire des livraisons. Ouvre les réglages pour l'autoriser.",
       [
+        { text: "Plus tard", style: "cancel" },
         {
-          text: "Open settings",
+          text: "Ouvrir les réglages",
           onPress: async () => {
             await Linking.openSettings();
           },
@@ -130,15 +138,17 @@ export default function LocationPermissionComponent({
   }, [setLocationPermission]);
 
   return (
-    <View className="flex-1">
+    <View style={{ flex: 1, backgroundColor: "#0B0B0C" }}>
       {children}
 
       <Modal
-        isVisible={isModalVisible}
-        coverScreen={false}
-        backdropOpacity={0.5}
+        visible={isModalVisible}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => {}}
       >
-        <View className="h-fit w-full bg-transparent justify-around items-center">
+        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "center", alignItems: "center" }}>
           <View
             className="h-fit w-[95%] p-4 items-center justify-around  rounded-[16px]"
             style={{
@@ -178,7 +188,7 @@ export default function LocationPermissionComponent({
                   className="text-center text-[14px] font-medium"
                   style={{ color: appTheme.black }}
                 >
-                  Continue
+                  Continuer
                 </Text>
               )}
             </TouchableOpacity>
@@ -187,12 +197,13 @@ export default function LocationPermissionComponent({
       </Modal>
 
       <Modal
-        isVisible={isBackgroundLocationDisclosureVisible}
-        backdropOpacity={0.65}
-        onBackdropPress={dismissBackgroundLocationDisclosure}
-        onBackButtonPress={dismissBackgroundLocationDisclosure}
+        visible={isBackgroundLocationDisclosureVisible}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={dismissBackgroundLocationDisclosure}
       >
-        <View className="w-full items-center">
+        <View style={{ flex: 1, backgroundColor: "rgba(0,0,0,0.65)", justifyContent: "center", alignItems: "center" }}>
           <View
             className="w-[95%] p-5 rounded-[16px]"
             style={{

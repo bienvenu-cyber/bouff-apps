@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_boot_logs: {
+        Row: {
+          app: string
+          build: string | null
+          created_at: string
+          device: string | null
+          id: string
+          message: string | null
+          session_id: string
+          stage: string
+        }
+        Insert: {
+          app: string
+          build?: string | null
+          created_at?: string
+          device?: string | null
+          id?: string
+          message?: string | null
+          session_id: string
+          stage: string
+        }
+        Update: {
+          app?: string
+          build?: string | null
+          created_at?: string
+          device?: string | null
+          id?: string
+          message?: string | null
+          session_id?: string
+          stage?: string
+        }
+        Relationships: []
+      }
       birthday_gifts: {
         Row: {
           created_at: string

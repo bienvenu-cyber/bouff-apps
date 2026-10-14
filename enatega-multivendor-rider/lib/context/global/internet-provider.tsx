@@ -29,8 +29,13 @@ const InternetProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const checkConnection = async () => {
+      try {
       const networkState = await Network.getNetworkStateAsync()
-      setIsConnected(networkState.isConnected)
+      // "inconnu" n'est pas "hors ligne" : seul un false explicite bloque.
+      setIsConnected(networkState.isConnected !== false)
+      } catch {
+        setIsConnected(true)
+      }
     }
 
     // Initial check
@@ -44,10 +49,10 @@ const InternetProvider: React.FC<{ children: React.ReactNode }> = ({
 
   if (!isConnected) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#0B0B0C", padding: 24 }}>
         <NoInternetIcon />
-        <Text className="font-[Inter] text-black text-2xl font-bold">
-          No Internet Connection
+        <Text style={{ color: "#F5F0E6", fontSize: 22, fontWeight: "700", textAlign: "center", marginTop: 12 }}>
+          Pas de connexion internet
         </Text>
       </View>
     );

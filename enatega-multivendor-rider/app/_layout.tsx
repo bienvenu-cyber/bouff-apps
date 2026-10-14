@@ -45,6 +45,7 @@ import {
 } from "@/lib/context/global/rider-mode.context";
 import getEnvVars from "@/environment";
 import { useMemo } from "react";
+import { bootLog } from "@/lib/services/boot-log";
 
 initSentry();
 
@@ -99,6 +100,18 @@ function ModeAwareApp({ fontsLoaded }: { fontsLoaded: boolean }) {
   const appReady =
     (fontsLoaded && modeReady && isPublicTokenReady) || startupTimedOut;
 
+  useEffect(() => {
+    if (fontsLoaded) bootLog("fonts_ready");
+  }, [fontsLoaded]);
+  useEffect(() => {
+    if (modeReady) bootLog("mode_ready", mode);
+  }, [modeReady, mode]);
+  useEffect(() => {
+    if (startupTimedOut && !(fontsLoaded && modeReady && isPublicTokenReady)) {
+      bootLog("startup_timeout_8s", { fontsLoaded, modeReady, isPublicTokenReady });
+    }
+  }, [startupTimedOut, fontsLoaded, modeReady, isPublicTokenReady]);
+
   return (
     <AnimatedSplashScreen ready={appReady}>
       {appReady ? (
@@ -135,6 +148,12 @@ function RootLayout() {
   });
   // Une police qui échoue ne doit jamais bloquer le démarrage.
   const loaded = fontLoaded || !!fontError;
+  useEffect(() => {
+    bootLog("layout_mounted");
+  }, []);
+  useEffect(() => {
+    if (fontError) bootLog("font_error", fontError);
+  }, [fontError]);
 
   // Cache l'écran de démarrage natif quoi qu'il arrive.
   useEffect(() => {
@@ -153,6 +172,7 @@ function RootLayout() {
         console.log("Global Error Caught:", { error, isFatal });
       }
       Sentry.captureException(error);
+      bootLog(isFatal ? "fatal_layout" : "error_layout", error);
       previousHandler?.(error, isFatal);
     });
 

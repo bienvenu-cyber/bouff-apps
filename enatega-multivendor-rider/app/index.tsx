@@ -1,5 +1,6 @@
 import { Href, Redirect } from "expo-router";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
+import { bootLog } from "@/lib/services/boot-log";
 import { ActivityIndicator, View } from "react-native";
 
 // Context
@@ -10,6 +11,9 @@ import { ROUTES } from "@/lib/utils/constants";
 
 function App() {
   const { token, isAuthReady } = useContext(AuthContext);
+  useEffect(() => {
+    if (isAuthReady) bootLog("auth_ready", token ? "connecte" : "deconnecte");
+  }, [isAuthReady, token]);
 
   if (!isAuthReady) {
     return (

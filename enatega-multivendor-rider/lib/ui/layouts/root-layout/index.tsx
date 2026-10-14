@@ -1,11 +1,16 @@
 import { useApptheme } from "@/lib/context/global/theme.context";
 import { useUserContext } from "@/lib/context/global/user.context";
-import { Stack } from "expo-router";
-import SpinnerComponent from "../../useable-components/spinner";
+import { Stack, usePathname } from "expo-router";
+import { useEffect } from "react";
+import { bootLog } from "@/lib/services/boot-log";
 
 export default function RootStackLayout() {
   // Hooks
   const { appTheme } = useApptheme();
+  const pathname = usePathname();
+  useEffect(() => {
+    bootLog("route", pathname);
+  }, [pathname]);
 
   return (
     <Stack

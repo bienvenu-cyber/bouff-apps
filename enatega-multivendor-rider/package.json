@@ -1,6 +1,6 @@
 {
   "name": "mobile-architecture",
-  "main": "expo-router/entry",
+  "main": "index.js",
   "version": "1.0.0",
   "overrides": {
     "nativewind": {
@@ -15,8 +15,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "check:single-vendor-schema": "node ./scripts/check-single-vendor-schema.js",
-    "lint": "npx eslint && prettier --write .",
-    "upload-sourcemaps": "npx sentry-expo upload-sourcemaps"
+    "lint": "npx eslint && prettier --write ."
   },
   "jest": {
     "preset": "jest-expo"
@@ -89,7 +88,6 @@
     "react-native-switch": "^1.5.1",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "^0.20.0",
-    "sentry-expo": "~7.0.0",
     "subscriptions-transport-ws": "^0.11.0",
     "tailwindcss": "^3.4.17",
     "yup": "^1.6.1"

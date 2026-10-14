@@ -1,5 +1,6 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
+import { bootLog } from "@/lib/services/boot-log";
 
 // Si un écran plante, on affiche un message propre avec « Réessayer »
 // au lieu d'un écran vide. L'erreur est envoyée à Sentry.
@@ -17,7 +18,8 @@ export default class StartupErrorBoundary extends Component<
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, _info: ErrorInfo) {
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    bootLog("error_boundary", `${error?.message}\n${error?.stack ?? ""}\n${info?.componentStack ?? ""}`);
     try {
       // eslint-disable-next-line @typescript-eslint/no-require-imports
       require("@sentry/react-native").captureException(error);
