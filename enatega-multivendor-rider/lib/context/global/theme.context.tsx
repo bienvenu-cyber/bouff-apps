@@ -43,10 +43,11 @@ export default function AppThemeProvidor({
 
   // Methods
   async function getCurrentAppTheme() {
-        const localTheme = await AsyncStorage.getItem("app_theme");
+    const localTheme = await AsyncStorage.getItem("app_theme").catch(() => null);
     // BOUFF : sombre par défaut, le téléphone ne décide plus.
+    // Ne JAMAIS appeler Appearance.setColorScheme ici : sur Android il
+    // recrée l'écran au démarrage et laisse l'app sur un écran noir.
     const theme = localTheme === "light" ? "light" : "dark";
-    Appearance.setColorScheme(theme as app_theme);
     setCurrentTheme(theme as app_theme);
     setAppTheme(
       theme === "light"
@@ -67,8 +68,8 @@ export default function AppThemeProvidor({
   }, []);
 
   useEffect(() => {
-    getCurrentAppTheme();
-  }, [colorScheme]);
+    void getCurrentAppTheme();
+  }, []);
 
   useEffect(() => {
     // Store the subscription so it can be removed on unmount — without this,
