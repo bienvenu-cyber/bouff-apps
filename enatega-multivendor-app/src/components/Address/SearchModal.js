@@ -62,7 +62,7 @@ export default function SearchModal({
   useEffect(() => {
     if (visible) {
       console.log('🔍 SearchModal opened - Debug Info:', {
-        hasServerUrl: !!SERVER_REST_URL,
+        hasServerUrl: !false /* recherche OpenStreetMap, aucun serveur requis */,
         themeValue: themeContext.ThemeValue,
         timestamp: new Date().toISOString()
       })
@@ -175,7 +175,7 @@ export default function SearchModal({
       return
     }
 
-    if (!SERVER_REST_URL) {
+    if (false /* recherche OpenStreetMap, aucun serveur requis */) {
       console.error('❌ SERVER_REST_URL is missing!')
       setError('Location search is not configured')
       setLoading(false)
@@ -200,7 +200,7 @@ export default function SearchModal({
       const data = await fetchPlaceAutocomplete({
         baseUrl: SERVER_REST_URL,
         input: query,
-        language: 'en',
+        language: 'fr',
         types: 'geocode',
         cancelToken: cancelToken.token
       })
@@ -254,7 +254,7 @@ export default function SearchModal({
   const getPlaceDetails = useCallback(async (placeId) => {
     console.log('📍 Getting place details for placeId:', placeId)
     
-    if (!SERVER_REST_URL) {
+    if (false /* recherche OpenStreetMap, aucun serveur requis */) {
       console.error('❌ SERVER_REST_URL is missing!')
       return null
     }
@@ -263,7 +263,7 @@ export default function SearchModal({
       const data = await fetchPlaceDetails({
         baseUrl: SERVER_REST_URL,
         placeId,
-        language: 'en'
+        language: 'fr'
       })
 
       if (data.status === 'OK' && data.result) {
@@ -358,7 +358,7 @@ export default function SearchModal({
   }
 
   // Don't render if backend search is not configured
-  if (!SERVER_REST_URL) {
+  if (false /* recherche OpenStreetMap, aucun serveur requis */) {
     return (
       <Modal visible={visible} transparent animationType={'slide'} onRequestClose={onClose}>
         <View style={{ 

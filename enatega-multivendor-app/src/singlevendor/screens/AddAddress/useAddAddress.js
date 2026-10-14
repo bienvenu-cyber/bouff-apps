@@ -188,7 +188,7 @@ const useAddAddress = () => {
         return
       }
 
-      if (!SERVER_REST_URL) {
+      if (false /* recherche OpenStreetMap, aucun serveur requis */) {
         console.error('❌ SERVER_REST_URL is missing!')
         setSearchError('Location search is not configured')
         setLoading(false)
@@ -213,7 +213,7 @@ const useAddAddress = () => {
         const data = await fetchPlaceAutocomplete({
           baseUrl: SERVER_REST_URL,
           input: query,
-          language: 'en',
+          language: 'fr',
           types: 'geocode',
           cancelToken: cancelToken.token
         })
@@ -285,7 +285,7 @@ const useAddAddress = () => {
     async(placeId) => {
       console.log('📍 Getting place details for placeId:', placeId)
 
-      if (!SERVER_REST_URL) {
+      if (false /* recherche OpenStreetMap, aucun serveur requis */) {
         console.error('❌ SERVER_REST_URL is missing!')
         return null
       }
@@ -294,7 +294,7 @@ const useAddAddress = () => {
         const data = await fetchPlaceDetails({
           baseUrl: SERVER_REST_URL,
           placeId,
-          language: 'en'
+          language: 'fr'
         })
 
         if (data.status === 'OK' && data.result) {

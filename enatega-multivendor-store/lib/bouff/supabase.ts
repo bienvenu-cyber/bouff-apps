@@ -1,5 +1,5 @@
 import "react-native-url-polyfill/auto";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { secureSessionStorage } from "./secureSession";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { AppState } from "react-native";
 
@@ -21,7 +21,7 @@ export function bouffDb(): SupabaseClient {
   if (!client) {
     client = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       auth: {
-        storage: AsyncStorage,
+        storage: secureSessionStorage,
         storageKey: "bouff-store-auth",
         persistSession: true,
         autoRefreshToken: true,

@@ -31,7 +31,7 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 - [x] App cuisine : onglet « Carte » pour les ruptures (plats et formules), règles testées
 - [x] App livreur : disponibilité, courses libres, prise en charge, en route, remise (course test complète OK) — à tester sur téléphone
 - [x] Back-office : restaurants, carte, comptes de l'équipe, livreurs, commissions, statistiques branchés — à tester en ligne
-- [ ] Retirer les adresses de serveurs Enatega écrites en dur — fait pour livreur et cuisine ; reste app client (à faire avec test sur téléphone)
+- [x] Retirer les adresses de serveurs Enatega écrites en dur (livreur, cuisine, client)
 
 - [x] Caisse comptoir sur le site (/caisse) : code par caissière, sur place / à emporter, espèces ou MoMo, envoi en cuisine ; caissières gérées dans l'admin
 - [ ] Acheter la tablette du comptoir et créer les codes des caissières
@@ -58,7 +58,7 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 - [x] Panier et passage de commande
 
 ## Nettoyage Enatega
-- [ ] Sessions en cookies sécurisés au lieu du stockage navigateur
+- [x] Sessions protégées : cookies sécurisés (site), coffre chiffré du téléphone (apps client, cuisine, livreur)
 - [x] Contrôle des rôles validé côté serveur
 - [ ] Suppression des fichiers générés commités, des traces de débogage, alignement des versions
 
@@ -70,3 +70,9 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 - [x] Admin : bouton Créditer un client (portefeuille, livraisons, points)
 - [x] Admin : vrais compteurs annulées / en retard / notes
 - [ ] URGENT avant prod : numéro WhatsApp BOUFF
+
+## Corrections du 14/10
+- [x] Caisse : ventes rattachées uniquement au numéro saisi
+- [x] Livreur : plus de déconnexion si le téléphone est lent
+- [x] App client : recherche d'adresse OpenStreetMap (sans Google)
+- [ ] Tester ces corrections sur vrai téléphone (nouvelle compilation nécessaire)

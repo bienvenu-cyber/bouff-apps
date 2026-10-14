@@ -28,14 +28,28 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({
     let isMounted = true;
 
     const hydrateAuth = async () => {
+      let timedOut = false;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const read = getSecureItem(tokenKey);
+      // Si la lecture finit en retard, on garde quand même la session :
+      // le livreur n'est pas déconnecté pour un téléphone lent.
+      read
+        .then((late) => {
+          if (timedOut && isMounted && late) {
+            setToken(late);
+            router.replace("/" as never);
+          }
+        })
+        .catch(() => {});
       try {
         const storedToken = await Promise.race([
-          getSecureItem(tokenKey),
-          new Promise<null>((resolve) =>
-            // Si le stockage du téléphone ne répond pas, on n'attend pas
-            // indéfiniment : le livreur arrive sur l'écran de connexion.
-            setTimeout(() => resolve(null), 4000),
-          ),
+          read,
+          new Promise<null>((resolve) => {
+            timer = setTimeout(() => {
+              timedOut = true;
+              resolve(null);
+            }, 4000);
+          }),
         ]);
 
         if (isMounted && storedToken) {
@@ -44,6 +58,7 @@ export const AuthProvider: React.FC<IAuthProviderProps> = ({
       } catch (e) {
         if (__DEV__) console.log("Auth hydrate error:", e);
       } finally {
+        if (timer) clearTimeout(timer);
         if (isMounted) {
           setIsAuthReady(true);
         }

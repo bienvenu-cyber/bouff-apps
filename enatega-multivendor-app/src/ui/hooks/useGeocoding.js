@@ -12,7 +12,7 @@ const useGeocoding = () => {
         baseUrl: SERVER_REST_URL,
         latitude,
         longitude,
-        language: 'en'
+        language: 'fr'
       }).catch((error) => {
         console.error('Error fetching reverse geocode data:', error)
         throw error
