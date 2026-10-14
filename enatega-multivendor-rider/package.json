@@ -15,7 +15,7 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "check:single-vendor-schema": "node ./scripts/check-single-vendor-schema.js",
-    "lint": "npx eslint && prettier --write .",
+    "lint": "npx eslint && prettier --write ."
   },
   "jest": {
     "preset": "jest-expo"
