@@ -862,7 +862,7 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
           <div className="shrink-0 text-right">
             <p className={r.status === "cancelled" ? "line-through text-bouff-text-muted" : ""}>{fcfa(r.total_fcfa)}</p>
             <p className="text-sm text-bouff-primary">{STATUS_LABEL[r.status] ?? r.status}</p>
-            {r.status !== "cancelled" && r.status !== "delivered" && (
+            {r.status === "received" && (
               <button onClick={() => { setReason(""); setError(null); setCancelling({ id: r.id, number: r.order_number }); }} className="mt-1 text-sm text-bouff-danger underline">
                 Annuler
               </button>
