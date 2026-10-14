@@ -109,7 +109,6 @@ const useAddAddress = () => {
   // Map functions
   const updateAddress = useCallback(
     (result) => {
-      console.log('🚀 ~ useAddAddress ~ result:', result)
       if (result?.formattedAddress) {
         setAddressDetail(result.formattedAddress)
       }
@@ -122,7 +121,6 @@ const useAddAddress = () => {
       const response = await getAddress(lat, lng)
       updateAddress(response)
     } catch (error) {
-      console.error('Geocoding error:', error)
     } finally {
       setLoading(false)
     }
@@ -171,7 +169,6 @@ const useAddAddress = () => {
         Alert.alert(t('locationError'), t('unableToGetLocation'), [{ text: t('ok') }])
       }
     } catch (error) {
-      console.error('Error setting current location:', error)
       Alert.alert(t('locationError'), t('unableToGetLocation'), [{ text: t('ok') }])
     }
   }, [getCurrentLocation, t])
@@ -179,7 +176,6 @@ const useAddAddress = () => {
   // Search places function
   const searchPlaces = useCallback(
     async(query) => {
-      console.log('🔍 SearchModal: searchPlaces called with query:', query)
 
       if (!query || query.length < 2) {
         setPredictions([])
@@ -189,7 +185,6 @@ const useAddAddress = () => {
       }
 
       if (false /* recherche OpenStreetMap, aucun serveur requis */) {
-        console.error('❌ SERVER_REST_URL is missing!')
         setSearchError('Location search is not configured')
         setLoading(false)
         return
@@ -208,7 +203,6 @@ const useAddAddress = () => {
       setSearchError(null)
 
       try {
-        console.log('🌐 Making API request for query:', query)
 
         const data = await fetchPlaceAutocomplete({
           baseUrl: SERVER_REST_URL,
@@ -218,18 +212,14 @@ const useAddAddress = () => {
           cancelToken: cancelToken.token
         })
 
-        console.log('📍 API Response status:', data.status)
 
         if (data.status === 'OK') {
-          console.log('✅ Found predictions:', data.predictions.length)
           setPredictions(data.predictions)
           setSearchError(null)
         } else if (data.status === 'ZERO_RESULTS') {
-          console.log('🔍 No results found for query:', query)
           setPredictions([])
           setSearchError(null)
         } else {
-          console.error('❌ API Error:', data.status, data.errorMessage)
           setPredictions([])
           setSearchError(data.errorMessage || 'Search failed')
 
@@ -242,11 +232,9 @@ const useAddAddress = () => {
         }
       } catch (error) {
         if (axios.isCancel(error)) {
-          console.log('🔄 Request cancelled:', error.message)
           return
         }
 
-        console.error('🚨 Error searching places:', error)
         setPredictions([])
 
         if (error.code === 'ECONNABORTED') {
@@ -266,7 +254,6 @@ const useAddAddress = () => {
   // Handle text change with debounce
   const handleTextChange = useCallback(
     (text) => {
-      console.log('⌨️ Text changed:', text)
       setSearchText(text)
 
       if (debounceTimerRef.current) {
@@ -283,10 +270,8 @@ const useAddAddress = () => {
   // Get place details
   const getPlaceDetails = useCallback(
     async(placeId) => {
-      console.log('📍 Getting place details for placeId:', placeId)
 
       if (false /* recherche OpenStreetMap, aucun serveur requis */) {
-        console.error('❌ SERVER_REST_URL is missing!')
         return null
       }
 
@@ -299,7 +284,6 @@ const useAddAddress = () => {
 
         if (data.status === 'OK' && data.result) {
           const result = data.result
-          console.log('✅ Got place details successfully')
 
           return {
             geometry: {
@@ -312,11 +296,9 @@ const useAddAddress = () => {
             name: result.name
           }
         } else {
-          console.error('❌ Place details error:', data.status)
           return null
         }
       } catch (error) {
-        console.error('🚨 Error getting place details:', error)
         return null
       }
     },
@@ -338,15 +320,11 @@ const useAddAddress = () => {
             lng: details.geometry.location.lng
           })
           setactiveState('searched')
-          console.log('🚀 ~ SearchingAddress ~ details?.geometry:', details?.geometry)
-          console.log('✅ Successfully got place coordinates:', details.geometry.location)
         } else {
-          console.error('❌ Failed to get place coordinates')
           Alert.alert(tr('Erreur', 'Error'), tr('Impossible de localiser cet endroit', 'Unable to get coordinates for this location'))
           setLoading(false)
         }
       } catch (error) {
-        console.error('🚨 Error handling place selection:', error)
         Alert.alert(tr('Erreur', 'Error'), tr('Impossible de choisir cet endroit', 'Unable to select this location'))
         setLoading(false)
       }
