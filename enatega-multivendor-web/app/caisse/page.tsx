@@ -7,15 +7,29 @@ import {
   clearCounterSession,
   counterLogin,
   counterLogout,
+  counterCancelOrder,
+  counterCloseDay,
+  counterDaySummary,
   counterPlaceOrder,
   counterRecentOrders,
   isSessionError,
   listCashiers,
   readCounterSession,
   type CounterCashier,
+  type CounterDaySummary,
 } from "@/lib/bouff-data/counter";
 
 const fcfa = (n: number) => `${n.toLocaleString("fr-FR").replace(/\u202f|\u00a0/g, " ")} F`;
+
+// Billets courants : compte juste + coupures supérieures au total.
+function cashSuggestions(total: number) {
+  const out = [total];
+  for (const step of [500, 1000, 2000, 5000, 10000]) {
+    const v = Math.ceil(total / step) * step;
+    if (v > total && !out.includes(v)) out.push(v);
+  }
+  return out.slice(0, 6);
+}
 
 interface TicketLine {
   key: string;
@@ -240,10 +254,12 @@ function Register({
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [confirmPay, setConfirmPay] = useState<"cash" | "mobile_money" | null>(null);
+  const [received, setReceived] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState<{ number: string; total: number; points: boolean } | null>(null);
+  const [done, setDone] = useState<{ number: string; total: number; points: boolean; dineIn: boolean; change: number | null } | null>(null);
   const [showRecent, setShowRecent] = useState(false);
+  const [showClose, setShowClose] = useState(false);
   const [ticketOpen, setTicketOpen] = useState(false);
   useEffect(() => {
     if (!lines.length) setTicketOpen(false);
@@ -354,7 +370,14 @@ function Register({
         customerPhone: customerPhone.trim(),
       });
       setConfirmPay(null);
-      setDone({ number: res.order_number, total: res.total_fcfa, points: res.points_linked });
+      setDone({
+        number: res.order_number,
+        total: res.total_fcfa,
+        points: res.points_linked,
+        dineIn,
+        change: payment === "cash" && received !== "" ? Math.max(0, Number(received) - res.total_fcfa) : null,
+      });
+      setReceived("");
       setTicketOpen(false);
       reset();
     } catch (e) {
@@ -379,6 +402,9 @@ function Register({
         <div className="flex shrink-0 gap-2">
           <button onClick={() => setShowRecent(true)} className="rounded-bouff-md border border-bouff-line px-4 py-2">
             <span className="sm:hidden">Ventes</span><span className="hidden sm:inline">Commandes du jour</span>
+          </button>
+          <button onClick={() => setShowClose(true)} className="rounded-bouff-md border border-bouff-primary px-4 py-2 text-bouff-primary">
+            <span className="sm:hidden">Clôture</span><span className="hidden sm:inline">Clôturer ma caisse</span>
           </button>
           <button onClick={onLogout} className="rounded-bouff-md border border-bouff-line px-4 py-2 text-bouff-text-muted">
             <span className="sm:hidden">Changer</span><span className="hidden sm:inline">Changer de caissière</span>
@@ -561,14 +587,45 @@ function Register({
             {confirmPay === "cash" ? "Encaisse en espèces" : "Vérifie que le MoMo est bien reçu"}
           </p>
           <p className="my-4 text-center font-bouff-display text-6xl text-bouff-primary">{fcfa(total)}</p>
-          <p className="mb-6 text-center text-bouff-text-muted">{dineIn ? "Sur place" : "À emporter"}</p>
+          <p className="mb-4 text-center text-bouff-text-muted">{dineIn ? "Sur place" : "À emporter"}</p>
+          {confirmPay === "cash" && (
+            <div className="mb-5">
+              <p className="mb-2 font-semibold">Montant reçu du client</p>
+              <div className="mb-2 grid grid-cols-3 gap-2">
+                {cashSuggestions(total).map((v) => (
+                  <button
+                    key={v}
+                    onClick={() => setReceived(String(v))}
+                    className={`rounded-bouff-md py-3 font-semibold ${received === String(v) ? "bg-bouff-primary text-bouff-on-primary" : "bg-bouff-surface-raised"}`}
+                  >
+                    {v === total ? "Compte juste" : fcfa(v)}
+                  </button>
+                ))}
+              </div>
+              <input
+                value={received}
+                onChange={(e) => setReceived(e.target.value.replace(/\D/g, ""))}
+                inputMode="numeric"
+                placeholder="Autre montant (F)"
+                className="w-full rounded-bouff-md border border-bouff-line bg-bouff-background px-3 py-3 text-xl text-bouff-text placeholder:text-base placeholder:text-bouff-text-muted placeholder:opacity-100"
+              />
+              {received !== "" && Number(received) < total && (
+                <p className="mt-2 text-bouff-danger">Il manque {fcfa(total - Number(received))}</p>
+              )}
+              {received !== "" && Number(received) >= total && (
+                <p className="mt-3 text-center text-2xl">
+                  Monnaie à rendre : <span className="font-bouff-display text-4xl text-bouff-primary">{fcfa(Number(received) - total)}</span>
+                </p>
+              )}
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-3">
             <button onClick={() => setConfirmPay(null)} disabled={busy} className="rounded-bouff-md bg-bouff-surface-raised py-4 text-lg">
               Retour
             </button>
             <button
               onClick={() => pay(confirmPay)}
-              disabled={busy}
+              disabled={busy || (confirmPay === "cash" && received !== "" && Number(received) < total)}
               className="rounded-bouff-md bg-bouff-primary py-4 text-lg font-bold text-bouff-on-primary disabled:opacity-50"
             >
               {busy ? "Envoi…" : confirmPay === "cash" ? "Argent reçu" : "MoMo reçu"}
@@ -580,8 +637,17 @@ function Register({
       {done && (
         <Modal onClose={() => setDone(null)}>
           <p className="text-center text-xl text-bouff-text-muted">Commande envoyée en cuisine</p>
-          <p className="my-6 text-center font-bouff-display text-8xl text-bouff-primary">{done.number}</p>
-          <p className="text-center text-lg">Donne ce numéro au client · {fcfa(done.total)}</p>
+          <p className="text-center text-lg text-bouff-text-muted">Numéro de commande</p>
+          <p className="my-4 text-center font-bouff-display text-[9rem] leading-none text-bouff-primary">{done.number}</p>
+          <p className="text-center text-lg">
+            {done.dineIn ? "Sur place" : "À emporter"} · {fcfa(done.total)}
+          </p>
+          {done.change !== null && done.change > 0 && (
+            <p className="mt-3 text-center text-2xl">
+              Rends <span className="font-bouff-display text-3xl text-bouff-primary">{fcfa(done.change)}</span>
+            </p>
+          )}
+          <p className="mt-2 text-center text-bouff-text-muted">Dis ce numéro au client : il sera appelé quand c'est prêt.</p>
           {done.points && <p className="mt-2 text-center text-bouff-success">Points BOUFF ajoutés à son compte à la remise.</p>}
           <button onClick={() => setDone(null)} className="mt-8 w-full rounded-bouff-md bg-bouff-primary py-4 text-xl font-bold text-bouff-on-primary">
             Client suivant
@@ -590,6 +656,7 @@ function Register({
       )}
 
       {showRecent && <RecentOrders token={session.token} onClose={() => setShowRecent(false)} onExpired={onExpired} />}
+      {showClose && <CloseDay token={session.token} name={session.name} onClose={() => setShowClose(false)} onExpired={onExpired} />}
     </div>
   );
 }
