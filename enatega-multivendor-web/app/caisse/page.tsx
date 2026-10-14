@@ -175,7 +175,7 @@ function Login({ onDone }: { onDone: (s: { token: string; name: string }) => voi
           {cashiers === null && !error && <p className="text-center text-bouff-text-muted">Chargement…</p>}
           {cashiers?.length === 0 && (
             <p className="text-center text-bouff-text-muted">
-              Aucune caissière n'est encore créée. Ajoute-les dans l'admin, rubrique « Caissières ».
+              Aucune hôtesse n'est encore créée. Ajoute-les dans l'admin, rubrique « Hôtesses ».
             </p>
           )}
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -407,7 +407,7 @@ function Register({
             <span className="sm:hidden">Clôture</span><span className="hidden sm:inline">Clôturer ma caisse</span>
           </button>
           <button onClick={onLogout} className="rounded-bouff-md border border-bouff-line px-4 py-2 text-bouff-text-muted">
-            <span className="sm:hidden">Changer</span><span className="hidden sm:inline">Changer de caissière</span>
+            <span className="sm:hidden">Changer</span><span className="hidden sm:inline">Changer d'hôtesse</span>
           </button>
         </div>
       </header>
@@ -901,7 +901,7 @@ function CloseDay({ token, name, onClose, onExpired }: { token: string; name: st
       const fix =
         liveGap && settled
           ? liveGap < 0
-            ? `Manque de ${fcfa(-liveGap)} remboursé par la caissière.`
+            ? `Manque de ${fcfa(-liveGap)} remboursé par l'hôtesse.`
             : `Surplus de ${fcfa(liveGap)} retiré du tiroir.`
           : "";
       setResult(await counterCloseDay(token, Number(counted), [fix, note.trim()].filter(Boolean).join(" ")));
