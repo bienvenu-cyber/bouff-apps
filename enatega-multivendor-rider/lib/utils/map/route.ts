@@ -93,6 +93,8 @@ const valid = (c?: Partial<LatLng> | null): c is LatLng =>
 export function useRoute(from?: LatLng | null, to?: LatLng | null) {
   const [route, setRoute] = useState<RouteResult | null>(null);
   const last = useRef<{ from: LatLng; to: LatLng; at: number } | null>(null);
+  const reqId = useRef(0);
+  useEffect(() => () => { reqId.current = -1; }, []);
 
   useEffect(() => {
     if (!valid(from) || !valid(to)) {
@@ -109,14 +111,11 @@ export function useRoute(from?: LatLng | null, to?: LatLng | null) {
       distanceKm(prev.from, from) < MOVE_THRESHOLD_KM;
     if (fresh) return;
     last.current = { from, to, at: Date.now() };
-    let cancelled = false;
+    const id = ++reqId.current;
     if (!prev || !sameTarget) setRoute(straightRoute(from, to));
     fetchRoute(from, to).then((r) => {
-      if (!cancelled) setRoute(r);
+      if (reqId.current === id) setRoute(r);
     });
-    return () => {
-      cancelled = true;
-    };
   }, [from?.latitude, from?.longitude, to?.latitude, to?.longitude]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return route;
