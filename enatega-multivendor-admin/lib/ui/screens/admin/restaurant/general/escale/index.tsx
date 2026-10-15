@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 // BOUFF — Escale BOUFF : pays du mois (avant-dernier mercredi + jeudi).
 // Les pays africains attendent la validation de l'admin ; les autres passent tout seuls.

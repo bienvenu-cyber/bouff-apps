@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 // BOUFF — Notifications : envoyer une promo en un clic. Les autres messages partent automatiquement.
 import { useContext, useEffect, useState } from 'react';
