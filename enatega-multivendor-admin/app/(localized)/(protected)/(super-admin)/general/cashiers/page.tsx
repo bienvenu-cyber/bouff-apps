@@ -90,7 +90,7 @@ export default function CashiersPage() {
       {error && !editing && <p className="mb-4 rounded-md bg-red-50 p-3 text-red-700">{error}</p>}
 
       {!rows && !error && <p className="text-gray-500">Chargement…</p>}
-      {rows?.length === 0 && <p className="text-gray-500">Aucune hôtesse pour l'instant.</p>}
+      {rows?.length === 0 && <p className="text-gray-500">Aucune hôtesse pour l’instant.</p>}
 
       {rows && rows.length > 0 && (
         <table className="w-full text-left">
@@ -98,7 +98,7 @@ export default function CashiersPage() {
             <tr>
               <th className="py-2">Prénom</th>
               <th>Statut</th>
-              <th>Aujourd'hui</th>
+              <th>Aujourd’hui</th>
               <th className="text-right">Actions</th>
             </tr>
           </thead>
@@ -129,7 +129,7 @@ export default function CashiersPage() {
             <label className="mb-1 block text-sm">Prénom</label>
             <input value={name} onChange={(e) => setName(e.target.value)} className="mb-4 w-full rounded-md border px-3 py-2 dark:bg-neutral-800" />
             <label className="mb-1 block text-sm">
-              Code à 6 chiffres {editing !== 'new' && <span className="text-gray-500">(laisser vide pour garder l'actuel)</span>}
+              Code à 6 chiffres {editing !== 'new' && <span className="text-gray-500">(laisser vide pour garder l’actuel)</span>}
             </label>
             <input
               value={pin}
