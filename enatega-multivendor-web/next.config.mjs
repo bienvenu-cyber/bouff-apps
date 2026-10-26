@@ -3,6 +3,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin();
 
 const configuredApiImagePatterns = [
+  process.env.NEXT_PUBLIC_SUPABASE_URL ??
+    "https://txyqwlatzlkurjrnlxhe.supabase.co",
   process.env.NEXT_PUBLIC_SERVER_URL,
   process.env.NEXT_PUBLIC_SINGLE_VENDOR_SERVER_URL,
   process.env.NEXT_PUBLIC_SINGLE_VENDOR_REST_URL,
