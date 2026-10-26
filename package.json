@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "install:web": "cd enatega-multivendor-web && npm install --legacy-peer-deps",
-    "ensure:web": "cd enatega-multivendor-web && [ -d node_modules/next-intl ] || npm install --legacy-peer-deps",
+    "ensure:web": "cd enatega-multivendor-web && (node -e \"require.resolve('next/package.json'); require.resolve('next/dist/server/lib/utils'); require.resolve('next-intl')\" || bun install --force)",
     "dev": "npm run ensure:web && cd enatega-multivendor-web && node ./node_modules/next/dist/bin/next dev -p 8080 --webpack",
     "dist": "node scripts/make-dist.mjs",
     "build": "npm run ensure:web && cd enatega-multivendor-web && node ./node_modules/next/dist/bin/next build && cd .. && npm run dist",
