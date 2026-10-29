@@ -408,6 +408,38 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_reports: {
+        Row: {
+          created_at: string
+          data: Json
+          id: string
+          report_date: string
+          restaurant_id: string
+        }
+        Insert: {
+          created_at?: string
+          data: Json
+          id?: string
+          report_date: string
+          restaurant_id: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          id?: string
+          report_date?: string
+          restaurant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_reports_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       delivery_zones: {
         Row: {
           city_id: string
@@ -1999,6 +2031,13 @@ export type Database = {
         Returns: Json
       }
       admin_customer_rewards: { Args: { p_user: string }; Returns: Json }
+      admin_daily_reports: {
+        Args: { p_limit?: number; p_restaurant_id: string }
+        Returns: {
+          data: Json
+          report_date: string
+        }[]
+      }
       admin_dashboard_counts: {
         Args: { p_from?: string; p_restaurant_id?: string; p_to?: string }
         Returns: Json
@@ -2117,6 +2156,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      admin_stats: {
+        Args: { p_from: string; p_restaurant_id: string; p_to: string }
+        Returns: Json
       }
       admin_sync_library: {
         Args: { p_restaurant_id: string }
@@ -2290,6 +2333,7 @@ export type Database = {
       }
       current_escale: { Args: { p_restaurant: string }; Returns: Json }
       daily_ops_tick: { Args: never; Returns: undefined }
+      daily_report_tick: { Args: never; Returns: number }
       effective_variant_price: {
         Args: { v: Database["public"]["Tables"]["item_variants"]["Row"] }
         Returns: number
@@ -2663,6 +2707,10 @@ export type Database = {
           p_roles: Database["public"]["Enums"]["app_role"][]
         }
         Returns: string[]
+      }
+      stats_compute: {
+        Args: { p_from: string; p_restaurant_id: string; p_to: string }
+        Returns: Json
       }
       submit_order_review: {
         Args: {
