@@ -137,6 +137,7 @@ export interface IDashboardOrderSalesDetailsByPaymentMethodResponseGraphQL {
     total_sales_without_delivery?: number;
     total_delivery_fee?: number;
     pickup_total_orders?: number;
+    dine_in_total_orders?: number;
     delivery_total_orders?: number;
     pickup_orders?: number;
     delivery_orders?: number;
