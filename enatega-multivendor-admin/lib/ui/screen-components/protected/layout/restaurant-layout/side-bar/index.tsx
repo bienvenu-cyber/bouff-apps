@@ -159,6 +159,13 @@ export default function MakeSidebar() {
       isClickable: true,
     },
     {
+      text: 'Statistiques & rapports',
+      route: '/admin/store/stats',
+      isParent: true,
+      icon: faMoneyBillTrendUp,
+      isClickable: true,
+    },
+    {
       text: 'Escale BOUFF',
       route: '/admin/store/escale',
       isParent: true,
