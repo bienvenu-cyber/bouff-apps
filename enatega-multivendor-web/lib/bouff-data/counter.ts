@@ -124,6 +124,11 @@ export async function counterCancelOrder(token: string, orderId: string, reason:
   if (error) throw new Error(error.message);
 }
 
+export async function counterCompleteOrder(token: string, orderId: string) {
+  const { error } = await bouffDb().rpc("counter_complete_order", { p_token: token, p_order_id: orderId });
+  if (error) throw new Error(error.message);
+}
+
 export interface CounterDaySummary {
   period_start: string;
   orders_count: number;

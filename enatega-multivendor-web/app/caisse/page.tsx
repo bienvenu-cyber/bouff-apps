@@ -8,6 +8,7 @@ import {
   counterLogin,
   counterLogout,
   counterCancelOrder,
+  counterCompleteOrder,
   counterCloseDay,
   counterDaySummary,
   counterPlaceOrder,
@@ -788,6 +789,25 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
   useEffect(load, [load]);
+  useEffect(() => {
+    const timer = window.setInterval(load, 15000);
+    return () => window.clearInterval(timer);
+  }, [load]);
+
+  const complete = async (orderId: string) => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await counterCompleteOrder(token, orderId);
+      load();
+    } catch (e) {
+      if (isSessionError(e)) onExpired();
+      else setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const confirmCancel = async () => {
     if (!cancelling) return;
@@ -862,6 +882,11 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
           <div className="shrink-0 text-right">
             <p className={r.status === "cancelled" ? "line-through text-bouff-text-muted" : ""}>{fcfa(r.total_fcfa)}</p>
             <p className="text-sm text-bouff-primary">{STATUS_LABEL[r.status] ?? r.status}</p>
+            {r.status === "ready" && (
+              <button disabled={busy} onClick={() => void complete(r.id)} className="mt-2 rounded-bouff-md bg-bouff-primary px-3 py-2 text-sm font-semibold text-bouff-on-primary disabled:opacity-40">
+                Remise au client
+              </button>
+            )}
             {r.status === "received" && (
               <button onClick={() => { setReason(""); setError(null); setCancelling({ id: r.id, number: r.order_number }); }} className="mt-1 text-sm text-bouff-danger underline">
                 Annuler

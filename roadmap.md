@@ -72,6 +72,7 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 - [ ] URGENT avant prod : numéro WhatsApp BOUFF
 
 ## Corrections du 14/10
+- [x] Terminer les trois anciennes commandes caisse signalées ; ajouter la remise au client pour les commandes payées et prêtes
 - [x] Caisse : ventes rattachées uniquement au numéro saisi
 - [x] Livreur : plus de déconnexion si le téléphone est lent
 - [x] App client : recherche d'adresse OpenStreetMap (sans Google)

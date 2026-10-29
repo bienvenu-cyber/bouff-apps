@@ -2301,6 +2301,10 @@ export type Database = {
         Args: { p_cash_counted: number; p_note?: string; p_token: string }
         Returns: Json
       }
+      counter_complete_order: {
+        Args: { p_order_id: string; p_token: string }
+        Returns: Json
+      }
       counter_day_summary: { Args: { p_token: string }; Returns: Json }
       counter_login: {
         Args: { p_cashier_id: string; p_pin: string }

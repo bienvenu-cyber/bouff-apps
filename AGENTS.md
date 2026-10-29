@@ -8,4 +8,5 @@
 - Customer app address search/reverse geocoding goes through src/api/googleMapsProxy.js backed by OpenStreetMap Nominatim (Benin only, 1 req/s) — why: no Google billing; screens keep the same API.
 - Native app auth sessions (client, kitchen) are stored via bouff/secureSession.ts (chunked expo-secure-store, AsyncStorage fallback/migration) — why: tokens must not sit in plain storage, but a slow keystore must never block startup.
 - The /caisse till uses its own session-less database client and counter orders take the customer only from the typed phone — why: a customer logged in on the tablet must never receive till sales.
+- Counter handover uses counter_complete_order after the kitchen marks the order ready; the database verifies the cashier session, restaurant, counter source and payment — why: taking payment is not proof that a meal has been served.
 - Rider app never calls Appearance.setColorScheme; dark mode is fixed natively via userInterfaceStyle — why: forcing the scheme at startup recreates the Android activity and left riders on a black screen.
