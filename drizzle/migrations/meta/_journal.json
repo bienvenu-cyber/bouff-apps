@@ -155,6 +155,13 @@
       "when": 1793293602766,
       "tag": "0021_stats_and_daily_reports",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1793302110122,
+      "tag": "0022_stats_dine_in_split",
+      "breakpoints": true
     }
   ]
 }
