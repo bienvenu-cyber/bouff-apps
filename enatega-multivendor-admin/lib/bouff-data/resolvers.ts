@@ -230,6 +230,7 @@ async function paymentBreakdown(restaurant: string, from?: string | null, to?: s
   const cnt = (list: any[]) => list.reduce((s, o) => s + o.n, 0);
   const pickup = rows.filter((o) => o.order_type === 'takeaway');
   const delivery = rows.filter((o) => o.order_type === 'delivery');
+  const dineIn = rows.filter((o) => o.order_type === 'dine_in');
   const cod = rows.filter((o) => o.payment_method === 'cash');
   const card = rows.filter((o) => o.payment_method !== 'cash');
   const all = sum(rows);
@@ -242,6 +243,7 @@ async function paymentBreakdown(restaurant: string, from?: string | null, to?: s
     ...all,
     pickup_total_orders: cnt(pickup),
     delivery_total_orders: cnt(delivery),
+    dine_in_total_orders: cnt(dineIn),
     pickup_orders: cnt(pickup),
     delivery_orders: cnt(delivery),
     pickup: { total_orders: cnt(pickup) },

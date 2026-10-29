@@ -104,6 +104,7 @@ export const GET_RESTAURANT_DASHBOARD_ORDER_SALES_DETAILS_BY_PAYMENT_METHOD = gq
       total_sales_without_delivery
       total_delivery_fee
       pickup_total_orders
+      dine_in_total_orders
       delivery_total_orders
       pickup_orders
       delivery_orders

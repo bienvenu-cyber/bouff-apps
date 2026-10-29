@@ -68,7 +68,9 @@ export default function UserStats({
       stats.delivery_orders ??
       stats.delivery?.total_orders ??
       Math.max(totalOrders - pickupOrders, 0);
+    const dineInOrders = Number(stats.dine_in_total_orders ?? 0);
     return {
+      dineInOrders,
       totalOrders,
       pickupOrders,
       deliveryOrders,
@@ -77,7 +79,7 @@ export default function UserStats({
   }, [data]);
 
   return (
-    <div className="p-3 grid grid-cols-1 items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div className="p-3 grid grid-cols-1 items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
       <StatsCard
         label={t('Total Orders')}
         total={dashboardUsers?.totalOrders ?? 0}
@@ -90,6 +92,15 @@ export default function UserStats({
       <StatsCard
         label={t('Pickup Orders')}
         total={dashboardUsers?.pickupOrders ?? 0}
+        icon={faShoppingCart}
+        route="/admin/store/orders"
+        loading={loading}
+        amountConfig={{ format: 'number', currency: 'XOF' }}
+      />
+
+      <StatsCard
+        label="Sur place"
+        total={dashboardUsers?.dineInOrders ?? 0}
         icon={faShoppingCart}
         route="/admin/store/orders"
         loading={loading}
