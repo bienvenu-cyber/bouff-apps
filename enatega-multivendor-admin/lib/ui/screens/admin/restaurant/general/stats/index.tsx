@@ -15,7 +15,7 @@ const N = (n: any) => Number(n ?? 0).toLocaleString('fr-FR');
 const DAYS = ['', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 const LBL: Record<string, string> = {
   delivery: 'Livraison', pickup: 'À emporter', dine_in: 'Sur place', takeaway: 'À emporter',
-  cash: 'Espèces', mobile_money: 'Mobile Money', card: 'Carte', counter: 'Caisse', app: 'Appli', web: 'Site',
+  cash: 'Espèces', mobile_money: 'Mobile Money', card: 'Carte', counter: 'Caisse', online: 'Appli / site', app: 'Appli', web: 'Site',
 };
 const lbl = (k: any) => LBL[String(k)] ?? String(k);
 
