@@ -191,7 +191,17 @@ export async function fetchOrder(id: string) {
   return mapOrder(o);
 }
 
+const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+// Le filtre (Tout / Aujourd'hui / Semaine / Mois / Année / Personnalisé) décide de la période ; les dates ne comptent qu'en « Personnalisé ».
 function dateRange(a: any) {
+  const k = String(a?.dateKeyword ?? '').toLowerCase();
+  const now = new Date();
+  const today = iso(now);
+  if (/today|aujourd/.test(k)) return { from: today, to: today };
+  if (/week|semaine/.test(k)) { const d = new Date(now); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return { from: iso(d), to: today }; }
+  if (/month|mois/.test(k)) return { from: iso(new Date(now.getFullYear(), now.getMonth(), 1)), to: today };
+  if (/year|ann/.test(k)) return { from: `${now.getFullYear()}-01-01`, to: today };
+  if (/^(all|tout|tous|toutes)?$/.test(k) && k !== '') return { from: null, to: null };
   const from = a.starting_date || a.startingDate;
   const to = a.ending_date || a.endingDate;
   return { from: from ? String(from).slice(0, 10) : null, to: to ? String(to).slice(0, 10) : null };
@@ -207,17 +217,17 @@ async function restaurantStats(id: string, from?: string | null, to?: string | n
 }
 
 async function paymentBreakdown(restaurant: string, from?: string | null, to?: string | null) {
-  let q = db().from('orders').select('order_type, payment_method, total_fcfa, delivery_fee_fcfa, status').eq('restaurant_id', restaurant).neq('status', 'cancelled');
-  if (from) q = q.gte('created_at', from);
-  if (to) q = q.lte('created_at', `${to}T23:59:59`);
-  const rows = ((await must(q)) as any[]) ?? [];
+  // Agrégé en base (quelques lignes), quel que soit le nombre de commandes.
+  const groups = ((await must(db().rpc('admin_order_breakdown', { p_restaurant_id: restaurant, p_from: from ?? null, p_to: to ?? null } as any))) as any[]) ?? [];
+  const rows = groups.map((g) => ({ order_type: g.order_type, payment_method: g.is_cash ? 'cash' : 'mobile_money', n: Number(g.orders), total_fcfa: Number(g.sales), delivery_fee_fcfa: Number(g.fees) }));
   const sum = (list: any[]) => ({
     __typename: 'PaymentData',
-    total_orders: list.length,
+    total_orders: list.reduce((s, o) => s + o.n, 0),
     total_sales: list.reduce((s, o) => s + o.total_fcfa, 0),
     total_sales_without_delivery: list.reduce((s, o) => s + o.total_fcfa - o.delivery_fee_fcfa, 0),
     total_delivery_fee: list.reduce((s, o) => s + o.delivery_fee_fcfa, 0),
   });
+  const cnt = (list: any[]) => list.reduce((s, o) => s + o.n, 0);
   const pickup = rows.filter((o) => o.order_type === 'takeaway');
   const delivery = rows.filter((o) => o.order_type === 'delivery');
   const cod = rows.filter((o) => o.payment_method === 'cash');
@@ -230,12 +240,12 @@ async function paymentBreakdown(restaurant: string, from?: string | null, to?: s
   ];
   return {
     ...all,
-    pickup_total_orders: pickup.length,
-    delivery_total_orders: delivery.length,
-    pickup_orders: pickup.length,
-    delivery_orders: delivery.length,
-    pickup: { total_orders: pickup.length },
-    delivery: { total_orders: delivery.length },
+    pickup_total_orders: cnt(pickup),
+    delivery_total_orders: cnt(delivery),
+    pickup_orders: cnt(pickup),
+    delivery_orders: cnt(delivery),
+    pickup: { total_orders: cnt(pickup) },
+    delivery: { total_orders: cnt(delivery) },
     all: split(rows),
     cod: split(cod),
     card: split(card),

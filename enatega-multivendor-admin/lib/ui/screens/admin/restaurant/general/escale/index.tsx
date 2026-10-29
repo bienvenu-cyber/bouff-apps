@@ -58,7 +58,7 @@ export default function EscaleScreen() {
   }
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 text-gray-900 dark:text-gray-100">
       <div>
         <h1 className="text-2xl font-bold">Escale BOUFF</h1>
         <p className="text-sm opacity-70">

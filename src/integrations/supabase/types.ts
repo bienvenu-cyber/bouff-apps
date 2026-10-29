@@ -2059,6 +2059,16 @@ export type Database = {
         }[]
       }
       admin_my_access: { Args: never; Returns: Json }
+      admin_order_breakdown: {
+        Args: { p_from?: string; p_restaurant_id: string; p_to?: string }
+        Returns: {
+          fees: number
+          is_cash: boolean
+          order_type: string
+          orders: number
+          sales: number
+        }[]
+      }
       admin_push_promo: { Args: { p_variant_id: string }; Returns: number }
       admin_push_stats: { Args: { p_days?: number }; Returns: Json }
       admin_remove_staff: {

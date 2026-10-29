@@ -141,6 +141,13 @@
       "when": 1791995692075,
       "tag": "0019_rename_cashier_messages_hotesse",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1793291833543,
+      "tag": "0020_migration",
+      "breakpoints": true
     }
   ]
 }
