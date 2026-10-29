@@ -1,7 +1,7 @@
 'use client';
-// Screens
-import NotificationsScreen from '@/lib/ui/screens/super-admin/management/notifications';
+// Notifications promo BOUFF (envoi aux clients ayant accepté les offres), réservé au super admin.
+import PromoPushScreen from '@/lib/ui/screens/admin/restaurant/general/promo-push';
 
 export default function NotificationsPage() {
-  return <NotificationsScreen />;
+  return <PromoPushScreen />;
 }

@@ -166,15 +166,6 @@ export default function MakeSidebar() {
       isClickable: true,
     },
     {
-      text: 'Notifications',
-      route: '/admin/store/notifications',
-      isParent: true,
-      icon: faMoneyBillTrendUp,
-      isClickable: true,
-      // Réservé au super admin : un gérant n'envoie pas de push à tous les clients.
-      shouldShow: () => user?.userType === 'ADMIN',
-    },
-    {
       text: t('Reviews'),
       route: '/admin/store/ratings',
       isParent: true,
