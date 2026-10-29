@@ -162,6 +162,13 @@
       "when": 1793302110122,
       "tag": "0022_stats_dine_in_split",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1793308955037,
+      "tag": "0023_counter_complete_ready_order",
+      "breakpoints": true
     }
   ]
 }
