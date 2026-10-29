@@ -1,7 +1,6 @@
-'use client';
+import { redirect } from 'next/navigation';
 
-import PaymentScreen from '@/lib/ui/screens/admin/restaurant/general/payments';
-
-export default function PaymentsPage() {
-  return <PaymentScreen />;
+// Page de l'ancien logiciel, non reliée à BOUFF : masquée.
+export default function Hidden() {
+  redirect('/admin/store/dashboard');
 }

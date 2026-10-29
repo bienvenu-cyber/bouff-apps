@@ -1,7 +1,6 @@
-'use client';
-// Screens
-import TransactionRestaurantScreen from '@/lib/ui/screens/admin/restaurant/wallet/transaction-history';
+import { redirect } from 'next/navigation';
 
-export default function TransactionSuperAdminPage() {
-  return <TransactionRestaurantScreen />;
+// Page de l'ancien logiciel, non reliée à BOUFF : masquée.
+export default function Hidden() {
+  redirect('/admin/store/dashboard');
 }

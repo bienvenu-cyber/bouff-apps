@@ -1,6 +1,6 @@
-'use client';
-import WithDrawRequestAdminScreen from "@/lib/ui/screens/admin/restaurant/wallet/withdrawalRequest";
+import { redirect } from 'next/navigation';
 
-export default function WithdrawalSuperAdminPage() {
-  return <WithDrawRequestAdminScreen/>;
+// Page de l'ancien logiciel, non reliée à BOUFF : masquée.
+export default function Hidden() {
+  redirect('/admin/store/dashboard');
 }

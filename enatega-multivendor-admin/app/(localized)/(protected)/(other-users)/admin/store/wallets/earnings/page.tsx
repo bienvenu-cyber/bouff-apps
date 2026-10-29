@@ -1,7 +1,6 @@
-'use client';
-// Screens
-import EarningsRestaurantScreen from "@/lib/ui/screens/admin/restaurant/wallet/earnings";
+import { redirect } from 'next/navigation';
 
-export default function EarningSuperAdminPage() {
-  return <EarningsRestaurantScreen />;
+// Page de l'ancien logiciel, non reliée à BOUFF : masquée.
+export default function Hidden() {
+  redirect('/admin/store/dashboard');
 }

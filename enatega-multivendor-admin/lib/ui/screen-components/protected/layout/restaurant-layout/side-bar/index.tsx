@@ -20,7 +20,7 @@ import {
   faRectangleList,
   faStar,
   faStore,
-  faWallet,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 
 // Components
@@ -94,11 +94,6 @@ export default function MakeSidebar() {
           route: '/admin/store/general/location',
           isParent: false,
         },
-        {
-          text: t('Payment'),
-          route: '/admin/store/general/payment',
-          isParent: false,
-        },
       ],
     },
 
@@ -132,35 +127,29 @@ export default function MakeSidebar() {
     },
 
     {
-      text: t('Wallet'),
-      route: '/admin/store/wallets',
-      isParent: true,
-      icon: faWallet,
-      subMenu: [
-        {
-          text: t('Transaction History'),
-          route: '/admin/store/wallets/transaction-history',
-          isParent: false,
-        },
-        {
-          text: t('Withdrawal Request'),
-          route: '/admin/store/wallets/withdrawal-request',
-          isParent: false,
-        },
-        {
-          text: t('Earnings'),
-          route: '/admin/store/wallets/earnings',
-          isParent: false,
-        },
-      ],
-    },
-
-    {
       text: t('Orders'),
       route: '/admin/store/orders',
       isParent: true,
       icon: faRectangleList,
       isClickable: true,
+    },
+    {
+      text: 'Équipe',
+      route: '/admin/store/team',
+      isParent: true,
+      icon: faUsers,
+      subMenu: [
+        {
+          text: 'Caissières',
+          route: '/admin/store/cashiers',
+          isParent: false,
+        },
+        {
+          text: 'Livreurs',
+          route: '/admin/store/riders',
+          isParent: false,
+        },
+      ],
     },
     {
       text: t('Marketing'),
@@ -182,6 +171,8 @@ export default function MakeSidebar() {
       isParent: true,
       icon: faMoneyBillTrendUp,
       isClickable: true,
+      // Réservé au super admin : un gérant n'envoie pas de push à tous les clients.
+      shouldShow: () => user?.userType === 'ADMIN',
     },
     {
       text: t('Reviews'),
