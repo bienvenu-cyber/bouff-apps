@@ -35,7 +35,6 @@ Aucune nouvelle application ne sera créée. On réutilise les applications déj
 
 - [x] Caisse comptoir sur le site (/caisse) : code par caissière, sur place / à emporter, espèces ou MoMo, envoi en cuisine ; caissières gérées dans l'admin
 - [ ] Acheter la tablette du comptoir et créer les codes des caissières
-- [ ] Caisse : type « repas personnel » (1 plat/service à -50 %, validé par la cuisine avant préparation, suivi par employé) — plus tard
 
 ## Déjà disponible côté base (rien à refaire)
 - [x] Prise de commande avec total, frais de zone et commission recalculés côté base
