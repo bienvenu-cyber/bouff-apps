@@ -14,7 +14,14 @@ const KIND_LABELS: Record<string, string> = {
 
 export default function PromoPushScreen() {
   const { restaurantLayoutContextData } = useContext(RestaurantLayoutContext);
-  const restaurantId = restaurantLayoutContextData?.restaurantId || '';
+  const ctxId = restaurantLayoutContextData?.restaurantId || '';
+  const [fallbackId, setFallbackId] = useState('');
+  const restaurantId = ctxId || fallbackId;
+  useEffect(() => {
+    if (ctxId) return;
+    bouffDb().from('restaurants').select('id').order('created_at').limit(1)
+      .then(({ data }) => setFallbackId((data as any)?.[0]?.id ?? ''));
+  }, [ctxId]);
   const [rows, setRows] = useState<Row[]>([]);
   const [busy, setBusy] = useState('');
   const [msg, setMsg] = useState('');
