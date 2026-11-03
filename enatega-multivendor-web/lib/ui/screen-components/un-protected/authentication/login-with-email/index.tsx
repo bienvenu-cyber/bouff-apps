@@ -56,6 +56,7 @@ export default function LoginWithEmail({
 
     // Proceed only if valid
     const emailExists = await checkEmailExists(email);
+    if (emailExists === null) return;
     if (emailExists) {
       showToast({
         type: "success",

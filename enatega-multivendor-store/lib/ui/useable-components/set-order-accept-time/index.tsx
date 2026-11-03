@@ -73,20 +73,17 @@ const SetTimeScreenAndAcceptOrder = ({
 
     try {
       setIsAcceptingOrder(true);
-      const status = await printOrder(id);
-
-      if (status) {
-        // null means it's ioS so ignore printing and true mean print wa successfull
-        await silenceRing();
-        await acceptOrder(id, selectedTime?.toString() || "0");
-        muteRing(orderId).catch(() => {});
-        FlashMessageComponent({
-          message: t("Order accepted. Opening Processing."),
-        });
-        onOrderAccepted();
+      await silenceRing();
+      await acceptOrder(id, selectedTime?.toString() || "0");
+      muteRing(orderId).catch(() => {});
+      onOrderAccepted();
+      // A missing/disconnected printer must not block an accepted meal.
+      try {
+        const printed = await printOrder(id);
+        if (!printed) FlashMessageComponent({ message: "Commande acceptée, impression indisponible." });
+      } catch {
+        FlashMessageComponent({ message: "Commande acceptée, impression indisponible." });
       }
-
-      setIsAcceptingOrder(false);
     } catch {
       // FlashMessageComponent({ message: err?.message ?? "Order accept failed" });
     } finally {
@@ -140,7 +137,7 @@ const SetTimeScreenAndAcceptOrder = ({
           isLoading={isSubmitting}
           style={{ backgroundColor: appTheme.primary }}
           onPress={onAcceptOrderHandler}
-          title={t("Done")}
+          title={t("Accept")}
         />
       </View>
       {Platform.OS === "android" && (

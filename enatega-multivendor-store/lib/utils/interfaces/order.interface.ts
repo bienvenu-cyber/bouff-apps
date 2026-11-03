@@ -92,6 +92,7 @@ export interface Zone {
 }
 
 export interface IOrder {
+  deliveryMode?: 'internal' | 'external';
   _id: string;
   id?: string;
   orderId: string;

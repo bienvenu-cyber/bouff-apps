@@ -70,6 +70,7 @@ export const SUBSCRIBE_PLACE_ORDER = gql`
         paidAmount
         orderAmount
         orderStatus
+        deliveryMode
         tipping
         taxationAmount
         status
@@ -117,6 +118,7 @@ export const SUBSCRIPTION_ORDER = gql`
     subscriptionOrder(id: $id) {
       _id
       orderStatus
+      deliveryMode
       isPickedUp
       rider {
         _id
@@ -144,6 +146,7 @@ export const SUBSCRIPTION_ORDER_MULTI_VENDOR =
     subscriptionOrder(id: $id) {
       _id
       orderStatus
+      deliveryMode
       isPickedUp
       rider { _id }
       completionTime

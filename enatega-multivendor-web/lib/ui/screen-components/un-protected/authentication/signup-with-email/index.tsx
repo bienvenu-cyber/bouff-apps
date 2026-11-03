@@ -115,6 +115,7 @@ export default function SignUpWithEmail({
       if (!isPhoneExists && normalizedEmail) {
         console.log("Checking email existence for:", normalizedEmail);
         const emailExists = await checkEmailExists(normalizedEmail);
+        if (emailExists === null) return;
         console.log("Email exists result:", emailExists);
 
         if (emailExists) {

@@ -66,7 +66,7 @@ export interface IAuthContextProps {
   setAuthToken: Dispatch<SetStateAction<string>>;
   user: IUser | null;
   setUser: Dispatch<SetStateAction<ILoginProfile | null>>;
-  checkEmailExists: (email: string) => Promise<boolean>;
+  checkEmailExists: (email: string) => Promise<boolean | null>;
   checkPhoneExists: (phone: string) => Promise<boolean | void>;
   handleUserLogin: (
     user: IUserLoginArguments & {
