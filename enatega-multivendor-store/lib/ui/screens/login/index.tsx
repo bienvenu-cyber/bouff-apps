@@ -1,6 +1,6 @@
 // Core
 import { Formik } from "formik";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 // React Native
 import {
@@ -29,23 +29,7 @@ import { CustomContinueButton } from "../../useable-components";
 import { useStoreMode } from "@/lib/context/global/store-mode.context";
 import { STORE_SERVER_MODES, StoreServerMode } from "@/lib/mode/store-mode";
 
-const multiVendorDemoCredentials: ILoginInitialValues = {
-  username:
-    process.env.EXPO_PUBLIC_MULTI_VENDOR_STORE_DEMO_USERNAME ??
-    (__DEV__ ? "FalafelTmeer@yopmail.com" : ""),
-  password:
-    process.env.EXPO_PUBLIC_MULTI_VENDOR_STORE_DEMO_PASSWORD ??
-    (__DEV__ ? "Yalla0014yalla0014@" : ""),
-};
-
-const singleVendorDemoCredentials: ILoginInitialValues = {
-  username:
-    process.env.EXPO_PUBLIC_SINGLE_VENDOR_STORE_DEMO_USERNAME ??
-    (__DEV__ ? "store@fastfresh.local" : ""),
-  password:
-    process.env.EXPO_PUBLIC_SINGLE_VENDOR_STORE_DEMO_PASSWORD ??
-    (__DEV__ ? "Store@12345" : ""),
-};
+const loginInitialValues: ILoginInitialValues = { username: "", password: "" };
 
 const LoginScreen = () => {
   // States
@@ -57,13 +41,6 @@ const LoginScreen = () => {
   const { isLogging, onLogin } = useLogin();
   const { isModeToggleEnabled, isSwitchingMode, mode, selectMode } =
     useStoreMode();
-  const loginInitialValues = useMemo(
-    () =>
-      mode === STORE_SERVER_MODES.MULTI
-        ? multiVendorDemoCredentials
-        : singleVendorDemoCredentials,
-    [mode],
-  );
 
   // Handlers
   const onLoginHandler = async (creds: ILoginInitialValues) => {
@@ -214,6 +191,11 @@ const LoginScreen = () => {
                         className="flex-1 h-12 text-bas"
                         style={{ color: appTheme.fontMainColor }}
                         placeholder={t("Username or Email")}
+                        placeholderTextColor={appTheme.fontSecondColor}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        autoComplete="email"
                         value={values.username}
                         onChangeText={handleChange("username")}
                         onBlur={handleBlur("username")}
@@ -243,6 +225,10 @@ const LoginScreen = () => {
                         className="flex-1 h-12 text-base"
                         style={{ color: appTheme.fontMainColor }}
                         placeholder={t("Password")}
+                        placeholderTextColor={appTheme.fontSecondColor}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        autoComplete="current-password"
                         secureTextEntry={!passwordVisible}
                         value={values.password}
                         onChangeText={handleChange("password")}
