@@ -46,7 +46,7 @@ export default function AppThemeProvidor({
         const localTheme = await AsyncStorage.getItem("app_theme");
     // BOUFF : sombre par défaut, le téléphone ne décide plus.
     const theme = localTheme === "light" ? "light" : "dark";
-    Appearance.setColorScheme(theme as app_theme);
+    if (typeof Appearance.setColorScheme === "function") Appearance.setColorScheme(theme as app_theme);
     setCurrentTheme(theme as app_theme);
     setAppTheme(
       theme === "light"
