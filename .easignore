@@ -18,3 +18,5 @@ enatega-multivendor-store/node_modules/
 enatega-multivendor-web/node_modules/
 enatega-multivendor-admin/node_modules/
 enatega-singlevendor-admin/node_modules/
+**/bun.lock
+bun.lock

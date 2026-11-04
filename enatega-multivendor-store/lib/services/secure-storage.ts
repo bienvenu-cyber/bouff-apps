@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SecureStore from "expo-secure-store";
+import * as SecureStore from "./session-storage";
 import { STORE_ID } from "@/lib/utils/constants";
 
 interface StorageEvent {
