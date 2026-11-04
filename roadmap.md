@@ -1,10 +1,11 @@
 # Feuille de route BOUFF
 
 ## Demande actuelle — coursiers externes et connexions
-- [ ] Activer le relais livraison automatique (prête +5 min, clôture +30 min), isoler les courses des livreurs internes et identifier les clôtures estimées
-- [ ] Auditer et corriger les actions finales cuisine sans nouveau bouton
-- [ ] Auditer les connexions de toutes les applications et fournir une vitrine fidèle des écrans actuels
-- [ ] Vérifier les règles et le parcours réel ; préciser les recompilations ou contrôles téléphone restants
+- [x] Activer le relais livraison automatique (prête +5 min, clôture +30 min), isoler les courses des livreurs internes et identifier les clôtures estimées
+- [x] Auditer et corriger les actions finales cuisine sans nouveau bouton (3 tests réussis)
+- [ ] Captures restantes : app client native (nécessite téléphone/simulateur), livreur (démarrage web indisponible) ; captures site, cuisine et administration obtenues
+- [ ] Parcours livraison réel : aucune commande externe existante ; session de votre compte indisponible pour le test connecté
+- [ ] Attendre le résultat Expo client et cuisine puis vérifier sur téléphone
 
 ## Fait
 - [x] Audit du code (voir `AUDIT-BOUFF.md`)
