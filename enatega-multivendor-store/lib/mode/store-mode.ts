@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 
 import { STORE_ID, STORE_TOKEN } from "@/lib/utils/constants";
 
@@ -39,6 +40,7 @@ export const getStoreIdKey = (mode: StoreServerMode) =>
   `enatega-store-${modeSuffix(mode)}-id`;
 
 export const migrateLegacyStoreSession = async (): Promise<void> => {
+  if (Platform.OS === "web") return;
   const hasMigrated = await AsyncStorage.getItem(STORE_STORAGE_MIGRATION_KEY);
   if (hasMigrated === "true") return;
 

@@ -44,7 +44,7 @@ export const StoreModeProvider = ({
   children: React.ReactNode;
 }) => {
   const forcedMode = getForcedStoreServerMode();
-  const [mode, setMode] = useState<StoreServerMode>(DEFAULT_STORE_SERVER_MODE);
+  const [mode, setMode] = useState<StoreServerMode>(forcedMode ?? DEFAULT_STORE_SERVER_MODE);
   const [isModeReady, setIsModeReady] = useState(false);
   const [isSwitchingMode, setIsSwitchingMode] = useState(false);
 
@@ -61,6 +61,8 @@ export const StoreModeProvider = ({
         } else if (mounted && isStoreServerMode(storedMode)) {
           setMode(storedMode);
         }
+      } catch {
+        if (mounted && forcedMode) setMode(forcedMode);
       } finally {
         if (mounted) setIsModeReady(true);
       }
