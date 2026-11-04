@@ -73,6 +73,11 @@ function TrackingStatusCard({
 
   const getStatusMessage = () => {
     const status = orderTrackingDetails?.orderStatus;
+    if (orderTrackingDetails.deliveryMode === 'external') {
+      if (status === 'ASSIGNED') return 'Commande prête. Départ estimé dans 5 minutes.';
+      if (status === 'PICKED') return 'En livraison · suivi estimé, sans position du coursier.';
+      if (status === 'DELIVERED') return 'Clôturée automatiquement, sans confirmation de réception.';
+    }
     const nowDate = new Date(now);
 
     switch (status) {
@@ -146,7 +151,7 @@ function TrackingStatusCard({
     }
   };
   const statusKey = `status_label_${orderTrackingDetails.orderStatus}`;
-  const currentStatusLabel = t.has(statusKey)
+  const currentStatusLabel = orderTrackingDetails.autoClosedAt ? 'Clôturée automatiquement' : t.has(statusKey)
     ? t(statusKey)
     : orderTrackingDetails.orderStatus;
 

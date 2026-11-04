@@ -1,5 +1,11 @@
 # Feuille de route BOUFF
 
+## Demande actuelle — coursiers externes et connexions
+- [ ] Activer le relais livraison automatique (prête +5 min, clôture +30 min), isoler les courses des livreurs internes et identifier les clôtures estimées
+- [ ] Auditer et corriger les actions finales cuisine sans nouveau bouton
+- [ ] Auditer les connexions de toutes les applications et fournir une vitrine fidèle des écrans actuels
+- [ ] Vérifier les règles et le parcours réel ; préciser les recompilations ou contrôles téléphone restants
+
 ## Fait
 - [x] Audit du code (voir `AUDIT-BOUFF.md`)
 - [x] Réintégration des images et icônes exclues du dépôt (le projet compile à nouveau après un `git clone`)

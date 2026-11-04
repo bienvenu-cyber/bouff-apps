@@ -10,3 +10,4 @@
 - The /caisse till uses its own session-less database client and counter orders take the customer only from the typed phone — why: a customer logged in on the tablet must never receive till sales.
 - Counter handover uses counter_complete_order after the kitchen marks the order ready; the database verifies the cashier session, restaurant, counter source and payment — why: taking payment is not proof that a meal has been served.
 - Rider app never calls Appearance.setColorScheme; dark mode is fixed natively via userInterfaceStyle — why: forcing the scheme at startup recreates the Android activity and left riders on a black screen.
+- External delivery is pinned per order at creation from restaurant delivery_mode; database transitions run through the existing wake-on-enqueue ops job and auto_closed_at is distinct from delivered_at — why: old rider APKs cannot claim external jobs and estimated closure cannot become proof of delivery.

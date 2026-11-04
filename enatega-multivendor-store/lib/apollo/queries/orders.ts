@@ -72,6 +72,7 @@ export const GET_ORDERS =
         paidAmount
         orderAmount
         orderStatus
+        deliveryMode
         tipping
         taxationAmount
         status
@@ -175,6 +176,7 @@ export const GET_ORDERS_SINGLE_VENDOR = gql`
       paidAmount
       orderAmount
       orderStatus
+      deliveryMode
       tipping
       taxationAmount
       status

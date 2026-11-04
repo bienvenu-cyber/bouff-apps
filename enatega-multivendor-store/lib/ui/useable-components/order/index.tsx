@@ -14,6 +14,7 @@ import {
   parseTimestamp,
 } from "@/lib/utils/methods/date-time";
 import { getIsAcceptButtonVisible } from "@/lib/utils/methods/gloabl";
+import { kitchenAction } from "@/lib/utils/methods/kitchen-actions";
 import { ORDER_TYPE } from "@/lib/utils/types";
 import { memo, useContext, useEffect, useRef, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
@@ -69,6 +70,7 @@ const Order = ({
   const { markReady, loading: loadingReady } = useMarkOrderReady();
   const { isSingleVendor } = useStoreMode();
   const statusPalette = getStatusPalette(tab, currentTheme === "dark");
+  const finalAction = kitchenAction(order.orderStatus, order.isPickedUp);
 
   // Keep this order's status live in real time. The subscription result is
   // written into the normalized cache (keyed by _id), so orderStatus/isPickedUp
@@ -262,7 +264,7 @@ const Order = ({
             ))}
         </View>
 
-        {order.orderStatus === "ASSIGNED" &&
+        {order.orderStatus === "ASSIGNED" && order.deliveryMode !== 'external' &&
           !order.isPickedUp &&
           !order.rider?._id && (
             <View
@@ -460,7 +462,7 @@ const Order = ({
             </View>
 
             {/* En cuisine → prête (livraison et emporter) */}
-            {order.orderStatus === "ACCEPTED" && (
+            {finalAction === 'ready' && (
               <View style={styles.actionRow}>
                 <TouchableOpacity
                   accessibilityRole="button"
@@ -489,7 +491,7 @@ const Order = ({
             )}
 
             {/* À emporter prête → remise au client */}
-            {order.orderStatus === "ASSIGNED" && order.isPickedUp && (
+            {finalAction === 'handover' && (
               <View style={styles.actionRow}>
                 <TouchableOpacity
                   accessibilityRole="button"
@@ -529,6 +531,7 @@ export default memo(Order, (prevProps, nextProps) => {
   if (prevProps.order.updatedAt !== nextProps.order.updatedAt) return false;
   if (prevProps.order.orderStatus !== nextProps.order.orderStatus) return false;
   if (prevProps.order.isPickedUp !== nextProps.order.isPickedUp) return false;
+  if (prevProps.order.deliveryMode !== nextProps.order.deliveryMode) return false;
   if (prevProps.order.rider?._id !== nextProps.order.rider?._id) return false;
   if (prevProps.order.preparationTime !== nextProps.order.preparationTime) {
     return false;

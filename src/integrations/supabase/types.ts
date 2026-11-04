@@ -1207,6 +1207,7 @@ export type Database = {
       orders: {
         Row: {
           accepted_at: string | null
+          auto_closed_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by_cashier_id: string | null
@@ -1223,6 +1224,7 @@ export type Database = {
           delivery_fee_fcfa: number
           delivery_lat: number | null
           delivery_lng: number | null
+          delivery_mode: string
           delivery_zone_id: string | null
           dine_in: boolean
           discount_fcfa: number
@@ -1249,6 +1251,7 @@ export type Database = {
         }
         Insert: {
           accepted_at?: string | null
+          auto_closed_at?: string | null
           cancel_reason?: string | null
           cancelled_at?: string | null
           cancelled_by_cashier_id?: string | null
@@ -1265,6 +1268,7 @@ export type Database = {
           delivery_fee_fcfa?: number
           delivery_lat?: number | null
           delivery_lng?: number | null
+          delivery_mode?: string
           delivery_zone_id?: string | null
           dine_in?: boolean
           discount_fcfa?: number
@@ -1291,6 +1295,7 @@ export type Database = {
         }
         Update: {
           accepted_at?: string | null
+          auto_closed_at?: string | null
           cancel_reason?: string | null
           cancelled_at?: string | null
           cancelled_by_cashier_id?: string | null
@@ -1307,6 +1312,7 @@ export type Database = {
           delivery_fee_fcfa?: number
           delivery_lat?: number | null
           delivery_lng?: number | null
+          delivery_mode?: string
           delivery_zone_id?: string | null
           dine_in?: boolean
           discount_fcfa?: number
@@ -1703,6 +1709,7 @@ export type Database = {
           commission_rate: number
           cover_url: string | null
           created_at: string
+          delivery_mode: string
           description: string | null
           escale_menu_item_id: string | null
           escale_per_month: number
@@ -1733,6 +1740,7 @@ export type Database = {
           commission_rate?: number
           cover_url?: string | null
           created_at?: string
+          delivery_mode?: string
           description?: string | null
           escale_menu_item_id?: string | null
           escale_per_month?: number
@@ -1763,6 +1771,7 @@ export type Database = {
           commission_rate?: number
           cover_url?: string | null
           created_at?: string
+          delivery_mode?: string
           description?: string | null
           escale_menu_item_id?: string | null
           escale_per_month?: number
@@ -1973,6 +1982,7 @@ export type Database = {
         Args: { p_minutes?: number; p_order_id: string }
         Returns: {
           accepted_at: string | null
+          auto_closed_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by_cashier_id: string | null
@@ -1989,6 +1999,7 @@ export type Database = {
           delivery_fee_fcfa: number
           delivery_lat: number | null
           delivery_lng: number | null
+          delivery_mode: string
           delivery_zone_id: string | null
           dine_in: boolean
           discount_fcfa: number
@@ -2173,6 +2184,7 @@ export type Database = {
         }
         Returns: {
           accepted_at: string | null
+          auto_closed_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by_cashier_id: string | null
@@ -2189,6 +2201,7 @@ export type Database = {
           delivery_fee_fcfa: number
           delivery_lat: number | null
           delivery_lng: number | null
+          delivery_mode: string
           delivery_zone_id: string | null
           dine_in: boolean
           discount_fcfa: number
@@ -2245,6 +2258,7 @@ export type Database = {
         Args: { p_order_id: string }
         Returns: {
           accepted_at: string | null
+          auto_closed_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by_cashier_id: string | null
@@ -2261,6 +2275,7 @@ export type Database = {
           delivery_fee_fcfa: number
           delivery_lat: number | null
           delivery_lng: number | null
+          delivery_mode: string
           delivery_zone_id: string | null
           dine_in: boolean
           discount_fcfa: number
@@ -2349,6 +2364,7 @@ export type Database = {
         Returns: string[]
       }
       escale_tick: { Args: never; Returns: undefined }
+      external_delivery_tick: { Args: never; Returns: number }
       is_restaurant_open: {
         Args: { p_restaurant_id: string }
         Returns: boolean
@@ -2517,6 +2533,7 @@ export type Database = {
         }
         Returns: {
           accepted_at: string | null
+          auto_closed_at: string | null
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by_cashier_id: string | null
@@ -2533,6 +2550,7 @@ export type Database = {
           delivery_fee_fcfa: number
           delivery_lat: number | null
           delivery_lng: number | null
+          delivery_mode: string
           delivery_zone_id: string | null
           dine_in: boolean
           discount_fcfa: number
@@ -2632,6 +2650,7 @@ export type Database = {
           commission_rate: number
           cover_url: string | null
           created_at: string
+          delivery_mode: string
           description: string | null
           escale_menu_item_id: string | null
           escale_per_month: number

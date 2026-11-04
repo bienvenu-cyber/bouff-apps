@@ -183,7 +183,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   >(RESET_PASSWORD_WITH_TOKEN);
 
   // Checkers
-  const checkEmailExists = useCallback(async (email: string): Promise<boolean> => {
+  const checkEmailExists = useCallback(async (email: string): Promise<boolean | null> => {
     try {
       setIsLoading(true);
       const emailResponse = await checkEmailExistsMutation({
@@ -199,7 +199,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         message: error.cause?.message || t("error_checking_email"),
         duration: 3000
       });
-      return false;
+      return null;
     } finally {
       setIsLoading(false);
     }

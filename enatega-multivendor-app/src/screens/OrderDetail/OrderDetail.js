@@ -97,6 +97,11 @@ const formatClockTime = (value) => {
 }
 
 const getStatusMessage = (order, eta, riderLocation, now) => {
+  if (order?.deliveryMode === 'external') {
+    if (order.orderStatus === ORDER_STATUS_ENUM.ASSIGNED) return 'Commande prête. Départ estimé dans 5 minutes.'
+    if (order.orderStatus === ORDER_STATUS_ENUM.PICKED) return 'En livraison · suivi estimé, sans position du coursier.'
+    if (order.orderStatus === ORDER_STATUS_ENUM.DELIVERED) return 'Clôturée automatiquement, sans confirmation de réception.'
+  }
   switch (order?.orderStatus) {
     case ORDER_STATUS_ENUM.PENDING:
       return 'Waiting for the store to confirm your order.'
@@ -436,7 +441,7 @@ function OrderDetail(props) {
           <TextDefault H4 bold textColor={currentTheme.colors.textPrimary} style={styles(currentTheme).statusHeading}>
             {getStatusMessage(order, eta, riderLocation, now)}
           </TextDefault>
-          {![ORDER_STATUS_ENUM.PENDING, ORDER_STATUS_ENUM.DELIVERED, ORDER_STATUS_ENUM.COMPLETED, ORDER_STATUS_ENUM.CANCELLED, ORDER_STATUS_ENUM.CANCELLEDBYREST].includes(order?.orderStatus) && (
+          {order?.deliveryMode !== 'external' && ![ORDER_STATUS_ENUM.PENDING, ORDER_STATUS_ENUM.DELIVERED, ORDER_STATUS_ENUM.COMPLETED, ORDER_STATUS_ENUM.CANCELLED, ORDER_STATUS_ENUM.CANCELLEDBYREST].includes(order?.orderStatus) && (
             <View style={styles(currentTheme).estimateRow}>
               <TextDefault textColor={currentTheme.colors.textSecondary}>{t('estimatedDeliveryTime')}</TextDefault>
               <TextDefault H4 bolder textColor={currentTheme.colors.accent}>
@@ -449,7 +454,7 @@ function OrderDetail(props) {
               {`Votre livreur arrive dans ${formatEta(freeRoute.durationMin)} · ${formatDistance(freeRoute.distanceKm)}`}
             </TextDefault>
           )}
-          <OrderStatusTimeline currentStatus={order?.orderStatus} isPickup={order?.isPickedUp} theme={currentTheme} />
+          <OrderStatusTimeline currentStatus={order?.orderStatus} isPickup={order?.isPickedUp} external={order?.deliveryMode === 'external'} theme={currentTheme} />
         </View>
         <View style={styles(currentTheme).contentInset}>
           <Instructions title={'Instructions'} theme={currentTheme} message={order?.instructions} />

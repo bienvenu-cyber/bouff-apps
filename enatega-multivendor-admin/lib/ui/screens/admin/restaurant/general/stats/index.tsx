@@ -139,6 +139,8 @@ export default function StatsScreen() {
   const kpis = [
     { t: "Chiffre d'affaires", v: F(k.sales), n: k.sales, b: p.sales },
     { t: 'Commandes', v: N(k.orders), n: k.orders, b: p.orders },
+    { t: 'Clôturées automatiquement', v: N(k.auto_closed), n: k.auto_closed, b: p.auto_closed },
+    { t: 'Livraisons confirmées', v: N(k.confirmed_deliveries), n: k.confirmed_deliveries, b: p.confirmed_deliveries },
     { t: 'Panier moyen', v: F(k.avg_ticket), n: k.avg_ticket, b: p.avg_ticket },
     { t: 'Clients', v: N(k.customers), n: k.customers, b: p.customers },
     { t: 'Annulées', v: N(k.cancelled), n: k.cancelled, b: p.cancelled },
@@ -251,6 +253,7 @@ export default function StatsScreen() {
                 <span className="text-sm">{F(a.sales)} <Delta now={a.sales} before={b.sales} /></span>
                 <span className="text-sm">Panier {F(a.avg_ticket)}</span>
                 <span className="text-sm">{N(a.cancelled)} annulées</span>
+                <span className="text-sm">{N(a.auto_closed)} clôtures automatiques</span>
                 {rush && <span className="text-sm">Rush {rush.k} h</span>}
                 {top && <span className="text-sm opacity-70 w-full">Top : {top}</span>}
                 <button onClick={() => download(`BOUFF_resume_${r.report_date}.csv`, toCsv(r.data, r.report_date, r.report_date))} className="px-2 py-0.5 rounded border text-xs">Excel</button>

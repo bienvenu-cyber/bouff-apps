@@ -1,6 +1,6 @@
 // Core
 import { Formik } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // React Native
@@ -36,23 +36,7 @@ import { CustomContinueButton } from "../../useable-components";
 import { useRiderMode } from "@/lib/context/global/rider-mode.context";
 import { RIDER_SERVER_MODES, RiderServerMode } from "@/lib/mode/rider-mode";
 
-const multiVendorDemoCredentials: ILoginInitialValues = {
-  username:
-    process.env.EXPO_PUBLIC_MULTI_VENDOR_RIDER_DEMO_USERNAME ??
-    (__DEV__ ? "ryanabotreef" : ""),
-  password:
-    process.env.EXPO_PUBLIC_MULTI_VENDOR_RIDER_DEMO_PASSWORD ??
-    (__DEV__ ? "Rider@123" : ""),
-};
-
-const singleVendorDemoCredentials: ILoginInitialValues = {
-  username:
-    process.env.EXPO_PUBLIC_SINGLE_VENDOR_RIDER_DEMO_USERNAME ??
-    (__DEV__ ? "enategaRider@gmail.com" : ""),
-  password:
-    process.env.EXPO_PUBLIC_SINGLE_VENDOR_RIDER_DEMO_PASSWORD ??
-    (__DEV__ ? "Enatega@123" : ""),
-};
+const loginInitialValues: ILoginInitialValues = { username: "", password: "" };
 
 const LoginScreen = () => {
   // States
@@ -64,13 +48,6 @@ const LoginScreen = () => {
   const { t } = useTranslation();
   const { onLogin, isLogging } = useLogin();
   const { isModeToggleEnabled, mode, selectMode } = useRiderMode();
-  const loginInitialValues = useMemo(
-    () =>
-      mode === RIDER_SERVER_MODES.MULTI
-        ? multiVendorDemoCredentials
-        : singleVendorDemoCredentials,
-    [mode],
-  );
 
   // Handlers
   const onLoginHandler = async (creds: ILoginInitialValues) => {
@@ -246,6 +223,9 @@ const LoginScreen = () => {
                         placeholderTextColor={appTheme.fontSecondColor}
                         keyboardType="email-address"
                         inputMode="email"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        autoComplete="email"
                         value={values.username}
                         onChangeText={handleChange("username")}
                         onBlur={handleBlur("username")}
@@ -270,6 +250,9 @@ const LoginScreen = () => {
                         style={{ color: appTheme.fontMainColor }}
                         placeholder={t("Password")}
                         secureTextEntry={!passwordVisible}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        autoComplete="current-password"
                         placeholderTextColor={appTheme.fontSecondColor}
                         value={values.password}
                         onChangeText={handleChange("password")}

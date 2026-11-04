@@ -69,6 +69,8 @@ interface User {
 }
 
 export interface IOrderTrackingDetail {
+  deliveryMode?: 'internal' | 'external';
+  autoClosedAt?: string | null;
   selectedPrepTime: number;
   reason?: string;
   _id: string;
