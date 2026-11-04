@@ -28,6 +28,8 @@ export default function useNotification() {
       await getStore({
         variables: { id: userId },
       });
+    } catch {
+      // A missing local session must not block the login screen.
     } finally {
       setStoreLookupComplete(true);
     }
@@ -119,9 +121,11 @@ export default function useNotification() {
   }, [handleNotification]);
 
   useEffect(() => {
-    registerForPushNotification();
-    registerForPushNotificationsAsync();
-    onGetStoreData();
+    if (Platform.OS !== "web") {
+      void registerForPushNotification().catch(() => {});
+      void registerForPushNotificationsAsync().catch(() => {});
+    }
+    void onGetStoreData();
   }, [storeIdKey]);
 
   return {
