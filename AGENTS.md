@@ -11,3 +11,6 @@
 - Counter handover uses counter_complete_order after the kitchen marks the order ready; the database verifies the cashier session, restaurant, counter source and payment — why: taking payment is not proof that a meal has been served.
 - Rider app never calls Appearance.setColorScheme; dark mode is fixed natively via userInterfaceStyle — why: forcing the scheme at startup recreates the Android activity and left riders on a black screen.
 - External delivery is pinned per order at creation from restaurant delivery_mode; database transitions run through the existing wake-on-enqueue ops job and auto_closed_at is distinct from delivered_at — why: old rider APKs cannot claim external jobs and estimated closure cannot become proof of delivery.
+- Kitchen browser sessions use tab-scoped sessionStorage through session-storage; native sessions keep Expo SecureStore — why: the native keystore API is unavailable on web.
+- EAS staging pins the installer version to the generated lockfile version — why: an older installer rejects the lockfile before compiling.
+- Web password recovery uses the established auth recovery session rather than legacy query-string credentials — why: emailed recovery links do not carry the old email/token protocol.

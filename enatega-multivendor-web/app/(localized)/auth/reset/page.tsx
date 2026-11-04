@@ -1,36 +1,42 @@
 "use client";
 
-import { RESET_PASSWORD_WITH_TOKEN } from "@/lib/api/graphql";
+import { bouffDb } from "@/lib/bouff-data/supabase";
+import { resetPassword } from "@/lib/bouff-data/auth";
 import CustomButton from "@/lib/ui/useable-components/button";
 import CustomPasswordTextField from "@/lib/ui/useable-components/password-input-field";
-import { useMutation } from "@apollo/client";
 import { useTranslations } from "next-intl";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function ResetPasswordPage() {
   const t = useTranslations();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const email = searchParams.get("email") || "";
-  const token = searchParams.get("token") || "";
+  const [email, setEmail] = useState("");
+  const [sessionReady, setSessionReady] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [mutateResetPassword, { loading }] = useMutation(
-    RESET_PASSWORD_WITH_TOKEN,
-  );
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!email || !token) {
-      router.replace(
-        `/auth/forgot-password?error=invalid&email=${encodeURIComponent(email)}`,
-      );
-    }
-  }, [email, token, router]);
+    let mounted = true;
+    void bouffDb().auth.getSession().then(({ data, error }) => {
+      if (!mounted) return;
+      if (error || !data.session) {
+        router.replace("/auth/forgot-password?error=invalid");
+        return;
+      }
+      setEmail(data.session.user.email ?? "");
+      setSessionReady(true);
+    }).catch(() => {
+      if (mounted) router.replace("/auth/forgot-password?error=invalid");
+    });
+    return () => { mounted = false; };
+  }, [router]);
 
   const handleSubmit = async () => {
+    if (!sessionReady || loading) return;
     if (!password || password.length < 6) {
       setErrorMessage(t("please_enter_valid_password_message"));
       return;
@@ -43,16 +49,11 @@ export default function ResetPasswordPage() {
 
     try {
       setErrorMessage("");
-      const response = await mutateResetPassword({
-        variables: {
-          email,
-          password,
-          token,
-        },
-      });
+      setLoading(true);
+      const response = await resetPassword(password);
 
-      if (response.data?.resetPassword?.result) {
-        router.replace("/auth/login");
+      if (response.result) {
+        router.replace("/auth/login?reset=success");
         return;
       }
 
@@ -63,6 +64,8 @@ export default function ResetPasswordPage() {
       router.replace(
         `/auth/forgot-password?error=invalid&email=${encodeURIComponent(email)}`,
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,7 +96,7 @@ export default function ResetPasswordPage() {
       ) : null}
       <CustomButton
         label={t("continue_label")}
-        loading={loading}
+        loading={loading || !sessionReady}
         onClick={handleSubmit}
         className="mt-6 rounded-full bg-primary-color p-3"
       />
