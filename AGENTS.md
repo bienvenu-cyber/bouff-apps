@@ -14,3 +14,4 @@
 - Kitchen browser sessions use tab-scoped sessionStorage through session-storage; native sessions keep Expo SecureStore — why: the native keystore API is unavailable on web.
 - EAS archives exclude Bun lockfiles and use each app's existing npm lockfile — why: the GitHub activity-controller tarball fails Bun integrity verification on Expo.
 - Web password recovery uses the established auth recovery session rather than legacy query-string credentials — why: emailed recovery links do not carry the old email/token protocol.
+- Online payments (FeexPay) run in the client web Next app's /api/payments/feexpay routes (deployed on Vercel, also used by the mobile app); they reach the database only through feexpay_service with the payments service token, and every provider result is re-checked against FeexPay before an order leaves awaiting_payment — why: Lovable hosting serves static files only and webhook/return URLs are unauthenticated.

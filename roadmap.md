@@ -1,10 +1,12 @@
 # Feuille de route BOUFF
 
 ## Demande actuelle — FeexPay
-- [ ] Enregistrer de manière sécurisée la clé privée FeexPay et l’identifiant de la boutique
-- [ ] Brancher Mobile Money MTN/Moov/Celtiis et carte, Bénin uniquement, aux commandes client web et mobile
-- [ ] Vérifier confirmations, erreurs, doublons, expiration et paiements tardifs ; conserver les règles caisse
-- [ ] Tester les parcours puis vérifier un paiement réel avec autorisation
+- [x] Enregistrer de manière sécurisée la clé privée FeexPay et l’identifiant de la boutique
+- [x] Brancher Mobile Money MTN/Moov/Celtiis et carte, Bénin uniquement, aux commandes client web et mobile
+- [x] Vérifier confirmations, erreurs, doublons, expiration et paiements tardifs ; conserver les règles caisse (essais à blanc en base OK)
+- [ ] Ajouter les 3 réglages paiement sur Vercel (bouff-apps) et l’adresse webhook dans FeexPay — en attente de l’utilisateur
+- [ ] Paiement réel de 500 F (MoMo) puis carte, après mise en ligne — en attente de l’utilisateur
+- [ ] Recompiler l’appli client pour le paiement en ligne
 
 ## Demande actuelle — coursiers externes et connexions
 - [x] Activer le relais livraison automatique (prête +5 min, clôture +30 min), isoler les courses des livreurs internes et identifier les clôtures estimées

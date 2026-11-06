@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { getGuest } from "@/lib/bouff-data/auth";
-import { cancelOrder } from "@/lib/bouff-data/orders";
+import { bouffDb } from "@/lib/bouff-data/supabase";
 import { invokePayment, PaymentError } from "@/lib/bouff-data/payments";
 import { CONNECTION_ERROR, paymentPayload, paymentState, type PaymentChoice, type PaymentReply, type PaymentState } from "@/lib/bouff-data/payment-logic";
 import PaymentFields from "./PaymentFields";
@@ -51,7 +51,8 @@ export default function PaymentPanel({ orderNumber, amount, customerPhone, onCon
     lock.current = true; setBusy(true);
     try {
       if (action === "cancel") {
-        await cancelOrder({ orderId: orderNumber });
+        const { error } = await bouffDb().rpc("cancel_my_order", { p_order_number: orderNumber, p_phone: phone || null });
+        if (error) throw new PaymentError(error.message, "CANCEL_REFUSED");
         apply(await invokePayment({ action: "status", orderNumber, customerPhone: phone }));
       } else {
         const data = await invokePayment({ action, orderNumber, customerPhone: phone,
@@ -66,19 +67,19 @@ export default function PaymentPanel({ orderNumber, amount, customerPhone, onCon
     } finally { lock.current = false; setBusy(false); }
   };
   const remaining = reply?.deadline ? Math.max(0, Math.ceil((Date.parse(reply.deadline) - now) / 1000)) : null;
-  const button = "rounded-xl bg-[#FF7A1A] px-4 py-3 font-semibold text-black disabled:opacity-50";
-  return <section aria-label="Paiement" className="mb-8 rounded-2xl border border-[#FF7A1A] bg-black p-6 text-white">
-    <h2 className="text-xl font-bold text-[#FF7A1A]">Paiement en attente</h2>
+  const button = "rounded-xl bg-primary-color px-4 py-3 font-semibold text-white disabled:opacity-50";
+  return <section aria-label="Paiement" className="mb-8 rounded-2xl border border-primary-color p-6 dark:text-white">
+    <h2 className="text-xl font-bold text-primary-color">Paiement en attente</h2>
     <p>{amount.toLocaleString("fr-FR")} F CFA · {choice.method === "momo" ? `Mobile Money (${choice.network === "mtn" ? "MTN" : choice.network === "moov" ? "Moov" : "Celtiis"})` : "Carte bancaire"}</p>
     {remaining !== null && <p>Temps restant : {Math.floor(remaining / 60)}:{String(remaining % 60).padStart(2, "0")}{remaining === 0 ? " · Vérification de la commande…" : ""}</p>}
     <div role="status" aria-live="polite">
       {state === "confirmed" ? <p>Paiement confirmé, votre commande part en cuisine</p> : state === "cancelled" ? <><p>Paiement non reçu à temps, commande annulée</p><p>Si vous avez été débité, contactez BOUFF au 01 65 40 90 59 : le montant sera vérifié.</p><Link href="/" className={button}>Retour au menu</Link></> : <>
         {message && <p>{message}</p>}
-        {state === "pending" && <><span aria-hidden="true" className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-[#FF7A1A] border-t-transparent" /><p>{choice.method === "momo" ? `Validez le paiement sur votre téléphone (${choice.network === "mtn" ? "MTN" : choice.network === "moov" ? "Moov" : "Celtiis"}). Ne communiquez jamais votre code secret.` : "Paiement en cours de vérification."}</p>{reply?.payment?.paymentUrl && <a className={button} href={reply.payment.paymentUrl}>Ouvrir la page de paiement</a>}</>}
+        {state === "pending" && <><span aria-hidden="true" className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-primary-color border-t-transparent" /><p>{choice.method === "momo" ? `Validez le paiement sur votre téléphone (${choice.network === "mtn" ? "MTN" : choice.network === "moov" ? "Moov" : "Celtiis"}). Ne communiquez jamais votre code secret.` : "Paiement en cours de vérification."}</p>{reply?.payment?.paymentUrl && <a className={button} href={reply.payment.paymentUrl}>Ouvrir la page de paiement</a>}</>}
       </>}
     </div>
     {!["confirmed", "cancelled"].includes(state) && <>
-      {(editing || state === "idle") && <><label>Moyen de paiement<select className="ml-3 rounded border bg-black p-2" disabled={busy} value={choice.method} onChange={e => setChoice({ ...choice, method: e.target.value as PaymentChoice["method"] })}><option value="momo">Mobile Money</option><option value="card">Carte bancaire</option></select></label><PaymentFields value={choice} onChange={setChoice} disabled={busy} /></>}
+      {(editing || state === "idle") && <><label>Moyen de paiement<select className="ml-3 rounded-xl border border-gray-200 bg-transparent p-2 dark:border-gray-700" disabled={busy} value={choice.method} onChange={e => setChoice({ ...choice, method: e.target.value as PaymentChoice["method"] })}><option value="momo">Mobile Money</option><option value="card">Carte bancaire</option></select></label><PaymentFields value={choice} onChange={setChoice} disabled={busy} /></>}
       <div className="mt-4 flex flex-wrap gap-3">
         {state === "network" && <button className={button} disabled={busy} onClick={() => void request("status")}>Réessayer</button>}
         {(state === "idle" || state === "failed" || editing) && <button className={button} disabled={busy || remaining === 0} onClick={() => void request("start")}>{state === "failed" ? "Réessayer" : "Payer maintenant"}</button>}

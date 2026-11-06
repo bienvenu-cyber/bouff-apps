@@ -167,6 +167,8 @@ async function listOrders(offset = 0, limit = 50) {
     .from("orders")
     .select(ORDER_SELECT)
     .eq("restaurant_id", rid)
+    // Une commande payée en ligne n'arrive en cuisine qu'une fois le paiement confirmé.
+    .neq("status", "awaiting_payment")
     .order("created_at", { ascending: false })
     .range(offset, offset + limit - 1);
   if (error) throw new Error(error.message);
@@ -444,7 +446,7 @@ function subscribe(operation: Operation, observer: any) {
         },
         async (payload: any) => {
           const row = payload.new;
-          if (!row?.id) return;
+          if (!row?.id || row.status === "awaiting_payment") return;
           // Les lignes de la commande sont écrites juste après la commande.
           if (payload.eventType === "INSERT") await new Promise((r) => setTimeout(r, 1500));
           const order = await fetchOrder(row.id).catch(() => null);

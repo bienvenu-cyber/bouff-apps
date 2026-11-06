@@ -1,7 +1,7 @@
 "use client";
 import type { PaymentChoice, Network } from "@/lib/bouff-data/payment-logic";
 export default function PaymentFields({ value, onChange, disabled = false }: { value: PaymentChoice; onChange: (value: PaymentChoice) => void; disabled?: boolean }) {
-  const inputClass = "rounded-xl border border-gray-600 bg-black p-3 text-white";
+  const inputClass = "rounded-xl border border-gray-200 bg-transparent p-3 dark:border-gray-700 dark:text-white";
   return <fieldset disabled={disabled} className="mt-3 grid gap-3">
     {value.method === "momo" ? <>
       <label>Réseau<select className={`${inputClass} ml-3`} value={value.network} onChange={e => onChange({ ...value, network: e.target.value as Network })}>
