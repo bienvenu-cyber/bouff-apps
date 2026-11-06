@@ -1,7 +1,7 @@
 # Feuille de route BOUFF
 
 ## Demande actuelle — FeexPay
-- [ ] Connecter le compte FeexPay de manière sécurisée et récupérer l’identifiant boutique
+- [ ] Enregistrer de manière sécurisée la clé privée FeexPay et l’identifiant de la boutique
 - [ ] Brancher Mobile Money MTN/Moov/Celtiis et carte, Bénin uniquement, aux commandes client web et mobile
 - [ ] Vérifier confirmations, erreurs, doublons, expiration et paiements tardifs ; conserver les règles caisse
 - [ ] Tester les parcours puis vérifier un paiement réel avec autorisation
