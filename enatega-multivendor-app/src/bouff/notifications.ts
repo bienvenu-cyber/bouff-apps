@@ -23,6 +23,7 @@ const GUEST_STATUS_KEY = "bouff/guest-order-status";
 const GUEST_IDS_KEY = "bouff/guest-order-ids";
 
 const MESSAGES: Record<string, (takeaway: boolean) => string> = {
+  awaiting_payment: () => "Paiement en attente",
   received: () => "Nous avons bien reçu votre commande.",
   in_kitchen: () => "Votre commande est en préparation en cuisine.",
   ready: (t) =>

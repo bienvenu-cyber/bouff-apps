@@ -1,6 +1,7 @@
 import { isLiveDeliveryTrackingStatus } from "@/lib/ui/screen-components/protected/order-tracking/services/tracking-status";
 
 export const SINGLE_VENDOR_TRACKING_STAGES = [
+  "AWAITING_PAYMENT",
   "PENDING",
   "ACCEPTED",
   "ASSIGNED",
@@ -10,6 +11,7 @@ export const SINGLE_VENDOR_TRACKING_STAGES = [
 ] as const;
 
 const STATUS_RANK: Record<string, number> = {
+  AWAITING_PAYMENT: -1,
   PENDING: 0,
   ACCEPTED: 1,
   ASSIGNED: 2,
@@ -27,6 +29,9 @@ interface TrackableOrder {
 
 const statusFromOrderState = (order: TrackableOrder) => {
   switch (order.orderState) {
+    case "awaiting_payment":
+    case "AWAITING_PAYMENT":
+      return "AWAITING_PAYMENT";
     case "COMPLETED":
       return "DELIVERED";
     case "CANCELLED":

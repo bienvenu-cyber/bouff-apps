@@ -12,6 +12,9 @@ import useCurrencyFormatter from "@/lib/hooks/useCurrencyFormatter";
 import { loadMenu, type BouffCity, type BouffZone } from "@/lib/bouff-data/catalog";
 import { getGuest, setGuest } from "@/lib/bouff-data/auth";
 import { setSelectedZoneId } from "@/lib/bouff-data/cart";
+import PaymentFields from "./PaymentFields";
+import { invokePayment } from "@/lib/bouff-data/payments";
+import { paymentPayload, validPhone, type PaymentChoice } from "@/lib/bouff-data/payment-logic";
 import { bouffDb } from "@/lib/bouff-data/supabase";
 
 
@@ -72,8 +75,9 @@ export default function SingleVendorCheckout() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [payerPhone, setPayerPhone] = useState("");
-  const [momoNotice, setMomoNotice] = useState<string | null>(null);
+  const [choice, setChoice] = useState<PaymentChoice>({ method: "momo", network: "mtn", payerPhone: "", email: "" });
+  const submitting = useRef(false);
+  const [submittingUi, setSubmittingUi] = useState(false);
   const TIP_PRESETS = [0, 200, 500, 1000];
   const [tipChoice, setTipChoice] = useState<number | "custom">(0);
   const [customTip, setCustomTip] = useState("");
@@ -103,18 +107,8 @@ export default function SingleVendorCheckout() {
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
     );
   };
-  // Paiement Mobile Money en ligne (pawaPay) : activé dès que les clés sont
-  // en place côté serveur (NEXT_PUBLIC_PAWAPAY_ENABLED=true).
-  const onlineMomoEnabled = process.env.NEXT_PUBLIC_PAWAPAY_ENABLED === "true";
   const paymentOptions: [string, string][] = [
-    ["COD", pickup ? "Espèces au comptoir" : "Espèces à la livraison"],
-    ["MOBILE_MONEY", "Mobile Money (à la remise)"],
-    ...(onlineMomoEnabled
-      ? ([["MOBILE_MONEY_ONLINE", "Mobile Money maintenant (MTN / Moov)"]] as [
-          string,
-          string,
-        ][])
-      : []),
+    ["COD", "Espèces"], ["MOBILE_MONEY", "Mobile Money"], ["CARD", "Carte bancaire"],
   ];
   const idempotencyKey = useRef(
     `sv-web-${Date.now()}-${Math.random().toString(36).slice(2)}`,
@@ -145,6 +139,7 @@ export default function SingleVendorCheckout() {
     const guest = getGuest();
     setName((current) => current || profile?.name || guest?.name || "");
     setPhone((current) => current || profile?.phone || guest?.phone || "");
+    setChoice(current => ({ ...current, payerPhone: current.payerPhone || profile?.phone || guest?.phone || "", email: current.email || profile?.email || "" }));
   }, [profile?.name, profile?.phone]);
 
   useEffect(() => {
@@ -192,12 +187,17 @@ export default function SingleVendorCheckout() {
 
   const submit = async () => {
     setError(null);
-    if (!canSubmit) return;
+    if (!canSubmit || submitting.current) return;
+    submitting.current = true; setSubmittingUi(true);
     try {
+      const online = paymentMethod !== "COD";
+      const payload = online ? paymentPayload({ ...choice, method: paymentMethod === "CARD" ? "card" : "momo", payerPhone: choice.payerPhone || phone }) : null;
+      if (online && !validPhone(phone)) throw new Error("Renseignez un numéro béninois valide : 01XXXXXXXX.");
       setGuest({ name: name.trim(), phone: phone.trim() });
       const result = await placeOrder({
         variables: {
           paymentMethod,
+          payOnline: online,
           customerName: name.trim(),
           customerPhone: phone.trim(),
           zoneId: pickup ? null : zoneId,
@@ -218,34 +218,22 @@ export default function SingleVendorCheckout() {
       if (!order) throw new Error("La commande n'a pas pu être enregistrée.");
       clearCart();
 
-      if (paymentMethod === "MOBILE_MONEY_ONLINE") {
+      if (online && payload && order.orderStatus === "AWAITING_PAYMENT") {
         try {
-          const response = await fetch("/api/payments/pawapay/initiate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderNumber: order.orderId,
-              customerPhone: phone.trim(),
-              payerPhone: (payerPhone || phone).trim(),
-            }),
-          });
-          const data = await response.json();
-          if (!response.ok) throw new Error(data?.error ?? "Paiement refusé.");
-          setMomoNotice(data?.message ?? null);
-        } catch (paymentError) {
-          // La commande est enregistrée : on prévient sans la perdre.
-          setMomoNotice(
-            paymentError instanceof Error
-              ? `${paymentError.message} Votre commande est enregistrée, vous pourrez régler à la remise.`
-              : "Paiement en ligne indisponible : réglez à la remise.",
-          );
+          const payment = await invokePayment({ action: "start", orderNumber: order.orderId, customerPhone: phone.trim(), ...payload, returnTo: "web", webOrigin: window.location.origin });
+          if (payload.method === "card" && payment.paymentUrl && !payment.paid) {
+            window.location.href = payment.paymentUrl;
+            return;
+          }
+        } catch {
+          // La commande existe : le suivi récupère le résultat serveur et permet de réessayer.
         }
       }
 
       router.replace(`/order/${order.orderId}/tracking`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Commande impossible.");
-    }
+    } finally { submitting.current = false; setSubmittingUi(false); }
   };
 
   if (!cart.length)
@@ -506,30 +494,8 @@ export default function SingleVendorCheckout() {
               </label>
             ))}
           </div>
-          {paymentMethod === "MOBILE_MONEY_ONLINE" && (
-            <label className="mt-4 block text-sm dark:text-gray-200">
-              Numéro Mobile Money à débiter
-              <input
-                value={payerPhone}
-                onChange={(event) => setPayerPhone(event.target.value)}
-                placeholder={phone || "97 00 00 00"}
-                inputMode="tel"
-                className={field}
-              />
-              <span className="mt-2 block text-xs text-gray-500 dark:text-gray-400">
-                Vous recevrez une demande de validation sur ce numéro.
-              </span>
-            </label>
-          )}
-          <label className="mt-5 block text-sm dark:text-gray-200">
-            Note pour la cuisine
-            <textarea
-              value={instructions}
-              onChange={(event) => setInstructions(event.target.value)}
-              placeholder="Sans oignon, bien piquant…"
-              className={field}
-            />
-          </label>
+          {paymentMethod !== "COD" && <PaymentFields value={{ ...choice, method: paymentMethod === "CARD" ? "card" : "momo", payerPhone: choice.payerPhone || phone }} onChange={setChoice} disabled={submittingUi} />}
+
         </section>
       </div>
 
@@ -571,20 +537,18 @@ export default function SingleVendorCheckout() {
           </p>
         )}
         <button
-          disabled={placeState.loading || !canSubmit}
+          disabled={submittingUi || placeState.loading || !canSubmit}
           onClick={() => void submit()}
           className="w-full rounded-full bg-primary-color px-5 py-3 font-semibold text-white disabled:opacity-50"
         >
-          {placeState.loading ? "Envoi en cours…" : "Commander"}
+          {submittingUi ? "Envoi en cours…" : "Commander"}
         </button>
         {(error || placeState.error) && (
           <p className="mt-3 text-sm text-red-600">
             {error || placeState.error?.message}
           </p>
         )}
-        {momoNotice && (
-          <p className="mt-3 text-sm text-primary-color">{momoNotice}</p>
-        )}
+
       </aside>
     </div>
   );

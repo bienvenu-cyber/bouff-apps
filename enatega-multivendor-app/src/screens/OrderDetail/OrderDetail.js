@@ -59,6 +59,7 @@ const SUBSCRIPTION_ORDER_TRACKING = gql`
 `
 
 const ORDER_STATUS_RANK = {
+  [ORDER_STATUS_ENUM.AWAITING_PAYMENT]: 0,
   [ORDER_STATUS_ENUM.PENDING]: 1,
   [ORDER_STATUS_ENUM.ACCEPTED]: 2,
   [ORDER_STATUS_ENUM.ASSIGNED]: 3,
@@ -103,6 +104,8 @@ const getStatusMessage = (order, eta, riderLocation, now) => {
     if (order.orderStatus === ORDER_STATUS_ENUM.DELIVERED) return 'Clôturée automatiquement, sans confirmation de réception.'
   }
   switch (order?.orderStatus) {
+    case ORDER_STATUS_ENUM.AWAITING_PAYMENT:
+      return 'Paiement en attente'
     case ORDER_STATUS_ENUM.PENDING:
       return 'Waiting for the store to confirm your order.'
     case ORDER_STATUS_ENUM.ACCEPTED:
@@ -437,11 +440,12 @@ function OrderDetail(props) {
             </MapView>
           </View>
         )}
+        {order.orderStatus === ORDER_STATUS_ENUM.AWAITING_PAYMENT && <TouchableOpacity accessibilityRole='button' onPress={() => navigation.navigate('FeexPay', { order })} style={{ padding: 16, backgroundColor: '#FF7A1A', borderRadius: 10 }}><TextDefault bold textColor='#000000'>Reprendre le paiement</TextDefault></TouchableOpacity>}
         <View style={styles(currentTheme).statusSection}>
           <TextDefault H4 bold textColor={currentTheme.colors.textPrimary} style={styles(currentTheme).statusHeading}>
             {getStatusMessage(order, eta, riderLocation, now)}
           </TextDefault>
-          {order?.deliveryMode !== 'external' && ![ORDER_STATUS_ENUM.PENDING, ORDER_STATUS_ENUM.DELIVERED, ORDER_STATUS_ENUM.COMPLETED, ORDER_STATUS_ENUM.CANCELLED, ORDER_STATUS_ENUM.CANCELLEDBYREST].includes(order?.orderStatus) && (
+          {order?.deliveryMode !== 'external' && ![ORDER_STATUS_ENUM.AWAITING_PAYMENT, ORDER_STATUS_ENUM.PENDING, ORDER_STATUS_ENUM.DELIVERED, ORDER_STATUS_ENUM.COMPLETED, ORDER_STATUS_ENUM.CANCELLED, ORDER_STATUS_ENUM.CANCELLEDBYREST].includes(order?.orderStatus) && (
             <View style={styles(currentTheme).estimateRow}>
               <TextDefault textColor={currentTheme.colors.textSecondary}>{t('estimatedDeliveryTime')}</TextDefault>
               <TextDefault H4 bolder textColor={currentTheme.colors.accent}>

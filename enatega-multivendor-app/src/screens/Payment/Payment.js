@@ -32,27 +32,9 @@ function Payment(props) {
   const themeContext = useContext(ThemeContext)
   const currentTheme = theme[themeContext.ThemeValue]
   const iconArray = [
-    {
-      payment: 'COD',
-      label: t('cod'),
-      index: 2,
-      icon: 'cash',
-      iconFamily: 'material-community'
-    },
-    {
-      payment: 'STRIPE',
-      label: t('creditCart'),
-      index: 0,
-      icon: 'credit-card'
-      // icon1: require('../../assets/images/visaIcon.png')
-    },
-    {
-      payment: 'PAYPAL',
-      label: t('paypal'),
-      index: 1,
-      icon: 'paypal'
-    },
-    
+    { payment: 'COD', label: 'Espèces', index: 2, icon: 'cash', iconFamily: 'material-community' },
+    { payment: 'MOBILE_MONEY', label: 'Mobile Money', index: 1, icon: 'mobile' },
+    { payment: 'CARD', label: 'Carte bancaire', index: 0, icon: 'credit-card' }
   ]
 
   useFocusEffect(() => {

@@ -10,6 +10,7 @@ import { loadMenu } from "./catalog";
 import { rememberGuestOrder } from "./notifications";
 
 export const STATUS_MAP: Record<string, string> = {
+  awaiting_payment: "AWAITING_PAYMENT",
   received: "PENDING",
   in_kitchen: "ACCEPTED",
   ready: "ASSIGNED",
@@ -20,7 +21,7 @@ export const STATUS_MAP: Record<string, string> = {
 
 export function paymentMethodFor(method?: string | null): string {
   const value = (method ?? "").toUpperCase();
-  if (value.includes("MOBILE") || value.includes("MOMO") || value.includes("PAWA"))
+  if (value.includes("MOBILE") || value.includes("MOMO"))
     return "mobile_money";
   if (value.includes("CARD") || value === "STRIPE" || value === "PAYPAL") return "card";
   return "cash";
@@ -92,6 +93,7 @@ export async function placeOrder(variables: Record<string, any>) {
     p_delivery_zone_id: zoneId,
     p_delivery_address: isPickedUp ? null : address,
     p_payment_method: paymentMethodFor(variables.paymentMethod),
+    p_pay_online: variables.payOnline === true,
     p_note: variables.instructions ?? variables.specialInstructions ?? null,
     p_tip_fcfa: tipFcfa,
     p_scheduled_for: scheduledFor,
@@ -120,7 +122,8 @@ export async function placeOrder(variables: Record<string, any>) {
     paidAmount: 0,
     orderAmount: result.total_fcfa,
     paymentStatus: "PENDING",
-    orderStatus: "PENDING",
+    orderStatus: STATUS_MAP[result.status] ?? "PENDING",
+    paymentDeadline: result.payment_deadline,
     deliveryCharges: result.delivery_fee_fcfa,
     tipping: result.tip_fcfa ?? 0,
     taxationAmount: 0,
@@ -147,7 +150,7 @@ async function orderRows(statuses: string[], limit = 20, page = 1) {
   return data ?? [];
 }
 
-const ACTIVE = ["received", "in_kitchen", "ready", "on_the_way"];
+const ACTIVE = ["awaiting_payment", "received", "in_kitchen", "ready", "on_the_way"];
 const PAST = ["delivered", "cancelled"];
 
 export async function activeOrders(limit?: number, page?: number) {

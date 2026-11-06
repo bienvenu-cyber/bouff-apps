@@ -23,6 +23,7 @@ const PICKUP_STEPS = [
 
 const OrderStatusTimeline = ({ currentStatus, isPickup, external, theme }) => {
   const { t } = useTranslation()
+  if (currentStatus === ORDER_STATUS_ENUM.AWAITING_PAYMENT) return <View style={styles(theme).container}><TextDefault bold textColor={theme.colors.accent}>Paiement en attente</TextDefault></View>
   const steps = isPickup ? PICKUP_STEPS : external ? DELIVERY_STEPS.map(step => ({ ...step, exactLabel: step.key === ORDER_STATUS_ENUM.ASSIGNED ? 'Prête' : step.key === ORDER_STATUS_ENUM.PICKED ? 'En livraison' : step.key === ORDER_STATUS_ENUM.DELIVERED ? 'Clôturée auto.' : null })) : DELIVERY_STEPS
   let currentIndex = steps.findIndex((step) => step.key === currentStatus)
 

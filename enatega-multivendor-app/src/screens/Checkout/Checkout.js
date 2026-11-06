@@ -9,6 +9,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { AntDesign, EvilIcons, Feather, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons'
 import { Modalize } from 'react-native-modalize'
 import { getTipping } from '../../apollo/queries'
+import PaymentFields from '../../bouff/PaymentFields'
+import { startPayload, normalizePhone } from '../../bouff/paymentLogic'
 import { applyCoupon, placeOrder } from '../../apollo/mutations'
 import { scale } from '../../utils/scaling'
 import { stripeCurrencies, paypalCurrencies } from '../../utils/currencies'
@@ -109,6 +111,10 @@ function Checkout(props) {
   const [tipAmount, setTipAmount] = useState('')
   const calenderModalRef = useRef(null)
   const [paymentMode, setPaymentMode] = useState('COD')
+  const [onlinePayment, setOnlinePayment] = useState({ method: 'cash', payerPhone: '', email: '' })
+  useEffect(() => {
+    setOnlinePayment(value => ({ ...value, payerPhone: value.payerPhone || normalizePhone(profile?.phone || ''), email: value.email || profile?.email || '' }))
+  }, [profile?.phone, profile?.email])
 
   const { loading, data } = useRestaurant(cartRestaurant)
   const [loadingOrder, setLoadingOrder] = useState(false)
@@ -257,6 +263,13 @@ function Checkout(props) {
   }
 
   const paymentMethod = props?.route.params && props?.route.params.paymentMethod ? props?.route.params.paymentMethod : COD_PAYMENT
+  useEffect(() => {
+    const selected = props.route.params?.paymentMethod?.payment
+    if (!selected) return
+    const method = selected === 'CARD' ? 'card' : selected === 'MOBILE_MONEY' ? 'momo' : 'cash'
+    setOnlinePayment(value => ({ ...value, method }))
+    setPaymentMode(method === 'cash' ? 'COD' : method === 'card' ? 'CARD' : 'MOBILE_MONEY')
+  }, [props.route.params?.paymentMethod?.payment])
 
   const [selectedTip, setSelectedTip] = useState()
   const pricing = useMemo(() => calculateOrderPricing({
@@ -403,12 +416,12 @@ function Checkout(props) {
     setOrderConfirmedTime(new Date())
     reFetchOrders()
     Analytics.track(Analytics.events.ORDER_PLACED, {
-      userId: data?.placeOrder.user._id,
+      userId: data?.placeOrder.user?._id,
       orderId: data?.placeOrder.orderId,
-      name: data?.placeOrder.user.name,
-      email: data?.placeOrder.user.email,
-      restaurantName: data?.placeOrder.restaurant.name,
-      restaurantAddress: data?.placeOrder.restaurant.address,
+      name: data?.placeOrder.user?.name,
+      email: data?.placeOrder.user?.email,
+      restaurantName: data?.placeOrder.restaurant?.name,
+      restaurantAddress: data?.placeOrder.restaurant?.address,
       orderPaymentMethod: data?.placeOrder.paymentMethod,
       orderItems: data?.placeOrder.items,
       orderAmount: data?.placeOrder.orderAmount,
@@ -417,38 +430,16 @@ function Checkout(props) {
       orderStatus: data?.placeOrder.orderStatus,
       orderDate: data?.placeOrder.orderDate
     })
-    if (paymentMode === 'COD' || paymentMode === 'MOBILE_MONEY') {
-      if (placedOrder?._id && !placedOrder?.isPickedUp) {
-        LiveActivityService.initiateForOrder({
-          orderId: placedOrder._id.toString(),
-          displayOrderId: placedOrder.orderId.toString()
-        }).catch((error) => {
-          console.warn('Live Activity could not be started', error?.message)
-        })
-      }
-      // Pop the Cart/CartAddress/Checkout screens off the stack (Main is
-      // already mounted underneath, so this doesn't remount it) and push
-      // OrderDetail with its normal animated transition instead of using
-      // navigation.reset, which swaps the whole stack instantly with no
-      // animation and produced a blank/black flash before this screen painted.
-      props.navigation.dispatch(StackActions.popToTop())
-      props.navigation.navigate('OrderDetail', {
-        _id: data?.placeOrder?._id,
-        order: data?.placeOrder
+    setLoadingOrder(false)
+    clearCart()
+    props.navigation.dispatch(StackActions.popToTop())
+    if (placedOrder.orderStatus === 'AWAITING_PAYMENT') {
+      props.navigation.navigate('FeexPay', {
+        order: { ...placedOrder, user: { ...placedOrder.user, phone: placedOrder.user?.phone || profile?.phone } },
+        initialPayment: onlinePayment
       })
-      clearCart()
-    } else if (paymentMode === 'PAYPAL') {
-      props?.navigation.replace('Paypal', {
-        _id: data?.placeOrder.orderId,
-        currency: configuration.currency
-      })
-    } else if (paymentMode === 'STRIPE') {
-      props?.navigation.replace('StripeCheckout', {
-        _id: data?.placeOrder.orderId,
-        amount: data?.placeOrder.orderAmount,
-        email: data?.placeOrder.user.email,
-        currency: configuration.currency
-      })
+    } else {
+      props.navigation.navigate('OrderDetail', { _id: placedOrder._id, order: placedOrder })
     }
   }
   function onError(error) {
@@ -564,6 +555,9 @@ function Checkout(props) {
   }
   async function onPayment() {
     try {
+      if (onlinePayment.method !== 'cash') {
+        try { startPayload({ ...onlinePayment, orderNumber: 'validation', customerPhone: profile?.phone || '' }) } catch (error) { setLoadingOrder(false); Alert.alert('Paiement', error.message); return }
+      }
       if (checkPaymentMethod(configuration.currency)) {
         const items = transformOrder(cart)
         const orderVariables = {
@@ -815,28 +809,10 @@ function Checkout(props) {
                       <TextDefault numberOfLines={1} H5 bolder textColor={currentTheme.colors.textPrimary} isRTL>
                         {t('titlePayment')}
                       </TextDefault>
-                      <View>
-                        <PaymentModeOption
-                          title={'Mobile Money (MoMo)'}
-                          icon={'cellphone'}
-                          iconFamily='material-community'
-                          selected={paymentMode === 'MOBILE_MONEY'}
-                          theme={currentTheme}
-                          onSelect={() => {
-                            setPaymentMode('MOBILE_MONEY')
-                          }}
-                        />
-                        <PaymentModeOption
-                          title={isPickup ? 'Paiement au retrait' : 'Paiement à la livraison'}
-                          icon={'cash'}
-                          iconFamily='material-community'
-                          selected={paymentMode === 'COD'}
-                          theme={currentTheme}
-                          onSelect={() => {
-                            setPaymentMode('COD')
-                          }}
-                        />
-                      </View>
+                      <PaymentFields value={onlinePayment} disabled={loadingOrder} theme={currentTheme} onChange={value => {
+                        setOnlinePayment(value)
+                        setPaymentMode(value.method === 'cash' ? 'COD' : value.method === 'momo' ? 'MOBILE_MONEY' : 'CARD')
+                      }} />
                     </View>
                   </>
                 )}

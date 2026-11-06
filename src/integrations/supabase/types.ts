@@ -1236,6 +1236,7 @@ export type Database = {
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
           paid_at: string | null
+          payment_deadline: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           picked_up_at: string | null
           ready_at: string | null
@@ -1280,6 +1281,7 @@ export type Database = {
           order_number?: string
           order_type?: Database["public"]["Enums"]["order_type"]
           paid_at?: string | null
+          payment_deadline?: string | null
           payment_method?: Database["public"]["Enums"]["payment_method"]
           picked_up_at?: string | null
           ready_at?: string | null
@@ -1324,6 +1326,7 @@ export type Database = {
           order_number?: string
           order_type?: Database["public"]["Enums"]["order_type"]
           paid_at?: string | null
+          payment_deadline?: string | null
           payment_method?: Database["public"]["Enums"]["payment_method"]
           picked_up_at?: string | null
           ready_at?: string | null
@@ -1431,48 +1434,81 @@ export type Database = {
       payments: {
         Row: {
           amount_fcfa: number
+          confirmed_at: string | null
           created_at: string
           currency: string
           failure_reason: string | null
           id: string
+          last_checked_at: string | null
+          method: string | null
+          needs_review: boolean
+          network: string | null
           order_id: string
+          payment_url: string | null
           phone: string
           provider: string
           provider_correspondent: string | null
+          provider_expires_at: string | null
           provider_ref: string | null
           raw: Json | null
+          return_to: string | null
+          review_reason: string | null
+          reviewed_at: string | null
           status: string
           updated_at: string
+          web_origin: string | null
         }
         Insert: {
           amount_fcfa: number
+          confirmed_at?: string | null
           created_at?: string
           currency?: string
           failure_reason?: string | null
           id?: string
+          last_checked_at?: string | null
+          method?: string | null
+          needs_review?: boolean
+          network?: string | null
           order_id: string
+          payment_url?: string | null
           phone: string
           provider?: string
           provider_correspondent?: string | null
+          provider_expires_at?: string | null
           provider_ref?: string | null
           raw?: Json | null
+          return_to?: string | null
+          review_reason?: string | null
+          reviewed_at?: string | null
           status?: string
           updated_at?: string
+          web_origin?: string | null
         }
         Update: {
           amount_fcfa?: number
+          confirmed_at?: string | null
           created_at?: string
           currency?: string
           failure_reason?: string | null
           id?: string
+          last_checked_at?: string | null
+          method?: string | null
+          needs_review?: boolean
+          network?: string | null
           order_id?: string
+          payment_url?: string | null
           phone?: string
           provider?: string
           provider_correspondent?: string | null
+          provider_expires_at?: string | null
           provider_ref?: string | null
           raw?: Json | null
+          return_to?: string | null
+          review_reason?: string | null
+          reviewed_at?: string | null
           status?: string
           updated_at?: string
+          web_origin?: string | null
         }
         Relationships: [
           {
@@ -2011,6 +2047,7 @@ export type Database = {
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
           paid_at: string | null
+          payment_deadline: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           picked_up_at: string | null
           ready_at: string | null
@@ -2109,6 +2146,7 @@ export type Database = {
         }[]
       }
       admin_my_access: { Args: never; Returns: Json }
+      admin_open_payments_token_window: { Args: never; Returns: string }
       admin_order_breakdown: {
         Args: { p_from?: string; p_restaurant_id: string; p_to?: string }
         Returns: {
@@ -2213,6 +2251,7 @@ export type Database = {
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
           paid_at: string | null
+          payment_deadline: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           picked_up_at: string | null
           ready_at: string | null
@@ -2287,6 +2326,7 @@ export type Database = {
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
           paid_at: string | null
+          payment_deadline: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           picked_up_at: string | null
           ready_at: string | null
@@ -2365,6 +2405,62 @@ export type Database = {
       }
       escale_tick: { Args: never; Returns: undefined }
       external_delivery_tick: { Args: never; Returns: number }
+      feexpay_alert_staff: {
+        Args: {
+          p_body: string
+          p_order: Database["public"]["Tables"]["orders"]["Row"]
+          p_title: string
+        }
+        Returns: undefined
+      }
+      feexpay_apply_result: {
+        Args: {
+          p_amount?: number
+          p_raw?: Json
+          p_reason?: string
+          p_reference: string
+          p_status: string
+        }
+        Returns: Json
+      }
+      feexpay_expire_due: { Args: { p_grace?: string }; Returns: number }
+      feexpay_order_state: {
+        Args: { p_order_number: string; p_phone: string }
+        Returns: Json
+      }
+      feexpay_payment_json: {
+        Args: { p: Database["public"]["Tables"]["payments"]["Row"] }
+        Returns: Json
+      }
+      feexpay_pending_to_check: {
+        Args: { p_limit?: number }
+        Returns: {
+          reference: string
+        }[]
+      }
+      feexpay_record_attempt: {
+        Args: {
+          p_amount: number
+          p_expires_at: string
+          p_method: string
+          p_network: string
+          p_order_id: string
+          p_payment_url: string
+          p_phone: string
+          p_raw: Json
+          p_reason: string
+          p_reference: string
+          p_return_to: string
+          p_status: string
+          p_web_origin: string
+        }
+        Returns: Json
+      }
+      feexpay_service: {
+        Args: { p_args?: Json; p_op: string; p_token: string }
+        Returns: Json
+      }
+      feexpay_touch: { Args: { p_reference: string }; Returns: undefined }
       is_restaurant_open: {
         Args: { p_restaurant_id: string }
         Returns: boolean
@@ -2435,6 +2531,7 @@ export type Database = {
           p_items: Json
           p_note?: string
           p_order_type: Database["public"]["Enums"]["order_type"]
+          p_pay_online?: boolean
           p_payment_method?: Database["public"]["Enums"]["payment_method"]
           p_restaurant_id: string
           p_scheduled_for?: string
@@ -2508,6 +2605,10 @@ export type Database = {
         Args: { p_platform?: string; p_token: string }
         Returns: Json
       }
+      register_service_token: {
+        Args: { p_name: string; p_token: string }
+        Returns: boolean
+      }
       restaurant_rating: { Args: { p_restaurant_id: string }; Returns: Json }
       restaurant_stats: {
         Args: { p_from?: string; p_restaurant_id: string; p_to?: string }
@@ -2562,6 +2663,7 @@ export type Database = {
           order_number: string
           order_type: Database["public"]["Enums"]["order_type"]
           paid_at: string | null
+          payment_deadline: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           picked_up_at: string | null
           ready_at: string | null
@@ -2784,6 +2886,7 @@ export type Database = {
         | "super_admin"
       coupon_kind: "percent" | "fixed"
       order_status:
+        | "awaiting_payment"
         | "received"
         | "in_kitchen"
         | "ready"
@@ -2930,6 +3033,7 @@ export const Constants = {
       ],
       coupon_kind: ["percent", "fixed"],
       order_status: [
+        "awaiting_payment",
         "received",
         "in_kitchen",
         "ready",

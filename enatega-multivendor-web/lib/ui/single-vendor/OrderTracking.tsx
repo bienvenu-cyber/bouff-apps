@@ -18,6 +18,7 @@ import GoogleMapTrackingComponent from "@/lib/ui/screen-components/protected/ord
 import TrackingOrderDetails from "@/lib/ui/screen-components/protected/order-tracking/components/tracking-order-details";
 import TrackingStatusCard from "@/lib/ui/screen-components/protected/order-tracking/components/tracking-status-card";
 import RiderChat from "./RiderChat";
+import PaymentPanel from "./PaymentPanel";
 import { PaddingContainer } from "@/lib/ui/useable-components/containers";
 import type { IOrderTrackingDetail } from "@/lib/utils/interfaces/order-tracking-detail.interface";
 import type { IOrderTracking } from "@/lib/utils/interfaces/orders.interface";
@@ -222,6 +223,7 @@ export default function SingleVendorOrderTracking({
 
         <div className="mt-8 md:mt-10">
           <PaddingContainer>
+            {status === "AWAITING_PAYMENT" && <PaymentPanel orderNumber={String(order.orderId)} amount={Number(order.orderAmount)} customerPhone={order.customer?.phone || order.user?.phone} onConfirmed={() => { void details.refetch(); }} />}
             <div className="mb-8 flex flex-col items-center justify-between gap-6 md:flex-row md:items-start">
               <TrackingStatusCard
                 orderTrackingDetails={normalizedOrder as IOrderTrackingDetail}

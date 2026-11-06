@@ -11,6 +11,7 @@ import { loadMenu } from "./catalog";
 import { rememberGuestOrder } from "./notifications";
 
 export const STATUS_MAP: Record<string, string> = {
+  awaiting_payment: "AWAITING_PAYMENT",
   received: "PENDING",
   in_kitchen: "ACCEPTED",
   ready: "ASSIGNED",
@@ -94,6 +95,7 @@ export async function placeOrder(variables: Record<string, any>) {
     p_delivery_zone_id: zoneId,
     p_delivery_address: isPickedUp ? null : address,
     p_payment_method: paymentMethodFor(variables.paymentMethod),
+    p_pay_online: ["mobile_money", "card"].includes(paymentMethodFor(variables.paymentMethod)),
     p_note: variables.instructions ?? variables.specialInstructions ?? null,
     p_coupon_code: String(variables.couponCode ?? "").trim() || null,
     p_use_wallet: getUseWallet(),
@@ -124,7 +126,9 @@ export async function placeOrder(variables: Record<string, any>) {
     paidAmount: 0,
     orderAmount: result.total_fcfa,
     paymentStatus: "PENDING",
-    orderStatus: "PENDING",
+    orderStatus: STATUS_MAP[result.status] ?? "PENDING",
+    paymentDeadline: result.payment_deadline ?? null,
+    user: { name: who.name, phone: who.phone },
     deliveryCharges: result.delivery_fee_fcfa,
     tipping: result.tip_fcfa ?? tip,
     taxationAmount: 0,
@@ -191,7 +195,7 @@ async function orderRows(statuses: string[], limit = 20, page = 1) {
   return data ?? [];
 }
 
-const ACTIVE = ["received", "in_kitchen", "ready", "on_the_way"];
+const ACTIVE = ["awaiting_payment", "received", "in_kitchen", "ready", "on_the_way"];
 const PAST = ["delivered", "cancelled"];
 
 export async function activeOrders(limit?: number, page?: number) {
@@ -268,9 +272,11 @@ async function guestOrderDetails(orderNumber: string, menu: any) {
     orderId: t.order_number,
     orderStatus: STATUS_MAP[t.status] ?? "PENDING",
     orderState: t.status,
+    user: { name: guest.name, phone: guest.phone },
+    paymentDeadline: t.payment_deadline ?? null,
     deliveryMode: t.delivery_mode,
     autoClosedAt: t.auto_closed_at,
-    paymentMethod: "COD",
+    paymentMethod: t.payment_method === "card" ? "CARD" : t.payment_method === "mobile_money" ? "MOBILE_MONEY" : "COD",
     paidAmount: 0,
     orderAmount: t.total_fcfa,
     paymentStatus: "PENDING",
@@ -426,6 +432,8 @@ export async function orderDetails(orderId: string) {
     orderId: order.order_number,
     orderStatus: STATUS_MAP[order.status] ?? "PENDING",
     orderState: order.status,
+    user: { name: order.customer_name, phone: order.customer_phone },
+    paymentDeadline: order.payment_deadline ?? null,
     deliveryMode: order.delivery_mode,
     autoClosedAt: order.auto_closed_at,
     paymentMethod: order.payment_method === "cash" ? "COD" : order.payment_method.toUpperCase(),

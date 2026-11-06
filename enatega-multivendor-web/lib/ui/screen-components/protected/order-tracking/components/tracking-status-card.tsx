@@ -81,6 +81,8 @@ function TrackingStatusCard({
     const nowDate = new Date(now);
 
     switch (status) {
+      case "AWAITING_PAYMENT":
+        return "Paiement en attente";
       case "PENDING":
         return isRestaurant ? t("PendingRestaurant") : t("PendingStore");
 
@@ -151,7 +153,7 @@ function TrackingStatusCard({
     }
   };
   const statusKey = `status_label_${orderTrackingDetails.orderStatus}`;
-  const currentStatusLabel = orderTrackingDetails.autoClosedAt ? 'Clôturée automatiquement' : t.has(statusKey)
+  const currentStatusLabel = orderTrackingDetails.orderStatus === "AWAITING_PAYMENT" ? "Paiement en attente" : orderTrackingDetails.autoClosedAt ? 'Clôturée automatiquement' : t.has(statusKey)
     ? t(statusKey)
     : orderTrackingDetails.orderStatus;
 

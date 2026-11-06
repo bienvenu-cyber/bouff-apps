@@ -724,6 +724,7 @@ export const SINGLE_VENDOR_SCHEDULE = gql`
 
 export const SINGLE_VENDOR_PLACE_ORDER = gql`
   mutation SingleVendorPlaceOrder(
+    $payOnline: Boolean
     $paymentMethod: String!
     $address: AddressInput!
     $tipping: Float!
@@ -739,6 +740,7 @@ export const SINGLE_VENDOR_PLACE_ORDER = gql`
     $scheduledFor: String
   ) {
     placeOrder(
+      payOnline: $payOnline
       paymentMethod: $paymentMethod
       address: $address
       tipping: $tipping

@@ -118,6 +118,7 @@ function MainNavigator() {
       <NavigationStack.Screen name='AddNewAddress' component={AddNewAddress} />
       <NavigationStack.Screen name='SaveAddress' component={SaveAddress} />
       <NavigationStack.Screen name='Payment' component={Payment} />
+      <NavigationStack.Screen name='FeexPay' getComponent={() => require('../screens/Payment/FeexPay').default} options={{ title: 'Paiement' }} />
       <NavigationStack.Screen
         name='OrderDetail'
         getComponent={() => require('../screens/OrderDetail/OrderDetail').default}
