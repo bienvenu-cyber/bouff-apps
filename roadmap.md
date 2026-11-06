@@ -1,5 +1,11 @@
 # Feuille de route BOUFF
 
+## Demande actuelle — FeexPay
+- [ ] Connecter le compte FeexPay de manière sécurisée et récupérer l’identifiant boutique
+- [ ] Brancher Mobile Money MTN/Moov/Celtiis et carte, Bénin uniquement, aux commandes client web et mobile
+- [ ] Vérifier confirmations, erreurs, doublons, expiration et paiements tardifs ; conserver les règles caisse
+- [ ] Tester les parcours puis vérifier un paiement réel avec autorisation
+
 ## Demande actuelle — coursiers externes et connexions
 - [x] Activer le relais livraison automatique (prête +5 min, clôture +30 min), isoler les courses des livreurs internes et identifier les clôtures estimées
 - [x] Auditer et corriger les actions finales cuisine sans nouveau bouton (3 tests réussis)
