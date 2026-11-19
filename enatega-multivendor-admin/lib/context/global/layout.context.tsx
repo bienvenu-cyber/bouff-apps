@@ -24,6 +24,11 @@ export const LayoutProvider = ({ children }: IProvider) => {
     useState<boolean>(true);
 
   useEffect(() => {
+    // Sur téléphone, le menu du restaurant démarre fermé pour laisser toute la place à la page.
+    if (window.innerWidth < 650) setRestaurantShowSidebar(false);
+  }, []);
+
+  useEffect(() => {
     // Check if routeStack exists; if not, initialize it as an empty stack
     const existingRouteStack = onUseLocalStorage('get', 'routeStack');
     if (!existingRouteStack) {

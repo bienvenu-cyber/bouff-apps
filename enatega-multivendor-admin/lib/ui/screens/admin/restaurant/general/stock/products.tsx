@@ -95,7 +95,7 @@ export default function Products({ ctx, canEdit }: { ctx: Ctx; canEdit: boolean 
                   return (
                     <tr key={p.id} className={`border-t dark:border-gray-800 ${p.is_active ? '' : 'opacity-50'}`}>
                       <td className="py-2 font-medium">{p.name}{p.count_daily && <span className="ml-2 text-xs text-orange-600">soir</span>}</td>
-                      <td className={`text-right tabular-nums ${isLow ? 'text-red-600 dark:text-red-400 font-semibold' : ''}`}>{Q(p.qty)} {p.unit}</td>
+                      <td className={`text-right tabular-nums whitespace-nowrap pl-2 ${isLow ? 'text-red-600 dark:text-red-400 font-semibold' : ''}`}>{Q(p.qty)} {p.unit}</td>
                       <td className="text-right opacity-70 hidden md:table-cell">{Number(p.min_qty) ? `min ${Q(p.min_qty)}` : 'pas de minimum'}</td>
                       <td className="text-right opacity-70 hidden md:table-cell">{p.unit_cost_fcfa ? `${F(p.unit_cost_fcfa)} / ${p.unit}` : '—'}</td>
                       <td className="text-right w-20">{canEdit && <Btn small onClick={() => setForm(toForm(p))}>Modifier</Btn>}</td>
