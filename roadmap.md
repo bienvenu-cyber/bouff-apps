@@ -1,11 +1,13 @@
 # Feuille de route BOUFF
 
 ## Demande actuelle — Stock & cuisine (gérante)
-- [ ] Base : produits, réceptions, pertes, comptages, dépenses, contrôles hygiène (écritures protégées, auteur + heure)
-- [ ] Liste de produits de départ (à corriger par la direction)
-- [ ] Page admin « Stock & cuisine » simple : Aujourd'hui, Stock, Comptage, Dépenses, Hygiène, Historique
-- [ ] Résumé de 1 h enrichi (dépenses, pertes, stock bas)
-- [ ] Tests des règles et vérification bout en bout
+- [x] Base : produits, réceptions, pertes, comptages, dépenses, contrôles hygiène (écritures protégées, auteur + heure)
+- [x] Liste de produits de départ (50 produits, à corriger par la direction)
+- [x] Page admin « Stock & cuisine » : Ma journée (6 étapes), Arrivage, Perte, Dépense, Comptage, Hygiène, Stock, Historique
+- [x] Résumé de 1 h enrichi (dépenses, pertes, stock bas)
+- [x] Tests des règles (10) et essai complet avec un compte gérant ; données d'essai effacées
+- [ ] Mise en ligne de l'administration sur Vercel (au prochain déploiement)
+- [ ] Direction : corriger la liste de produits, prix d'achat et minimums ; premier inventaire complet
 - [ ] Plus tard : recettes (stock automatique), marges, pointage + prime, saisie des pertes dans l'appli cuisine
 
 ## Demande actuelle — FeexPay
