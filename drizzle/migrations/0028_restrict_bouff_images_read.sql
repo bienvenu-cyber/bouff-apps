@@ -1,0 +1,2 @@
+DROP POLICY IF EXISTS bouff_images_read ON storage.objects;
+CREATE POLICY bouff_images_read ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'bouff-images' AND private.is_any_admin(auth.uid()));
