@@ -158,6 +158,8 @@ export default function MakeSidebar() {
       isParent: true,
       icon: faMoneyBillTrendUp,
       isClickable: true,
+      // Réservé au super admin : la gérante ne voit pas le marketing.
+      shouldShow: () => user?.userType === 'ADMIN',
     },
     {
       text: 'Stock & cuisine',
