@@ -1,5 +1,13 @@
 # Feuille de route BOUFF
 
+## Demande actuelle — Stock & cuisine (gérante)
+- [ ] Base : produits, réceptions, pertes, comptages, dépenses, contrôles hygiène (écritures protégées, auteur + heure)
+- [ ] Liste de produits de départ (à corriger par la direction)
+- [ ] Page admin « Stock & cuisine » simple : Aujourd'hui, Stock, Comptage, Dépenses, Hygiène, Historique
+- [ ] Résumé de 1 h enrichi (dépenses, pertes, stock bas)
+- [ ] Tests des règles et vérification bout en bout
+- [ ] Plus tard : recettes (stock automatique), marges, pointage + prime, saisie des pertes dans l'appli cuisine
+
 ## Demande actuelle — FeexPay
 - [x] Enregistrer de manière sécurisée la clé privée FeexPay et l’identifiant de la boutique
 - [x] Brancher Mobile Money MTN/Moov/Celtiis et carte, Bénin uniquement, aux commandes client web et mobile

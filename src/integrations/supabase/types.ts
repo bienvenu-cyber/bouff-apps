@@ -607,6 +607,62 @@ export type Database = {
           },
         ]
       }
+      expenses: {
+        Row: {
+          amount_fcfa: number
+          author_id: string | null
+          author_name: string | null
+          cancelled_at: string | null
+          cancelled_by_name: string | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          local_day: string
+          paid_from: string
+          restaurant_id: string
+          source: string
+        }
+        Insert: {
+          amount_fcfa: number
+          author_id?: string | null
+          author_name?: string | null
+          cancelled_at?: string | null
+          cancelled_by_name?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          local_day?: string
+          paid_from: string
+          restaurant_id: string
+          source?: string
+        }
+        Update: {
+          amount_fcfa?: number
+          author_id?: string | null
+          author_name?: string | null
+          cancelled_at?: string | null
+          cancelled_by_name?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          local_day?: string
+          paid_from?: string
+          restaurant_id?: string
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorites: {
         Row: {
           created_at: string
@@ -629,6 +685,62 @@ export type Database = {
             columns: ["menu_item_id"]
             isOneToOne: false
             referencedRelation: "menu_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hygiene_checks: {
+        Row: {
+          all_ok: boolean
+          author_id: string | null
+          author_name: string | null
+          created_at: string
+          freezer_temp: number | null
+          fridge_temp: number | null
+          id: string
+          items: Json
+          local_day: string
+          moment: string
+          note: string | null
+          restaurant_id: string
+          updated_at: string
+        }
+        Insert: {
+          all_ok?: boolean
+          author_id?: string | null
+          author_name?: string | null
+          created_at?: string
+          freezer_temp?: number | null
+          fridge_temp?: number | null
+          id?: string
+          items?: Json
+          local_day?: string
+          moment: string
+          note?: string | null
+          restaurant_id: string
+          updated_at?: string
+        }
+        Update: {
+          all_ok?: boolean
+          author_id?: string | null
+          author_name?: string | null
+          created_at?: string
+          freezer_temp?: number | null
+          fridge_temp?: number | null
+          id?: string
+          items?: Json
+          local_day?: string
+          moment?: string
+          note?: string | null
+          restaurant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hygiene_checks_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
             referencedColumns: ["id"]
           },
         ]
@@ -1977,6 +2089,262 @@ export type Database = {
           },
         ]
       }
+      stock_count_lines: {
+        Row: {
+          count_id: string
+          counted: number
+          expected: number
+          gap: number
+          gap_value_fcfa: number
+          id: string
+          product_id: string
+          product_name: string
+          unit: string
+        }
+        Insert: {
+          count_id: string
+          counted: number
+          expected: number
+          gap: number
+          gap_value_fcfa?: number
+          id?: string
+          product_id: string
+          product_name: string
+          unit: string
+        }
+        Update: {
+          count_id?: string
+          counted?: number
+          expected?: number
+          gap?: number
+          gap_value_fcfa?: number
+          id?: string
+          product_id?: string
+          product_name?: string
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_count_lines_count_id_fkey"
+            columns: ["count_id"]
+            isOneToOne: false
+            referencedRelation: "stock_counts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_count_lines_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "stock_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_counts: {
+        Row: {
+          author_id: string | null
+          author_name: string | null
+          created_at: string
+          gap_value_fcfa: number
+          id: string
+          kind: string
+          lines_count: number
+          local_day: string
+          note: string | null
+          restaurant_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          author_name?: string | null
+          created_at?: string
+          gap_value_fcfa?: number
+          id?: string
+          kind: string
+          lines_count?: number
+          local_day?: string
+          note?: string | null
+          restaurant_id: string
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string | null
+          created_at?: string
+          gap_value_fcfa?: number
+          id?: string
+          kind?: string
+          lines_count?: number
+          local_day?: string
+          note?: string | null
+          restaurant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_counts_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_movements: {
+        Row: {
+          author_id: string | null
+          author_name: string | null
+          cancelled_at: string | null
+          cancels_id: string | null
+          count_id: string | null
+          created_at: string
+          expense_id: string | null
+          id: string
+          kind: string
+          local_day: string
+          note: string | null
+          product_id: string
+          qty_after: number
+          qty_delta: number
+          reason: string | null
+          restaurant_id: string
+          supplier: string | null
+          value_fcfa: number
+        }
+        Insert: {
+          author_id?: string | null
+          author_name?: string | null
+          cancelled_at?: string | null
+          cancels_id?: string | null
+          count_id?: string | null
+          created_at?: string
+          expense_id?: string | null
+          id?: string
+          kind: string
+          local_day?: string
+          note?: string | null
+          product_id: string
+          qty_after: number
+          qty_delta: number
+          reason?: string | null
+          restaurant_id: string
+          supplier?: string | null
+          value_fcfa?: number
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string | null
+          cancelled_at?: string | null
+          cancels_id?: string | null
+          count_id?: string | null
+          created_at?: string
+          expense_id?: string | null
+          id?: string
+          kind?: string
+          local_day?: string
+          note?: string | null
+          product_id?: string
+          qty_after?: number
+          qty_delta?: number
+          reason?: string | null
+          restaurant_id?: string
+          supplier?: string | null
+          value_fcfa?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_cancels_id_fkey"
+            columns: ["cancels_id"]
+            isOneToOne: false
+            referencedRelation: "stock_movements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_count_id_fkey"
+            columns: ["count_id"]
+            isOneToOne: false
+            referencedRelation: "stock_counts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_expense_id_fkey"
+            columns: ["expense_id"]
+            isOneToOne: false
+            referencedRelation: "expenses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "stock_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stock_movements_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_products: {
+        Row: {
+          category: string
+          count_daily: boolean
+          created_at: string
+          id: string
+          is_active: boolean
+          min_qty: number
+          name: string
+          qty: number
+          restaurant_id: string
+          sort_order: number
+          supplier: string | null
+          unit: string
+          unit_cost_fcfa: number | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          count_daily?: boolean
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          min_qty?: number
+          name: string
+          qty?: number
+          restaurant_id: string
+          sort_order?: number
+          supplier?: string | null
+          unit?: string
+          unit_cost_fcfa?: number | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          count_daily?: boolean
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          min_qty?: number
+          name?: string
+          qty?: number
+          restaurant_id?: string
+          sort_order?: number
+          supplier?: string | null
+          unit?: string
+          unit_cost_fcfa?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_products_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -2404,6 +2772,37 @@ export type Database = {
         Returns: string[]
       }
       escale_tick: { Args: never; Returns: undefined }
+      expense_add: {
+        Args: {
+          p_amount: number
+          p_category: string
+          p_description?: string
+          p_paid_from: string
+          p_restaurant_id: string
+        }
+        Returns: {
+          amount_fcfa: number
+          author_id: string | null
+          author_name: string | null
+          cancelled_at: string | null
+          cancelled_by_name: string | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          local_day: string
+          paid_from: string
+          restaurant_id: string
+          source: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "expenses"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      expense_cancel: { Args: { p_expense_id: string }; Returns: undefined }
       external_delivery_tick: { Args: never; Returns: number }
       feexpay_alert_staff: {
         Args: {
@@ -2461,6 +2860,37 @@ export type Database = {
         Returns: Json
       }
       feexpay_touch: { Args: { p_reference: string }; Returns: undefined }
+      hygiene_save: {
+        Args: {
+          p_freezer_temp: number
+          p_fridge_temp: number
+          p_items: Json
+          p_moment: string
+          p_note?: string
+          p_restaurant_id: string
+        }
+        Returns: {
+          all_ok: boolean
+          author_id: string | null
+          author_name: string | null
+          created_at: string
+          freezer_temp: number | null
+          fridge_temp: number | null
+          id: string
+          items: Json
+          local_day: string
+          moment: string
+          note: string | null
+          restaurant_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "hygiene_checks"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       is_restaurant_open: {
         Args: { p_restaurant_id: string }
         Returns: boolean
@@ -2836,6 +3266,93 @@ export type Database = {
       stats_compute: {
         Args: { p_from: string; p_restaurant_id: string; p_to: string }
         Returns: Json
+      }
+      stock_cancel_movement: {
+        Args: { p_movement_id: string }
+        Returns: undefined
+      }
+      stock_day: {
+        Args: { p_day?: string; p_restaurant_id: string }
+        Returns: Json
+      }
+      stock_loss: {
+        Args: {
+          p_note?: string
+          p_product_id: string
+          p_qty: number
+          p_reason: string
+          p_restaurant_id: string
+        }
+        Returns: {
+          author_id: string | null
+          author_name: string | null
+          cancelled_at: string | null
+          cancels_id: string | null
+          count_id: string | null
+          created_at: string
+          expense_id: string | null
+          id: string
+          kind: string
+          local_day: string
+          note: string | null
+          product_id: string
+          qty_after: number
+          qty_delta: number
+          reason: string | null
+          restaurant_id: string
+          supplier: string | null
+          value_fcfa: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "stock_movements"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      stock_receive: {
+        Args: {
+          p_lines: Json
+          p_note?: string
+          p_paid_from?: string
+          p_restaurant_id: string
+          p_supplier?: string
+        }
+        Returns: Json
+      }
+      stock_save_count: {
+        Args: {
+          p_kind: string
+          p_lines: Json
+          p_note?: string
+          p_restaurant_id: string
+        }
+        Returns: Json
+      }
+      stock_save_product: {
+        Args: { p_product: Json; p_restaurant_id: string }
+        Returns: {
+          category: string
+          count_daily: boolean
+          created_at: string
+          id: string
+          is_active: boolean
+          min_qty: number
+          name: string
+          qty: number
+          restaurant_id: string
+          sort_order: number
+          supplier: string | null
+          unit: string
+          unit_cost_fcfa: number | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "stock_products"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       submit_order_review: {
         Args: {

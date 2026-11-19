@@ -204,6 +204,13 @@
       "when": 1795096350110,
       "tag": "0028_restrict_bouff_images_read",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1795099342959,
+      "tag": "0029_stock_cuisine",
+      "breakpoints": true
     }
   ]
 }

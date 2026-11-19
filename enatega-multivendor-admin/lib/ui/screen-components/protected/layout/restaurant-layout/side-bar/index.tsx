@@ -14,6 +14,7 @@ import {
 // Icons
 import {
   faArrowLeft,
+  faBoxesStacked,
   faCog,
   faHome,
   faMoneyBillTrendUp,
@@ -156,6 +157,13 @@ export default function MakeSidebar() {
       route: '/admin/store/coupons',
       isParent: true,
       icon: faMoneyBillTrendUp,
+      isClickable: true,
+    },
+    {
+      text: 'Stock & cuisine',
+      route: '/admin/store/stock',
+      isParent: true,
+      icon: faBoxesStacked,
       isClickable: true,
     },
     {
