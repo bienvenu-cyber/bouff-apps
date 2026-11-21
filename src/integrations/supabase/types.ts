@@ -2734,6 +2734,10 @@ export type Database = {
         Returns: Json
       }
       counter_logout: { Args: { p_token: string }; Returns: undefined }
+      counter_order_receipt: {
+        Args: { p_order_id: string; p_token: string }
+        Returns: Json
+      }
       counter_place_order: {
         Args: {
           p_customer_name?: string

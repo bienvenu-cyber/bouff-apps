@@ -2,6 +2,7 @@
 // Le code est vérifié par la base BOUFF ; la tablette garde seulement un jeton de session.
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { RESTAURANT_SLUG, SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "./config";
+import type { Receipt } from "./receipt";
 
 // Client sans session : la caisse n'utilise jamais le compte client
 // éventuellement connecté sur la tablette.
@@ -153,4 +154,11 @@ export async function counterCloseDay(token: string, cashCounted: number, note?:
   });
   if (error) throw new Error(error.message);
   return data as CounterDaySummary;
+}
+
+// Reçu imprimable : la base vérifie la session caisse et le restaurant.
+export async function counterOrderReceipt(token: string, orderId: string) {
+  const { data, error } = await bouffDb().rpc("counter_order_receipt", { p_token: token, p_order_id: orderId });
+  if (error) throw new Error(error.message);
+  return data as Receipt;
 }

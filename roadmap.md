@@ -1,5 +1,11 @@
 # Feuille de route BOUFF
 
+## Demande actuelle — Reçus caisse
+- [x] Reçu de caisse (pas une facture normalisée) : imprimer après la vente, impression automatique au choix, réimpression depuis « Commandes du jour »
+- [x] Téléphone du restaurant renseigné pour le reçu
+- [ ] Acheter l'imprimante thermique 80 mm (USB/Bluetooth, compatible Android) et l'essayer sur la tablette — en attente de l'achat
+- [ ] Mise en ligne du site (bouff-apps sur Vercel) pour avoir le bouton dans /caisse
+
 ## Demande actuelle — Stock & cuisine (gérante)
 - [x] Base : produits, réceptions, pertes, comptages, dépenses, contrôles hygiène (écritures protégées, auteur + heure)
 - [x] Liste de produits de départ (50 produits, à corriger par la direction)

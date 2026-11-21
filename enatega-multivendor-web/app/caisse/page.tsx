@@ -11,6 +11,7 @@ import {
   counterCompleteOrder,
   counterCloseDay,
   counterDaySummary,
+  counterOrderReceipt,
   counterPlaceOrder,
   counterRecentOrders,
   isSessionError,
@@ -19,6 +20,8 @@ import {
   type CounterCashier,
   type CounterDaySummary,
 } from "@/lib/bouff-data/counter";
+import type { Receipt, ReceiptExtras } from "@/lib/bouff-data/receipt";
+import ReceiptSheet from "./ReceiptSheet";
 
 const fcfa = (n: number) => `${n.toLocaleString("fr-FR").replace(/\u202f|\u00a0/g, " ")} F`;
 
@@ -54,6 +57,7 @@ interface SavedTicket {
 // Onglets calculés depuis la carte : toute nouvelle catégorie, tout nouveau plat ou
 // combo ajouté dans l'admin apparaît ici sans toucher au code.
 const COMBOS_TAB = "__combos";
+const AUTOPRINT_KEY = "bouff/counter-autoprint";
 const COMBO_KIND = "combo";
 
 function buildLine(item: BouffItem, variant: BouffVariant | null, optionIds: string[]) {
@@ -258,7 +262,54 @@ function Register({
   const [received, setReceived] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [done, setDone] = useState<{ number: string; total: number; points: boolean; dineIn: boolean; change: number | null } | null>(null);
+  const [done, setDone] = useState<{
+    orderId: string;
+    number: string;
+    total: number;
+    points: boolean;
+    dineIn: boolean;
+    change: number | null;
+    received: number | null;
+  } | null>(null);
+  const [printJob, setPrintJob] = useState<{ receipt: Receipt; extras: ReceiptExtras; at: number } | null>(null);
+  const [printing, setPrinting] = useState(false);
+  const [printError, setPrintError] = useState<string | null>(null);
+  const [autoPrint, setAutoPrint] = useState(false);
+  useEffect(() => {
+    setAutoPrint(window.localStorage.getItem(AUTOPRINT_KEY) === "1");
+  }, []);
+  const toggleAutoPrint = (on: boolean) => {
+    setAutoPrint(on);
+    window.localStorage.setItem(AUTOPRINT_KEY, on ? "1" : "0");
+  };
+
+  // Le reçu est toujours relu depuis la base : prix et numéro exacts, même en réimpression.
+  const printReceipt = async (orderId: string, extras: ReceiptExtras = {}) => {
+    if (printing) return;
+    setPrinting(true);
+    setPrintError(null);
+    try {
+      const receipt = await counterOrderReceipt(session.token, orderId);
+      setPrintJob({ receipt, extras, at: Date.now() });
+    } catch (e) {
+      if (isSessionError(e)) onExpired();
+      else setPrintError(`Reçu non imprimé : ${(e as Error).message}`);
+    } finally {
+      setPrinting(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!printJob) return;
+    let cancelled = false;
+    const ready = document.fonts?.ready ?? Promise.resolve();
+    void ready.then(() => {
+      if (!cancelled) window.setTimeout(() => window.print(), 60);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [printJob]);
   const [showRecent, setShowRecent] = useState(false);
   const [showClose, setShowClose] = useState(false);
   const [ticketOpen, setTicketOpen] = useState(false);
@@ -371,13 +422,23 @@ function Register({
         customerPhone: customerPhone.trim(),
       });
       setConfirmPay(null);
+      const cashReceived = payment === "cash" && received !== "" ? Number(received) : null;
       setDone({
+        orderId: res.order_id,
         number: res.order_number,
         total: res.total_fcfa,
         points: res.points_linked,
         dineIn,
-        change: payment === "cash" && received !== "" ? Math.max(0, Number(received) - res.total_fcfa) : null,
+        change: cashReceived !== null ? Math.max(0, cashReceived - res.total_fcfa) : null,
+        received: cashReceived,
       });
+      setPrintError(null);
+      if (autoPrint) {
+        void printReceipt(res.order_id, {
+          pointsLinked: res.points_linked,
+          ...(cashReceived !== null ? { receivedFcfa: cashReceived } : {}),
+        });
+      }
       setReceived("");
       setTicketOpen(false);
       reset();
@@ -650,13 +711,45 @@ function Register({
           )}
           <p className="mt-2 text-center text-bouff-text-muted">Dis ce numéro au client : il sera appelé quand c'est prêt.</p>
           {done.points && <p className="mt-2 text-center text-bouff-success">Points BOUFF ajoutés à son compte à la remise.</p>}
-          <button onClick={() => setDone(null)} className="mt-8 w-full rounded-bouff-md bg-bouff-primary py-4 text-xl font-bold text-bouff-on-primary">
+          {printError && <p className="mt-4 text-center text-bouff-danger">{printError}</p>}
+          <button
+            onClick={() =>
+              void printReceipt(done.orderId, {
+                pointsLinked: done.points,
+                ...(done.received !== null ? { receivedFcfa: done.received } : {}),
+              })
+            }
+            disabled={printing}
+            className="mt-6 w-full rounded-bouff-md border-2 border-bouff-primary py-4 text-xl font-bold text-bouff-primary disabled:opacity-40"
+          >
+            {printing ? "Préparation du reçu…" : "Imprimer le reçu"}
+          </button>
+          <label className="mt-3 flex cursor-pointer items-center justify-center gap-3 text-bouff-text-muted">
+            <input
+              type="checkbox"
+              checked={autoPrint}
+              onChange={(e) => toggleAutoPrint(e.target.checked)}
+              className="h-5 w-5 accent-bouff-primary"
+            />
+            Imprimer automatiquement après chaque vente
+          </label>
+          <button onClick={() => setDone(null)} className="mt-4 w-full rounded-bouff-md bg-bouff-primary py-4 text-xl font-bold text-bouff-on-primary">
             Client suivant
           </button>
         </Modal>
       )}
 
-      {showRecent && <RecentOrders token={session.token} onClose={() => setShowRecent(false)} onExpired={onExpired} />}
+      {showRecent && (
+        <RecentOrders
+          token={session.token}
+          onClose={() => setShowRecent(false)}
+          onExpired={onExpired}
+          onPrint={(id) => void printReceipt(id)}
+          printing={printing}
+          printError={printError}
+        />
+      )}
+      {printJob && <ReceiptSheet key={printJob.at} receipt={printJob.receipt} extras={printJob.extras} />}
       {showClose && <CloseDay token={session.token} name={session.name} onClose={() => setShowClose(false)} onExpired={onExpired} />}
     </div>
   );
@@ -775,7 +868,21 @@ function ItemPicker({
   );
 }
 
-function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: () => void; onExpired: () => void }) {
+function RecentOrders({
+  token,
+  onClose,
+  onExpired,
+  onPrint,
+  printing,
+  printError,
+}: {
+  token: string;
+  onClose: () => void;
+  onExpired: () => void;
+  onPrint: (orderId: string) => void;
+  printing: boolean;
+  printError: string | null;
+}) {
   const [rows, setRows] = useState<Awaited<ReturnType<typeof counterRecentOrders>> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState<{ id: string; number: string } | null>(null);
@@ -865,6 +972,7 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
     <Modal onClose={onClose}>
       <p className="mb-4 text-2xl font-semibold">Commandes du comptoir</p>
       {error && <p className="text-bouff-danger">{error}</p>}
+      {printError && <p className="text-bouff-danger">{printError}</p>}
       {!rows && !error && <p className="text-bouff-text-muted">Chargement…</p>}
       {rows?.length === 0 && <p className="text-bouff-text-muted">Aucune commande pour l'instant.</p>}
       {rows?.map((r) => (
@@ -885,6 +993,15 @@ function RecentOrders({ token, onClose, onExpired }: { token: string; onClose: (
             {r.status === "ready" && (
               <button disabled={busy} onClick={() => void complete(r.id)} className="mt-2 rounded-bouff-md bg-bouff-primary px-3 py-2 text-sm font-semibold text-bouff-on-primary disabled:opacity-40">
                 Remise au client
+              </button>
+            )}
+            {r.status !== "cancelled" && (
+              <button
+                disabled={printing}
+                onClick={() => onPrint(r.id)}
+                className="mt-1 block w-full text-right text-sm text-bouff-text underline disabled:opacity-40"
+              >
+                Réimprimer le reçu
               </button>
             )}
             {r.status === "received" && (

@@ -1,4 +1,5 @@
 import "../(localized)/global.css";
+import "./receipt.css";
 
 export const metadata = {
   title: "Caisse BOUFF",

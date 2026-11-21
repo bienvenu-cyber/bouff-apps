@@ -211,6 +211,13 @@
       "when": 1795099342959,
       "tag": "0029_stock_cuisine",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1795274370976,
+      "tag": "0030_counter_order_receipt",
+      "breakpoints": true
     }
   ]
 }
