@@ -1,0 +1,29 @@
+/* Reçu de caisse : invisible à l'écran, seul élément imprimé (papier thermique 80 mm). */
+#bouff-receipt-root { display: none; }
+
+@media print {
+  @page { margin: 2mm; }
+  html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+  body > *:not(#bouff-receipt-root) { display: none !important; }
+  #bouff-receipt-root { display: block !important; }
+}
+
+/* Papier blanc, encre noire : seules couleurs qu'une imprimante thermique sait rendre. */
+.bouff-receipt { width: 72mm; max-width: 100%; margin: 0 auto; padding: 2mm 0 8mm; color: #000; background: #fff;
+  font-family: ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.35; }
+.bouff-receipt * { color: #000 !important; }
+.bouff-receipt .r-center { text-align: center; }
+.bouff-receipt .r-logo { font-size: 34px; line-height: 1; letter-spacing: 0.06em; }
+.bouff-receipt .r-small { font-size: 10.5px; }
+.bouff-receipt .r-rule { border: 0; border-top: 1px dashed #000; margin: 6px 0; }
+.bouff-receipt .r-number { font-size: 30px; font-weight: 800; line-height: 1.05; letter-spacing: 0.02em; }
+.bouff-receipt .r-row { display: flex; justify-content: space-between; gap: 6px; }
+.bouff-receipt .r-row > span:last-child { white-space: nowrap; }
+.bouff-receipt .r-line { margin: 4px 0; break-inside: avoid; }
+.bouff-receipt .r-line-name { font-weight: 700; }
+.bouff-receipt .r-sub { padding-left: 10px; font-size: 11px; }
+.bouff-receipt .r-total { font-size: 17px; font-weight: 800; }
+.bouff-receipt .r-strong { font-weight: 700; }
+.bouff-receipt .r-cancelled { border: 2px solid #000; padding: 3px; font-weight: 800; text-align: center; margin: 6px 0; }
+.bouff-receipt .r-order { break-inside: avoid; }
+.bouff-receipt .r-strike { text-decoration: line-through; }

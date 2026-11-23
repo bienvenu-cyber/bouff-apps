@@ -8,6 +8,7 @@ import {
   SUBSCRIPTION_ORDER_TRACKING,
 } from '@/lib/api/graphql';
 import { useQuery, useSubscription } from '@apollo/client';
+import { usePrintReceipts } from '@/lib/ui/useable-components/receipt-sheet/use-print-receipts';
 
 interface IOrderDetailModalProps {
   visible: boolean;
@@ -21,6 +22,7 @@ const OrderDetailModal: React.FC<IOrderDetailModalProps> = ({
   restaurantData,
 }) => {
   const { CURRENT_SYMBOL } = useConfiguration();
+  const { print, printing, printError, sheet } = usePrintReceipts();
   const trackingEnabled =
     visible && restaurantData?.orderStatus === 'PICKED' && Boolean(restaurantData?._id);
   const { data: trackingQueryData } = useQuery(ORDER_TRACKING, {
@@ -64,6 +66,17 @@ const OrderDetailModal: React.FC<IOrderDetailModalProps> = ({
       breakpoints={{ '960px': '78vw', '640px': 'calc(100vw - 16px)' }}
     >
       <div className="order-details-container dark:bg-dark-900 dark:text-white ">
+        <div className="mb-3 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            disabled={printing}
+            onClick={() => void print([String(restaurantData._id)])}
+            className="rounded-md bg-primary-color px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            {printing ? 'Préparation du reçu…' : 'Imprimer le reçu'}
+          </button>
+          {printError && <span className="text-sm text-red-500">{printError}</span>}
+        </div>
         {/* Customer Information Section */}
         <div className="order-section dark:bg-dark-600">
           <h3 className="section-header dark:text-primary-dark">
@@ -284,6 +297,7 @@ const OrderDetailModal: React.FC<IOrderDetailModalProps> = ({
           <p>{restaurantData.deliveryAddress.deliveryAddress}</p>
         </div>
       </div>
+      {sheet}
     </Dialog>
   );
 };

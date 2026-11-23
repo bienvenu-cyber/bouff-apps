@@ -25,3 +25,5 @@
 .bouff-receipt .r-total { font-size: 17px; font-weight: 800; }
 .bouff-receipt .r-strong { font-weight: 700; }
 .bouff-receipt .r-cancelled { border: 2px solid #000; padding: 3px; font-weight: 800; text-align: center; margin: 6px 0; }
+.bouff-receipt .r-order { break-inside: avoid; }
+.bouff-receipt .r-strike { text-decoration: line-through; }

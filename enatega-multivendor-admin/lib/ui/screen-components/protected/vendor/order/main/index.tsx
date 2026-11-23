@@ -16,6 +16,7 @@ import { DataTableRowClickEvent } from 'primereact/datatable';
 import OrderDetailModal from '@/lib/ui/useable-components/popup-menu/order-details-modal';
 import { useTranslations } from 'next-intl';
 import useDebounce from '@/lib/hooks/useDebounce';
+import { usePrintReceipts } from '@/lib/ui/useable-components/receipt-sheet/use-print-receipts';
 
 export default function OrderVendorMain() {
   // Hooks
@@ -33,6 +34,7 @@ export default function OrderVendorMain() {
   const [selectedRestaurant, setSelectedRestaurant] =
     useState<IExtendedOrder | null>(null);
   const debouncedSearch = useDebounce(searchTerm, 500);
+  const { print, printing, printError, sheet } = usePrintReceipts();
 
   const { data, error, loading } = useQueryGQL(
     GET_ORDER_BY_RESTAURANT,
@@ -99,8 +101,32 @@ export default function OrderVendorMain() {
         setSelectedActions={setSelectedActions}
         onSearch={handleSearch}
       />
+      {selectedData.length > 0 && (
+        <div className="mb-3 flex flex-wrap items-center gap-3 rounded-lg border border-gray-200 px-3 py-2 dark:border-dark-600 dark:text-white">
+          <span className="text-sm">
+            {selectedData.length} commande{selectedData.length > 1 ? 's' : ''} sélectionnée{selectedData.length > 1 ? 's' : ''}
+          </span>
+          <button
+            type="button"
+            disabled={printing}
+            onClick={() => void print(selectedData.map((o) => String(o._id)))}
+            className="rounded-md bg-primary-color px-3 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            {printing
+              ? 'Préparation du reçu…'
+              : selectedData.length > 1
+                ? `Imprimer un reçu groupé (${selectedData.length})`
+                : 'Imprimer le reçu'}
+          </button>
+          <button type="button" onClick={() => setSelectedData([])} className="text-sm underline">
+            Tout désélectionner
+          </button>
+          {printError && <span className="text-sm text-red-500">{printError}</span>}
+        </div>
+      )}
       <Table
         data={displayData as IExtendedOrder[]}
+        isSelectable={!loading}
         setSelectedData={setSelectedData}
         selectedData={selectedData}
         columns={ORDER_COLUMNS()}
@@ -120,6 +146,7 @@ export default function OrderVendorMain() {
         onHide={() => setIsModalOpen(false)}
         restaurantData={selectedRestaurant}
       />
+      {sheet}
       {error && (
         <p className="text-red-500">
           {t('Error')}: {error.message}

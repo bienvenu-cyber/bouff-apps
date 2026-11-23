@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.admin_order_receipts(uuid[]) FROM anon;

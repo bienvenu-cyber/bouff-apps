@@ -4,7 +4,12 @@
 - [x] Reçu de caisse (pas une facture normalisée) : imprimer après la vente, impression automatique au choix, réimpression depuis « Commandes du jour »
 - [x] Téléphone du restaurant renseigné pour le reçu
 - [ ] Acheter l'imprimante thermique 80 mm (USB/Bluetooth, compatible Android) et l'essayer sur la tablette — en attente de l'achat
-- [ ] Mise en ligne du site (bouff-apps sur Vercel) pour avoir le bouton dans /caisse
+- [x] Caisse : modifier une commande tant que la cuisine ne l'a pas acceptée (différence à encaisser/rendre)
+- [x] Caisse : ajouter une nouvelle commande payée pour une table ; numéro de table facultatif (visible en cuisine)
+- [x] Reçu groupé (une table ou plusieurs commandes) ; reçus imprimables par la gérante pour toute commande
+- [x] Montant reçu et monnaie rendue gardés et réimprimés
+- [ ] Mise en ligne du site (bouff-apps) et de l'admin (bouff-admin) sur Vercel pour avoir ces boutons
+- [ ] Essai réel avec l'imprimante thermique
 
 ## Demande actuelle — Stock & cuisine (gérante)
 - [x] Base : produits, réceptions, pertes, comptages, dépenses, contrôles hygiène (écritures protégées, auteur + heure)

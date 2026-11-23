@@ -31,6 +31,15 @@ export interface CounterLineInput {
   quantity: number;
 }
 
+export interface CounterOrderLine {
+  menu_item_id: string | null;
+  variant_id: string | null;
+  option_ids: string[];
+  quantity: number;
+  name: string;
+  variant: string | null;
+}
+
 export function readCounterSession(): { token: string; name: string } | null {
   if (typeof window === "undefined") return null;
   const token = window.localStorage.getItem(TOKEN_KEY);
@@ -85,6 +94,8 @@ export async function counterPlaceOrder(input: {
   customerName?: string;
   customerPhone?: string;
   note?: string;
+  tableLabel?: string | null;
+  cashReceived?: number | null;
 }) {
   const { data, error } = await bouffDb().rpc("counter_place_order", {
     p_token: input.token,
@@ -94,13 +105,49 @@ export async function counterPlaceOrder(input: {
     p_customer_name: input.customerName || null,
     p_customer_phone: input.customerPhone || null,
     p_note: input.note || null,
+    p_table_label: input.tableLabel || null,
+    p_cash_received: input.payment === "cash" && input.cashReceived ? input.cashReceived : null,
   });
   if (error) throw new Error(error.message);
   return data as {
     order_id: string;
     order_number: string;
     total_fcfa: number;
+    table_label: string | null;
+    cash_received_fcfa: number | null;
+    change_fcfa: number | null;
     points_linked: boolean;
+  };
+}
+
+// Modifier une commande tant que la cuisine ne l'a pas acceptée : même numéro, prix recalculés par la base.
+export async function counterUpdateOrder(input: {
+  token: string;
+  orderId: string;
+  items: CounterLineInput[];
+  dineIn: boolean;
+  tableLabel?: string | null;
+  extraReceived?: number | null;
+}) {
+  const { data, error } = await bouffDb().rpc("counter_update_order", {
+    p_token: input.token,
+    p_order_id: input.orderId,
+    p_items: input.items,
+    p_dine_in: input.dineIn,
+    p_table_label: input.tableLabel || null,
+    p_extra_received: input.extraReceived ?? null,
+  });
+  if (error) throw new Error(error.message);
+  return data as {
+    order_id: string;
+    order_number: string;
+    payment_method: string;
+    old_total_fcfa: number;
+    total_fcfa: number;
+    difference_fcfa: number;
+    table_label: string | null;
+    cash_received_fcfa: number | null;
+    change_fcfa: number | null;
   };
 }
 
@@ -113,10 +160,15 @@ export async function counterRecentOrders(token: string) {
     status: string;
     total_fcfa: number;
     customer_name: string;
+    customer_phone: string | null;
     dine_in: boolean;
+    table_label: string | null;
     payment_method: string;
+    cash_received_fcfa: number | null;
     created_at: string;
+    edited_at: string | null;
     cancel_reason: string | null;
+    lines: CounterOrderLine[];
   }>;
 }
 
@@ -134,8 +186,11 @@ export interface CounterDaySummary {
   period_start: string;
   orders_count: number;
   cancelled_count: number;
+  edited_count?: number;
   cash_fcfa: number;
   momo_fcfa: number;
+  cash_received_fcfa?: number;
+  change_fcfa?: number;
   cash_counted_fcfa?: number;
   gap_fcfa?: number;
 }
@@ -161,4 +216,11 @@ export async function counterOrderReceipt(token: string, orderId: string) {
   const { data, error } = await bouffDb().rpc("counter_order_receipt", { p_token: token, p_order_id: orderId });
   if (error) throw new Error(error.message);
   return data as Receipt;
+}
+
+// Reçu groupé (une table, un groupe) : uniquement des commandes caisse du même restaurant.
+export async function counterOrderReceipts(token: string, orderIds: string[]) {
+  const { data, error } = await bouffDb().rpc("counter_order_receipts", { p_token: token, p_order_ids: orderIds });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as Receipt[];
 }

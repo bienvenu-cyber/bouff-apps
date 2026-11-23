@@ -218,6 +218,20 @@
       "when": 1795274370976,
       "tag": "0030_counter_order_receipt",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1795442965126,
+      "tag": "0031_counter_edit_tables_receipts",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1795444956175,
+      "tag": "0032_admin_receipts_signed_in_only",
+      "breakpoints": true
     }
   ]
 }

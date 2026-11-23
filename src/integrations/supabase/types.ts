@@ -1127,6 +1127,70 @@ export type Database = {
           },
         ]
       }
+      order_edits: {
+        Row: {
+          author_name: string | null
+          cashier_id: string | null
+          created_at: string
+          extra_received_fcfa: number | null
+          id: string
+          new_items: Json
+          new_total_fcfa: number
+          old_items: Json
+          old_total_fcfa: number
+          order_id: string
+          restaurant_id: string
+        }
+        Insert: {
+          author_name?: string | null
+          cashier_id?: string | null
+          created_at?: string
+          extra_received_fcfa?: number | null
+          id?: string
+          new_items: Json
+          new_total_fcfa: number
+          old_items: Json
+          old_total_fcfa: number
+          order_id: string
+          restaurant_id: string
+        }
+        Update: {
+          author_name?: string | null
+          cashier_id?: string | null
+          created_at?: string
+          extra_received_fcfa?: number | null
+          id?: string
+          new_items?: Json
+          new_total_fcfa?: number
+          old_items?: Json
+          old_total_fcfa?: number
+          order_id?: string
+          restaurant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_edits_cashier_id_fkey"
+            columns: ["cashier_id"]
+            isOneToOne: false
+            referencedRelation: "cashiers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_edits_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_edits_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_item_options: {
         Row: {
           created_at: string
@@ -1323,6 +1387,7 @@ export type Database = {
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by_cashier_id: string | null
+          cash_received_fcfa: number | null
           cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
@@ -1340,6 +1405,7 @@ export type Database = {
           delivery_zone_id: string | null
           dine_in: boolean
           discount_fcfa: number
+          edited_at: string | null
           estimated_ready_at: string | null
           free_delivery_used: boolean
           id: string
@@ -1357,6 +1423,7 @@ export type Database = {
           scheduled_for: string | null
           source: string
           status: Database["public"]["Enums"]["order_status"]
+          table_label: string | null
           tip_fcfa: number
           total_fcfa: number
           updated_at: string
@@ -1368,6 +1435,7 @@ export type Database = {
           cancel_reason?: string | null
           cancelled_at?: string | null
           cancelled_by_cashier_id?: string | null
+          cash_received_fcfa?: number | null
           cashier_id?: string | null
           commission_fcfa?: number
           coupon_code?: string | null
@@ -1385,6 +1453,7 @@ export type Database = {
           delivery_zone_id?: string | null
           dine_in?: boolean
           discount_fcfa?: number
+          edited_at?: string | null
           estimated_ready_at?: string | null
           free_delivery_used?: boolean
           id?: string
@@ -1402,6 +1471,7 @@ export type Database = {
           scheduled_for?: string | null
           source?: string
           status?: Database["public"]["Enums"]["order_status"]
+          table_label?: string | null
           tip_fcfa?: number
           total_fcfa?: number
           updated_at?: string
@@ -1413,6 +1483,7 @@ export type Database = {
           cancel_reason?: string | null
           cancelled_at?: string | null
           cancelled_by_cashier_id?: string | null
+          cash_received_fcfa?: number | null
           cashier_id?: string | null
           commission_fcfa?: number
           coupon_code?: string | null
@@ -1430,6 +1501,7 @@ export type Database = {
           delivery_zone_id?: string | null
           dine_in?: boolean
           discount_fcfa?: number
+          edited_at?: string | null
           estimated_ready_at?: string | null
           free_delivery_used?: boolean
           id?: string
@@ -1447,6 +1519,7 @@ export type Database = {
           scheduled_for?: string | null
           source?: string
           status?: Database["public"]["Enums"]["order_status"]
+          table_label?: string | null
           tip_fcfa?: number
           total_fcfa?: number
           updated_at?: string
@@ -2390,6 +2463,7 @@ export type Database = {
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by_cashier_id: string | null
+          cash_received_fcfa: number | null
           cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
@@ -2407,6 +2481,7 @@ export type Database = {
           delivery_zone_id: string | null
           dine_in: boolean
           discount_fcfa: number
+          edited_at: string | null
           estimated_ready_at: string | null
           free_delivery_used: boolean
           id: string
@@ -2424,6 +2499,7 @@ export type Database = {
           scheduled_for: string | null
           source: string
           status: Database["public"]["Enums"]["order_status"]
+          table_label: string | null
           tip_fcfa: number
           total_fcfa: number
           updated_at: string
@@ -2525,6 +2601,7 @@ export type Database = {
           sales: number
         }[]
       }
+      admin_order_receipts: { Args: { p_order_ids: string[] }; Returns: Json }
       admin_push_promo: { Args: { p_variant_id: string }; Returns: number }
       admin_push_stats: { Args: { p_days?: number }; Returns: Json }
       admin_remove_staff: {
@@ -2594,6 +2671,7 @@ export type Database = {
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by_cashier_id: string | null
+          cash_received_fcfa: number | null
           cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
@@ -2611,6 +2689,7 @@ export type Database = {
           delivery_zone_id: string | null
           dine_in: boolean
           discount_fcfa: number
+          edited_at: string | null
           estimated_ready_at: string | null
           free_delivery_used: boolean
           id: string
@@ -2628,6 +2707,7 @@ export type Database = {
           scheduled_for: string | null
           source: string
           status: Database["public"]["Enums"]["order_status"]
+          table_label: string | null
           tip_fcfa: number
           total_fcfa: number
           updated_at: string
@@ -2669,6 +2749,7 @@ export type Database = {
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by_cashier_id: string | null
+          cash_received_fcfa: number | null
           cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
@@ -2686,6 +2767,7 @@ export type Database = {
           delivery_zone_id: string | null
           dine_in: boolean
           discount_fcfa: number
+          edited_at: string | null
           estimated_ready_at: string | null
           free_delivery_used: boolean
           id: string
@@ -2703,6 +2785,7 @@ export type Database = {
           scheduled_for: string | null
           source: string
           status: Database["public"]["Enums"]["order_status"]
+          table_label: string | null
           tip_fcfa: number
           total_fcfa: number
           updated_at: string
@@ -2738,20 +2821,37 @@ export type Database = {
         Args: { p_order_id: string; p_token: string }
         Returns: Json
       }
+      counter_order_receipts: {
+        Args: { p_order_ids: string[]; p_token: string }
+        Returns: Json
+      }
       counter_place_order: {
         Args: {
+          p_cash_received?: number
           p_customer_name?: string
           p_customer_phone?: string
           p_dine_in: boolean
           p_items: Json
           p_note?: string
           p_payment_method: Database["public"]["Enums"]["payment_method"]
+          p_table_label?: string
           p_token: string
         }
         Returns: Json
       }
       counter_recent_orders: { Args: { p_token: string }; Returns: Json }
       counter_session: { Args: { p_token: string }; Returns: Json }
+      counter_update_order: {
+        Args: {
+          p_dine_in: boolean
+          p_extra_received?: number
+          p_items: Json
+          p_order_id: string
+          p_table_label?: string
+          p_token: string
+        }
+        Returns: Json
+      }
       coupon_quote: {
         Args: {
           p_code: string
@@ -3072,6 +3172,7 @@ export type Database = {
           cancel_reason: string | null
           cancelled_at: string | null
           cancelled_by_cashier_id: string | null
+          cash_received_fcfa: number | null
           cashier_id: string | null
           commission_fcfa: number
           coupon_code: string | null
@@ -3089,6 +3190,7 @@ export type Database = {
           delivery_zone_id: string | null
           dine_in: boolean
           discount_fcfa: number
+          edited_at: string | null
           estimated_ready_at: string | null
           free_delivery_used: boolean
           id: string
@@ -3106,6 +3208,7 @@ export type Database = {
           scheduled_for: string | null
           source: string
           status: Database["public"]["Enums"]["order_status"]
+          table_label: string | null
           tip_fcfa: number
           total_fcfa: number
           updated_at: string
