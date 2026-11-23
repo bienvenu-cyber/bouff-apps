@@ -495,7 +495,15 @@ export default function SingleVendorCheckout() {
             ))}
           </div>
           {paymentMethod !== "COD" && <PaymentFields value={{ ...choice, method: paymentMethod === "CARD" ? "card" : "momo", payerPhone: choice.payerPhone || phone }} onChange={setChoice} disabled={submittingUi} />}
-
+          <label className="mt-5 block text-sm dark:text-gray-200">
+            Note pour la cuisine
+            <textarea
+              value={instructions}
+              onChange={(event) => setInstructions(event.target.value)}
+              placeholder="Sans oignon, bien piquant…"
+              className={field}
+            />
+          </label>
         </section>
       </div>
 
