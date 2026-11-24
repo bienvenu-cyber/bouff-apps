@@ -27,6 +27,16 @@
         "buildType": "apk"
       }
     },
+    "google-play": {
+      "extends": "production",
+      "distribution": "store",
+      "developmentClient": false,
+      "environment": "production",
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle"
+      }
+    },
     "production": {
       "channel": "production",
       "env": {
@@ -39,6 +49,12 @@
     }
   },
   "submit": {
+    "google-play": {
+      "android": {
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    },
     "production": {
       "android": {
         "serviceAccountKeyPath": "./google-service-account.json",
@@ -52,6 +68,7 @@
     }
   },
   "cli": {
-    "version": ">= 0.43.0"
+    "version": ">= 0.43.0",
+    "appVersionSource": "remote"
   }
 }

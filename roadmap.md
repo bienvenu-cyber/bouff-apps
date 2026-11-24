@@ -1,5 +1,12 @@
 # Feuille de route BOUFF
 
+## Demande actuelle — Google Play client et cuisine
+- [x] Préparer des versions AAB dédiées à Google Play ; APK de staging conservés ; 8 tests réussis
+- [x] Lancer les compilations Expo client (version 145) et cuisine (version 88)
+- [ ] Récupérer et vérifier les deux AAB — compilations Expo en cours
+- [ ] Compléter les fiches Google Play et les déclarations — aucun accès Play Console connecté ; compte personnel avec Production accessible selon l'utilisateur
+- [ ] Essayer les deux versions, puis demander leur publication — envoi Play Console et validation Google requis
+
 ## Demande actuelle — Reçus caisse
 - [x] Reçu de caisse (pas une facture normalisée) : imprimer après la vente, impression automatique au choix, réimpression depuis « Commandes du jour »
 - [x] Téléphone du restaurant renseigné pour le reçu
