@@ -232,6 +232,13 @@
       "when": 1795444956175,
       "tag": "0032_admin_receipts_signed_in_only",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1795616213653,
+      "tag": "0033_account_deletion_requests",
+      "breakpoints": true
     }
   ]
 }

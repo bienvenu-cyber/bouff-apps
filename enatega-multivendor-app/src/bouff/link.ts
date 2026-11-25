@@ -798,6 +798,14 @@ const resolvers: Record<string, Resolver> = {
     if (edited?.selected) await selectZoneFor(edited);
     return { editAddress: await addressesPayload() };
   },
+  Deactivate: async (v) => {
+    const { error } = await bouffDb().rpc("request_account_deletion", {
+      p_contact: v.email ?? "",
+      p_reason: "Demande depuis l'appli",
+    });
+    if (error) throw new Error(error.message);
+    return { Deactivate: { isActive: false } };
+  },
   DeleteAddress: async (v) => {
     await writeAddresses((await readAddresses()).filter((a) => a._id !== v.id));
     return { deleteAddress: await addressesPayload() };

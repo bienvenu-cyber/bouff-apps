@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          contact: string
+          created_at: string
+          id: string
+          processed_at: string | null
+          reason: string | null
+          source: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          contact: string
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          reason?: string | null
+          source?: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          contact?: string
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          reason?: string | null
+          source?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       app_boot_logs: {
         Row: {
           app: string
@@ -3141,6 +3174,10 @@ export type Database = {
       }
       register_service_token: {
         Args: { p_name: string; p_token: string }
+        Returns: boolean
+      }
+      request_account_deletion: {
+        Args: { p_contact: string; p_reason?: string }
         Returns: boolean
       }
       restaurant_rating: { Args: { p_restaurant_id: string }; Returns: Json }

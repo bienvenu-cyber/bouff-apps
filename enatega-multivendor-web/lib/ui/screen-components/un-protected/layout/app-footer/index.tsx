@@ -30,6 +30,7 @@ const AppFooter = () => {
       { label: "Accueil", link: "/", internal: true },
       { label: "Conditions d'utilisation", link: "/terms", internal: true },
       { label: "Confidentialité", link: "/privacy", internal: true },
+      { label: "Supprimer mon compte", link: "/suppression-compte", internal: true },
     ],
   };
 
@@ -38,6 +39,7 @@ const AppFooter = () => {
       { label: "La carte", href: "/browse" },
       { label: "Conditions d'utilisation", href: "/terms" },
       { label: "Confidentialité", href: "/privacy" },
+      { label: "Supprimer mon compte", href: "/suppression-compte" },
     ];
 
     return (
