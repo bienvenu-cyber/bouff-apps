@@ -346,7 +346,7 @@ export default function SingleVendorCheckout() {
                   ))}
                 </select>
                 <span className="mt-1 block text-xs text-gray-500 dark:text-gray-400">
-                  Frais de livraison à partir de {formatCurrency(Math.min(...(cityZones.length ? cityZones.map((z) => z.fee) : [0])))}, selon le quartier.
+                  Livraison {formatCurrency(Math.min(...(cityZones.length ? cityZones.map((z) => z.fee) : [0])))} dans tous les quartiers.
                 </span>
               </label>
               <label className="mt-4 block text-sm dark:text-gray-200">
