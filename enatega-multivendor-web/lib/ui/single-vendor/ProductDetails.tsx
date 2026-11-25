@@ -125,7 +125,7 @@ export default function SingleVendorProductDetails({
               {product.title}
             </h1>
             <button
-              aria-label="Toggle favorite"
+              aria-label="Ajouter aux favoris"
               onClick={() => void toggleFavorite({ variables: { id: foodId } })}
               className="text-2xl text-primary-color"
             >
@@ -255,13 +255,13 @@ export default function SingleVendorProductDetails({
               />
             ) : (
               <button type="button" disabled className="h-14 min-w-[190px] rounded-2xl bg-gray-200 px-5 font-semibold text-gray-500 dark:bg-gray-700 dark:text-gray-300">
-                Select required options
+                Choisir les options
               </button>
             )}
           </div>
           {product.ingredients && (
             <p className="mt-8 text-sm text-gray-500">
-              <strong>Ingredients:</strong> {product.ingredients}
+              <strong>Ingrédients :</strong> {product.ingredients}
             </p>
           )}
         </div>
